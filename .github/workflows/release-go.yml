@@ -81,8 +81,10 @@ jobs:
               echo "Tag $GO_TAG already exists at $GITHUB_SHA — nothing to do."
               exit 0
             else
-              echo "::error::Tag $GO_TAG already exists at $REMOTE_SHA, expected $GITHUB_SHA"
-              exit 1
+              echo "Tag $GO_TAG exists at $REMOTE_SHA, moving to $GITHUB_SHA"
+              git tag -f "$GO_TAG" "$GITHUB_SHA"
+              git push origin "$GO_TAG" --force
+              exit 0
             fi
           fi
 

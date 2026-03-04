@@ -57,4 +57,8 @@ sedi "s/public static let version = \".*\"/public static let version = \"$VERSIO
 echo "Syncing TypeScript lockfile..."
 (cd typescript && npm install --package-lock-only --ignore-scripts)
 
+# Sync Ruby lockfile
+echo "Syncing Ruby lockfile..."
+(cd ruby && bundle install --quiet)
+
 echo "Done. Bumped 8 files to $VERSION."
