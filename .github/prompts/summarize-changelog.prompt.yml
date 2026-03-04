@@ -13,6 +13,7 @@ messages:
       - If the diff touches generated code only (service files, types), note
         what API coverage was added rather than listing file changes
       - Keep it under 30 lines
+      - Output raw markdown only — no code fences wrapping the response
 model: openai/gpt-4o
 modelParameters:
   maxCompletionTokens: 1000

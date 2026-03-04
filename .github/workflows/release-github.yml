@@ -185,6 +185,8 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           SEMVER="${{ steps.version.outputs.semver }}"
           RESPONSE_FILE="${{ steps.summarize.outputs.response-file }}"
+          # Strip markdown code fence wrapper if the model emitted one
+          sed -i '1{/^```/d}; ${/^```$/d}' "$RESPONSE_FILE"
           {
             cat "$RESPONSE_FILE"
             echo ""
