@@ -1,8 +1,5 @@
 changelog:
   exclude:
-    labels:
-      - dependencies
-      - github-actions
     authors:
       - dependabot[bot]
   categories:
@@ -15,6 +12,11 @@ changelog:
     - title: Bug Fixes
       labels:
         - bug
+    - title: CI & Infrastructure
+      labels:
+        - ci
+        - dependencies
+        - github-actions
     - title: Documentation
       labels:
         - documentation
