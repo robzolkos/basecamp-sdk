@@ -153,6 +153,13 @@ endif
 		{ echo "ERROR: Swift version does not match $(VERSION). Run 'make bump VERSION=$(VERSION)' first."; exit 1; }
 	@git diff --quiet && git diff --cached --quiet || \
 		{ echo "ERROR: Working tree has uncommitted changes. Commit first."; exit 1; }
+	@# Verify we're on main — release tags must be on the default branch
+	@BRANCH=$$(git rev-parse --abbrev-ref HEAD); \
+	if [ "$$BRANCH" != "main" ]; then \
+		echo "ERROR: Must be on main branch to release (currently on $$BRANCH)."; exit 1; \
+	fi
+	@# Push main first — release workflows verify the tag commit is reachable from origin/main
+	git push origin main
 	git tag "v$(VERSION)"
 	git push origin "v$(VERSION)"
 	@echo "Pushed v$(VERSION) — all SDK release workflows will trigger."

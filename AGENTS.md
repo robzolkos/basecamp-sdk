@@ -203,6 +203,41 @@ When reviewing a PR that touches `spec/basecamp.smithy`, verify that `openapi.js
 
 ---
 
+## Release Procedure
+
+Two commands cut a release. `make release` handles pushing `main`, tagging, and triggering all 6 workflows (Go, TypeScript, Ruby, Swift, Kotlin, GitHub Release).
+
+```bash
+make bump VERSION=x.y.z   # updates 8 version files + lockfiles
+# commit the bump
+make release VERSION=x.y.z  # pushes main, tags, pushes tag
+```
+
+### What `make release` does
+
+1. Verifies all 8 version constants match the requested version
+2. Verifies the working tree is clean
+3. Verifies you're on the `main` branch
+4. Pushes `main` to origin (release workflows guard that the tag commit is reachable from `origin/main`)
+5. Creates and pushes the `v{VERSION}` tag
+
+### Guards
+
+- **Branch guard**: refuses to release from non-`main` branches
+- **Version guard**: refuses if any of the 8 constants don't match
+- **Clean tree guard**: refuses if there are uncommitted changes
+- **CI guard**: each release workflow runs `git merge-base --is-ancestor "$GITHUB_SHA" origin/main` — rejects tags whose commit isn't on `main`
+
+### Verification
+
+After releasing, monitor all 6 workflows in GitHub Actions. The "Create GitHub Release" workflow waits for the 5 SDK workflows to succeed before creating the release.
+
+```bash
+gh run list --repo basecamp/basecamp-sdk --limit 6 --json name,status,conclusion
+```
+
+---
+
 ## Upstream API Sync Workflow
 
 When syncing the SDK spec to match upstream API changes (bc3-api docs + bc3 Rails app):
