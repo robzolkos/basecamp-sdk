@@ -390,16 +390,16 @@ func executeOperation(ctx context.Context, account *basecamp.AccountClient, tc T
 
 	case "GetProjectTimeline":
 		projectID := getInt64Param(tc.PathParams, "projectId")
-		_, err := account.Timeline().ProjectTimeline(ctx, projectID)
+		_, err := account.Timeline().ProjectTimeline(ctx, projectID, nil)
 		return operationResult{err: err}
 
 	case "GetProgressReport":
-		_, err := account.Timeline().Progress(ctx)
+		_, err := account.Timeline().Progress(ctx, nil)
 		return operationResult{err: err}
 
 	case "GetPersonProgress":
 		personID := getInt64Param(tc.PathParams, "personId")
-		_, err := account.Timeline().PersonProgress(ctx, personID)
+		_, err := account.Timeline().PersonProgress(ctx, personID, nil)
 		return operationResult{err: err}
 
 	case "GetProjectTimesheet":
