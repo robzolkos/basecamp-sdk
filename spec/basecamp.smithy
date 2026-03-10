@@ -2892,8 +2892,8 @@ structure Upload {
   description: UploadDescription
   content_type: String
   byte_size: Long
-  width: Integer
-  height: Integer
+  width: Double
+  height: Double
   download_url: String
   filename: String
   boosts_count: Integer

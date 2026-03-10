@@ -144,8 +144,8 @@ type Upload struct {
 	Description      string    `json:"description"`
 	ContentType      string    `json:"content_type"`
 	ByteSize         int64     `json:"byte_size"`
-	Width            int       `json:"width,omitempty"`
-	Height           int       `json:"height,omitempty"`
+	Width            float64   `json:"width,omitempty"`
+	Height           float64   `json:"height,omitempty"`
 	DownloadURL      string    `json:"download_url"`
 	Filename         string    `json:"filename"`
 }
@@ -1125,8 +1125,8 @@ func uploadFromGenerated(gu generated.Upload) Upload {
 		Description:      gu.Description,
 		ContentType:      gu.ContentType,
 		ByteSize:         gu.ByteSize,
-		Width:            int(gu.Width),
-		Height:           int(gu.Height),
+		Width:            gu.Width,
+		Height:           gu.Height,
 		DownloadURL:      gu.DownloadUrl,
 		Filename:         gu.Filename,
 		CreatedAt:        gu.CreatedAt,

@@ -23843,12 +23843,12 @@
             "format": "int64"
           },
           "width": {
-            "type": "integer",
-            "format": "int32"
+            "type": "number",
+            "format": "double"
           },
           "height": {
-            "type": "integer",
-            "format": "int32"
+            "type": "number",
+            "format": "double"
           },
           "download_url": {
             "type": "string"

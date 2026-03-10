@@ -49,8 +49,8 @@
   "description": "Company logo in high resolution",
   "content_type": "image/png",
   "byte_size": 245678,
-  "width": 1024,
-  "height": 768,
+  "width": 1024.0,
+  "height": 768.0,
   "download_url": "https://3.basecampapi.com/999999999/blobs/abcd1234/download/logo.png",
   "filename": "logo.png"
 }
