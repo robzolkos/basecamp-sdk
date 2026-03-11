@@ -390,17 +390,53 @@ func executeOperation(ctx context.Context, account *basecamp.AccountClient, tc T
 
 	case "GetProjectTimeline":
 		projectID := getInt64Param(tc.PathParams, "projectId")
-		_, err := account.Timeline().ProjectTimeline(ctx, projectID)
-		return operationResult{err: err}
+		var timelineOpts *basecamp.TimelineListOptions
+		if tc.ConfigOverrides != nil && tc.ConfigOverrides.MaxItems > 0 {
+			timelineOpts = &basecamp.TimelineListOptions{Limit: tc.ConfigOverrides.MaxItems}
+		}
+		result, err := account.Timeline().ProjectTimeline(ctx, projectID, timelineOpts)
+		if err != nil {
+			return operationResult{err: err}
+		}
+		return operationResult{
+			meta: map[string]interface{}{
+				"totalCount": result.Meta.TotalCount,
+				"truncated":  result.Meta.Truncated,
+			},
+		}
 
 	case "GetProgressReport":
-		_, err := account.Timeline().Progress(ctx)
-		return operationResult{err: err}
+		var timelineOpts *basecamp.TimelineListOptions
+		if tc.ConfigOverrides != nil && tc.ConfigOverrides.MaxItems > 0 {
+			timelineOpts = &basecamp.TimelineListOptions{Limit: tc.ConfigOverrides.MaxItems}
+		}
+		result, err := account.Timeline().Progress(ctx, timelineOpts)
+		if err != nil {
+			return operationResult{err: err}
+		}
+		return operationResult{
+			meta: map[string]interface{}{
+				"totalCount": result.Meta.TotalCount,
+				"truncated":  result.Meta.Truncated,
+			},
+		}
 
 	case "GetPersonProgress":
 		personID := getInt64Param(tc.PathParams, "personId")
-		_, err := account.Timeline().PersonProgress(ctx, personID)
-		return operationResult{err: err}
+		var timelineOpts *basecamp.TimelineListOptions
+		if tc.ConfigOverrides != nil && tc.ConfigOverrides.MaxItems > 0 {
+			timelineOpts = &basecamp.TimelineListOptions{Limit: tc.ConfigOverrides.MaxItems}
+		}
+		result, err := account.Timeline().PersonProgress(ctx, personID, timelineOpts)
+		if err != nil {
+			return operationResult{err: err}
+		}
+		return operationResult{
+			meta: map[string]interface{}{
+				"totalCount": result.Meta.TotalCount,
+				"truncated":  result.Meta.Truncated,
+			},
+		}
 
 	case "GetProjectTimesheet":
 		projectID := getInt64Param(tc.PathParams, "projectId")
