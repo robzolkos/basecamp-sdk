@@ -220,7 +220,7 @@ func (s *TimelineService) PersonProgress(ctx context.Context, personID int64, op
 		return nil, err
 	}
 	if resp.JSON200 == nil {
-		return nil, nil
+		return nil, fmt.Errorf("unexpected empty response")
 	}
 
 	totalCount := parseTotalCount(resp.HTTPResponse)
