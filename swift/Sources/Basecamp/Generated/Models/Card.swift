@@ -24,7 +24,6 @@ public struct Card: Codable, Sendable {
     public var completed: Bool?
     public var completedAt: String?
     public var completer: Person?
-    public var completionSubscribers: [Person]?
     public var completionUrl: String?
     public var content: String?
     public var description: String?
@@ -56,7 +55,6 @@ public struct Card: Codable, Sendable {
         completed: Bool? = nil,
         completedAt: String? = nil,
         completer: Person? = nil,
-        completionSubscribers: [Person]? = nil,
         completionUrl: String? = nil,
         content: String? = nil,
         description: String? = nil,
@@ -87,7 +85,6 @@ public struct Card: Codable, Sendable {
         self.completed = completed
         self.completedAt = completedAt
         self.completer = completer
-        self.completionSubscribers = completionSubscribers
         self.completionUrl = completionUrl
         self.content = content
         self.description = description

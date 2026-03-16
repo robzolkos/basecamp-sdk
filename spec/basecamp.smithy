@@ -4509,7 +4509,6 @@ structure Card {
   creator: Person
   completer: Person
   assignees: PersonList
-  completion_subscribers: PersonList
   steps: CardStepList
   boosts_count: Integer
   boosts_url: String

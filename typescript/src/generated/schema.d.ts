@@ -2317,7 +2317,6 @@ export interface components {
             creator: components["schemas"]["Person"];
             completer?: components["schemas"]["Person"];
             assignees?: components["schemas"]["Person"][];
-            completion_subscribers?: components["schemas"]["Person"][];
             steps?: components["schemas"]["CardStep"][];
             /** Format: int32 */
             boosts_count?: number;

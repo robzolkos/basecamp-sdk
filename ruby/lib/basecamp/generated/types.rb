@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Auto-generated from OpenAPI spec. Do not edit manually.
-# Generated: 2026-03-16T01:24:22Z
+# Generated: 2026-03-16T16:58:00Z
 
 require "json"
 require "time"
@@ -284,7 +284,7 @@ module Basecamp
     # Card
     class Card
       include TypeHelpers
-      attr_accessor :app_url, :bucket, :created_at, :creator, :id, :inherits_status, :parent, :status, :title, :type, :updated_at, :url, :visible_to_clients, :assignees, :bookmark_url, :boosts_count, :boosts_url, :comments_count, :comments_url, :completed, :completed_at, :completer, :completion_subscribers, :completion_url, :content, :description, :due_on, :position, :steps, :subscription_url
+      attr_accessor :app_url, :bucket, :created_at, :creator, :id, :inherits_status, :parent, :status, :title, :type, :updated_at, :url, :visible_to_clients, :assignees, :bookmark_url, :boosts_count, :boosts_url, :comments_count, :comments_url, :completed, :completed_at, :completer, :completion_url, :content, :description, :due_on, :position, :steps, :subscription_url
 
       # @return [Array<Symbol>]
       def self.required_fields
@@ -314,7 +314,6 @@ module Basecamp
         @completed = parse_boolean(data["completed"])
         @completed_at = parse_datetime(data["completed_at"])
         @completer = parse_type(data["completer"], "Person")
-        @completion_subscribers = parse_array(data["completion_subscribers"], "Person")
         @completion_url = data["completion_url"]
         @content = data["content"]
         @description = data["description"]
@@ -348,7 +347,6 @@ module Basecamp
           "completed" => @completed,
           "completed_at" => @completed_at,
           "completer" => @completer,
-          "completion_subscribers" => @completion_subscribers,
           "completion_url" => @completion_url,
           "content" => @content,
           "description" => @description,
@@ -1288,6 +1286,39 @@ module Basecamp
           "forwards_count" => @forwards_count,
           "forwards_url" => @forwards_url,
           "position" => @position,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # LineupMarker
+    class LineupMarker
+      include TypeHelpers
+      attr_accessor :created_at, :date, :id, :name, :updated_at
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[created_at date id name updated_at].freeze
+      end
+
+      def initialize(data = {})
+        @created_at = parse_datetime(data["created_at"])
+        @date = data["date"]
+        @id = parse_integer(data["id"])
+        @name = data["name"]
+        @updated_at = parse_datetime(data["updated_at"])
+      end
+
+      def to_h
+        {
+          "created_at" => @created_at,
+          "date" => @date,
+          "id" => @id,
+          "name" => @name,
+          "updated_at" => @updated_at,
         }.compact
       end
 

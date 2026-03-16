@@ -38,7 +38,6 @@ data class Card(
     @SerialName("completion_url") val completionUrl: String? = null,
     val completer: Person? = null,
     val assignees: List<Person> = emptyList(),
-    @SerialName("completion_subscribers") val completionSubscribers: List<Person> = emptyList(),
     val steps: List<CardStep> = emptyList(),
     @SerialName("boosts_count") val boostsCount: Int = 0,
     @SerialName("boosts_url") val boostsUrl: String? = null

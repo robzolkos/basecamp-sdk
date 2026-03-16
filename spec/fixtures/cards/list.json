@@ -43,7 +43,6 @@
         "name": "Annie Bryan"
       }
     ],
-    "completion_subscribers": [],
     "steps": [
       {
         "id": 1069479360,
@@ -154,7 +153,6 @@
       "name": "Annie Bryan"
     },
     "assignees": [],
-    "completion_subscribers": [],
     "steps": []
   }
 ]

@@ -16664,12 +16664,6 @@
               "$ref": "#/components/schemas/Person"
             }
           },
-          "completion_subscribers": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Person"
-            }
-          },
           "steps": {
             "type": "array",
             "items": {

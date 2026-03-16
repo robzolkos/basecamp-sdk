@@ -109,36 +109,35 @@ type CampfireLineAttachment struct {
 
 // Card defines model for Card.
 type Card struct {
-	AppUrl                string          `json:"app_url"`
-	Assignees             []Person        `json:"assignees,omitempty"`
-	BookmarkUrl           string          `json:"bookmark_url,omitempty"`
-	BoostsCount           int32           `json:"boosts_count,omitempty"`
-	BoostsUrl             string          `json:"boosts_url,omitempty"`
-	Bucket                TodoBucket      `json:"bucket"`
-	CommentsCount         int32           `json:"comments_count,omitempty"`
-	CommentsUrl           string          `json:"comments_url,omitempty"`
-	Completed             bool            `json:"completed,omitempty"`
-	CompletedAt           time.Time       `json:"completed_at,omitempty"`
-	Completer             Person          `json:"completer,omitempty"`
-	CompletionSubscribers []Person        `json:"completion_subscribers,omitempty"`
-	CompletionUrl         string          `json:"completion_url,omitempty"`
-	Content               string          `json:"content,omitempty"`
-	CreatedAt             time.Time       `json:"created_at"`
-	Creator               Person          `json:"creator"`
-	Description           string          `json:"description,omitempty"`
-	DueOn                 types.Date      `json:"due_on,omitempty"`
-	Id                    int64           `json:"id"`
-	InheritsStatus        bool            `json:"inherits_status"`
-	Parent                RecordingParent `json:"parent"`
-	Position              int32           `json:"position,omitempty"`
-	Status                string          `json:"status"`
-	Steps                 []CardStep      `json:"steps,omitempty"`
-	SubscriptionUrl       string          `json:"subscription_url,omitempty"`
-	Title                 string          `json:"title"`
-	Type                  string          `json:"type"`
-	UpdatedAt             time.Time       `json:"updated_at"`
-	Url                   string          `json:"url"`
-	VisibleToClients      bool            `json:"visible_to_clients"`
+	AppUrl           string          `json:"app_url"`
+	Assignees        []Person        `json:"assignees,omitempty"`
+	BookmarkUrl      string          `json:"bookmark_url,omitempty"`
+	BoostsCount      int32           `json:"boosts_count,omitempty"`
+	BoostsUrl        string          `json:"boosts_url,omitempty"`
+	Bucket           TodoBucket      `json:"bucket"`
+	CommentsCount    int32           `json:"comments_count,omitempty"`
+	CommentsUrl      string          `json:"comments_url,omitempty"`
+	Completed        bool            `json:"completed,omitempty"`
+	CompletedAt      time.Time       `json:"completed_at,omitempty"`
+	Completer        Person          `json:"completer,omitempty"`
+	CompletionUrl    string          `json:"completion_url,omitempty"`
+	Content          string          `json:"content,omitempty"`
+	CreatedAt        time.Time       `json:"created_at"`
+	Creator          Person          `json:"creator"`
+	Description      string          `json:"description,omitempty"`
+	DueOn            types.Date      `json:"due_on,omitempty"`
+	Id               int64           `json:"id"`
+	InheritsStatus   bool            `json:"inherits_status"`
+	Parent           RecordingParent `json:"parent"`
+	Position         int32           `json:"position,omitempty"`
+	Status           string          `json:"status"`
+	Steps            []CardStep      `json:"steps,omitempty"`
+	SubscriptionUrl  string          `json:"subscription_url,omitempty"`
+	Title            string          `json:"title"`
+	Type             string          `json:"type"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	Url              string          `json:"url"`
+	VisibleToClients bool            `json:"visible_to_clients"`
 }
 
 // CardColumn defines model for CardColumn.
