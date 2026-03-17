@@ -236,6 +236,7 @@ const SERVICE_SPLITS: Record<string, Record<string, string[]>> = {
     Todos: ["ListTodos", "CreateTodo", "GetTodo", "UpdateTodo", "CompleteTodo", "UncompleteTodo", "TrashTodo"],
     Todolists: ["GetTodolistOrGroup", "UpdateTodolistOrGroup", "ListTodolists", "CreateTodolist"],
     Todosets: ["GetTodoset"],
+    HillCharts: ["GetHillChart", "UpdateHillChartSettings"],
     TodolistGroups: ["ListTodolistGroups", "CreateTodolistGroup", "RepositionTodolistGroup"],
   },
   Untagged: {

@@ -2129,6 +2129,31 @@
         ]
       }
     },
+    "GetHillChart": {
+      "retry": {
+        "maxAttempts": 3,
+        "baseDelayMs": 1000,
+        "backoff": "exponential",
+        "retryOn": [
+          429,
+          503
+        ]
+      }
+    },
+    "UpdateHillChartSettings": {
+      "retry": {
+        "maxAttempts": 3,
+        "baseDelayMs": 1000,
+        "backoff": "exponential",
+        "retryOn": [
+          429,
+          503
+        ]
+      },
+      "idempotent": {
+        "natural": true
+      }
+    },
     "ListTodolists": {
       "retry": {
         "maxAttempts": 3,

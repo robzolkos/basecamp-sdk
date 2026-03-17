@@ -127,6 +127,11 @@ export {
 } from "./generated/services/todosets.js";
 
 export {
+  HillChartsService,
+  type UpdateHillChartSettingsHillChartRequest,
+} from "./generated/services/hill-charts.js";
+
+export {
   PeopleService,
   type Person,
   type UpdateProjectAccessPeopleRequest,

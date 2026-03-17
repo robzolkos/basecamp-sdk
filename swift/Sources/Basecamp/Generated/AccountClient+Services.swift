@@ -19,6 +19,7 @@ extension AccountClient {
     public var documents: DocumentsService { service("documents") { DocumentsService(accountClient: self) } }
     public var events: EventsService { service("events") { EventsService(accountClient: self) } }
     public var forwards: ForwardsService { service("forwards") { ForwardsService(accountClient: self) } }
+    public var hillCharts: HillChartsService { service("hillCharts") { HillChartsService(accountClient: self) } }
     public var lineup: LineupService { service("lineup") { LineupService(accountClient: self) } }
     public var messageBoards: MessageBoardsService { service("messageBoards") { MessageBoardsService(accountClient: self) } }
     public var messageTypes: MessageTypesService { service("messageTypes") { MessageTypesService(accountClient: self) } }

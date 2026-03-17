@@ -117,6 +117,7 @@ class ServiceGenerator
       'Todos' => %w[ListTodos CreateTodo GetTodo UpdateTodo CompleteTodo UncompleteTodo TrashTodo],
       'Todolists' => %w[GetTodolistOrGroup UpdateTodolistOrGroup ListTodolists CreateTodolist],
       'Todosets' => %w[GetTodoset],
+      'HillCharts' => %w[GetHillChart UpdateHillChartSettings],
       'TodolistGroups' => %w[ListTodolistGroups CreateTodolistGroup RepositionTodolistGroup]
     },
     'Untagged' => {

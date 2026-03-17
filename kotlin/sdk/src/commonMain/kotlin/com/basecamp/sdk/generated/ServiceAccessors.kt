@@ -79,6 +79,10 @@ val AccountClient.events: EventsService
 val AccountClient.forwards: ForwardsService
     get() = service("Forwards") { ForwardsService(this) }
 
+/** HillCharts operations. */
+val AccountClient.hillCharts: HillChartsService
+    get() = service("HillCharts") { HillChartsService(this) }
+
 /** Lineup operations. */
 val AccountClient.lineup: LineupService
     get() = service("Lineup") { LineupService(this) }

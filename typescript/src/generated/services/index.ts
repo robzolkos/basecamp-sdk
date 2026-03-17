@@ -35,5 +35,6 @@ export { TodolistGroupsService } from "./todolist-groups.js";
 export { TodolistsService } from "./todolists.js";
 export { TodosService } from "./todos.js";
 export { TodosetsService } from "./todosets.js";
+export { HillChartsService } from "./hill-charts.js";
 export { UploadsService } from "./uploads.js";
 export { VaultsService } from "./vaults.js";

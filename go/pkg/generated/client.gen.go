@@ -806,6 +806,9 @@ type GetForwardReplyResponseContent = ForwardReply
 // GetForwardResponseContent defines model for GetForwardResponseContent.
 type GetForwardResponseContent = Forward
 
+// GetHillChartResponseContent defines model for GetHillChartResponseContent.
+type GetHillChartResponseContent = HillChart
+
 // GetInboxResponseContent defines model for GetInboxResponseContent.
 type GetInboxResponseContent = Inbox
 
@@ -919,6 +922,25 @@ type GetVaultResponseContent = Vault
 
 // GetWebhookResponseContent defines model for GetWebhookResponseContent.
 type GetWebhookResponseContent = Webhook
+
+// HillChart defines model for HillChart.
+type HillChart struct {
+	AppUpdateUrl string         `json:"app_update_url,omitempty"`
+	Dots         []HillChartDot `json:"dots,omitempty"`
+	Enabled      bool           `json:"enabled"`
+	Stale        bool           `json:"stale"`
+	UpdatedAt    time.Time      `json:"updated_at,omitempty"`
+}
+
+// HillChartDot defines model for HillChartDot.
+type HillChartDot struct {
+	AppUrl   string `json:"app_url,omitempty"`
+	Color    string `json:"color"`
+	Id       int64  `json:"id"`
+	Label    string `json:"label"`
+	Position int32  `json:"position"`
+	Url      string `json:"url,omitempty"`
+}
 
 // Inbox defines model for Inbox.
 type Inbox struct {
@@ -1794,6 +1816,15 @@ type UpdateDocumentRequestContent struct {
 // UpdateDocumentResponseContent defines model for UpdateDocumentResponseContent.
 type UpdateDocumentResponseContent = Document
 
+// UpdateHillChartSettingsRequestContent defines model for UpdateHillChartSettingsRequestContent.
+type UpdateHillChartSettingsRequestContent struct {
+	Tracked   []int64 `json:"tracked,omitempty"`
+	Untracked []int64 `json:"untracked,omitempty"`
+}
+
+// UpdateHillChartSettingsResponseContent defines model for UpdateHillChartSettingsResponseContent.
+type UpdateHillChartSettingsResponseContent = HillChart
+
 // UpdateLineupMarkerRequestContent defines model for UpdateLineupMarkerRequestContent.
 type UpdateLineupMarkerRequestContent struct {
 	Date string `json:"date,omitempty"`
@@ -2407,6 +2438,9 @@ type UpdateTodoJSONRequestBody = UpdateTodoRequestContent
 
 // RepositionTodoJSONRequestBody defines body for RepositionTodo for application/json ContentType.
 type RepositionTodoJSONRequestBody = RepositionTodoRequestContent
+
+// UpdateHillChartSettingsJSONRequestBody defines body for UpdateHillChartSettings for application/json ContentType.
+type UpdateHillChartSettingsJSONRequestBody = UpdateHillChartSettingsRequestContent
 
 // CreateTodolistJSONRequestBody defines body for CreateTodolist for application/json ContentType.
 type CreateTodolistJSONRequestBody = CreateTodolistRequestContent
@@ -3315,6 +3349,14 @@ type ClientInterface interface {
 
 	// GetTodoset request
 	GetTodoset(ctx context.Context, accountId string, todosetId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetHillChart request
+	GetHillChart(ctx context.Context, accountId string, todosetId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateHillChartSettingsWithBody request with any body
+	UpdateHillChartSettingsWithBody(ctx context.Context, accountId string, todosetId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateHillChartSettings(ctx context.Context, accountId string, todosetId int64, body UpdateHillChartSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTodolists request
 	ListTodolists(ctx context.Context, accountId string, todosetId int64, params *ListTodolistsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -5786,6 +5828,34 @@ func (c *Client) GetTodoset(ctx context.Context, accountId string, todosetId int
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
 		return NewGetTodosetRequest(c.Server, accountId, todosetId)
 	}, true, "GetTodoset", reqEditors...)
+
+}
+
+// GetHillChart is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) GetHillChart(ctx context.Context, accountId string, todosetId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewGetHillChartRequest(c.Server, accountId, todosetId)
+	}, true, "GetHillChart", reqEditors...)
+
+}
+
+// UpdateHillChartSettingsWithBody is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) UpdateHillChartSettingsWithBody(ctx context.Context, accountId string, todosetId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewUpdateHillChartSettingsRequestWithBody(c.Server, accountId, todosetId, contentType, body)
+	}, true, "UpdateHillChartSettings", reqEditors...)
+
+}
+
+func (c *Client) UpdateHillChartSettings(ctx context.Context, accountId string, todosetId int64, body UpdateHillChartSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewUpdateHillChartSettingsRequest(c.Server, accountId, todosetId, body)
+	}, true, "UpdateHillChartSettings", reqEditors...)
 
 }
 
@@ -13867,6 +13937,101 @@ func NewGetTodosetRequest(server string, accountId string, todosetId int64) (*ht
 	return req, nil
 }
 
+// NewGetHillChartRequest generates requests for GetHillChart
+func NewGetHillChartRequest(server string, accountId string, todosetId int64) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "todosetId", runtime.ParamLocationPath, todosetId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/todosets/%s/hill.json", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateHillChartSettingsRequest calls the generic UpdateHillChartSettings builder with application/json body
+func NewUpdateHillChartSettingsRequest(server string, accountId string, todosetId int64, body UpdateHillChartSettingsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateHillChartSettingsRequestWithBody(server, accountId, todosetId, "application/json", bodyReader)
+}
+
+// NewUpdateHillChartSettingsRequestWithBody generates requests for UpdateHillChartSettings with any type of body
+func NewUpdateHillChartSettingsRequestWithBody(server string, accountId string, todosetId int64, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "todosetId", runtime.ParamLocationPath, todosetId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/todosets/%s/hills/settings.json", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListTodolistsRequest generates requests for ListTodolists
 func NewListTodolistsRequest(server string, accountId string, todosetId int64, params *ListTodolistsParams) (*http.Request, error) {
 	var err error
@@ -14825,6 +14990,8 @@ var operationMetadata = map[string]OperationMetadata{
 	"CompleteTodo":                       {Idempotent: true, HasSensitiveParams: false},
 	"RepositionTodo":                     {Idempotent: true, HasSensitiveParams: false},
 	"GetTodoset":                         {Idempotent: true, HasSensitiveParams: false},
+	"GetHillChart":                       {Idempotent: true, HasSensitiveParams: false},
+	"UpdateHillChartSettings":            {Idempotent: true, HasSensitiveParams: false},
 	"ListTodolists":                      {Idempotent: true, HasSensitiveParams: false},
 	"CreateTodolist":                     {Idempotent: false, HasSensitiveParams: false},
 	"GetUpload":                          {Idempotent: true, HasSensitiveParams: false},
@@ -16372,6 +16539,14 @@ type ClientWithResponsesInterface interface {
 
 	// GetTodosetWithResponse request
 	GetTodosetWithResponse(ctx context.Context, accountId string, todosetId int64, reqEditors ...RequestEditorFn) (*GetTodosetResponse, error)
+
+	// GetHillChartWithResponse request
+	GetHillChartWithResponse(ctx context.Context, accountId string, todosetId int64, reqEditors ...RequestEditorFn) (*GetHillChartResponse, error)
+
+	// UpdateHillChartSettingsWithBodyWithResponse request with any body
+	UpdateHillChartSettingsWithBodyWithResponse(ctx context.Context, accountId string, todosetId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateHillChartSettingsResponse, error)
+
+	UpdateHillChartSettingsWithResponse(ctx context.Context, accountId string, todosetId int64, body UpdateHillChartSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateHillChartSettingsResponse, error)
 
 	// ListTodolistsWithResponse request
 	ListTodolistsWithResponse(ctx context.Context, accountId string, todosetId int64, params *ListTodolistsParams, reqEditors ...RequestEditorFn) (*ListTodolistsResponse, error)
@@ -20717,6 +20892,59 @@ func (r GetTodosetResponse) StatusCode() int {
 	return 0
 }
 
+type GetHillChartResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetHillChartResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON404      *NotFoundErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r GetHillChartResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetHillChartResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateHillChartSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UpdateHillChartSettingsResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON404      *NotFoundErrorResponseContent
+	JSON422      *ValidationErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateHillChartSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateHillChartSettingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListTodolistsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -23037,6 +23265,32 @@ func (c *ClientWithResponses) GetTodosetWithResponse(ctx context.Context, accoun
 		return nil, err
 	}
 	return ParseGetTodosetResponse(rsp)
+}
+
+// GetHillChartWithResponse request returning *GetHillChartResponse
+func (c *ClientWithResponses) GetHillChartWithResponse(ctx context.Context, accountId string, todosetId int64, reqEditors ...RequestEditorFn) (*GetHillChartResponse, error) {
+	rsp, err := c.GetHillChart(ctx, accountId, todosetId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetHillChartResponse(rsp)
+}
+
+// UpdateHillChartSettingsWithBodyWithResponse request with arbitrary body returning *UpdateHillChartSettingsResponse
+func (c *ClientWithResponses) UpdateHillChartSettingsWithBodyWithResponse(ctx context.Context, accountId string, todosetId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateHillChartSettingsResponse, error) {
+	rsp, err := c.UpdateHillChartSettingsWithBody(ctx, accountId, todosetId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateHillChartSettingsResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateHillChartSettingsWithResponse(ctx context.Context, accountId string, todosetId int64, body UpdateHillChartSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateHillChartSettingsResponse, error) {
+	rsp, err := c.UpdateHillChartSettings(ctx, accountId, todosetId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateHillChartSettingsResponse(rsp)
 }
 
 // ListTodolistsWithResponse request returning *ListTodolistsResponse
@@ -32329,6 +32583,121 @@ func ParseGetTodosetResponse(rsp *http.Response) (*GetTodosetResponse, error) {
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetHillChartResponse parses an HTTP response from a GetHillChartWithResponse call
+func ParseGetHillChartResponse(rsp *http.Response) (*GetHillChartResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetHillChartResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetHillChartResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFoundErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateHillChartSettingsResponse parses an HTTP response from a UpdateHillChartSettingsWithResponse call
+func ParseUpdateHillChartSettingsResponse(rsp *http.Response) (*UpdateHillChartSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateHillChartSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UpdateHillChartSettingsResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFoundErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest ValidationErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalServerErrorResponseContent

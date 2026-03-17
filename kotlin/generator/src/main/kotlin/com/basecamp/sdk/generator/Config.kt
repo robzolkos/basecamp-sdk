@@ -95,6 +95,7 @@ val SERVICE_SPLITS: Map<String, Map<String, List<String>>> = mapOf(
         "Todos" to listOf("ListTodos", "CreateTodo", "GetTodo", "UpdateTodo", "CompleteTodo", "UncompleteTodo", "TrashTodo"),
         "Todolists" to listOf("GetTodolistOrGroup", "UpdateTodolistOrGroup", "ListTodolists", "CreateTodolist"),
         "Todosets" to listOf("GetTodoset"),
+        "HillCharts" to listOf("GetHillChart", "UpdateHillChartSettings"),
         "TodolistGroups" to listOf("ListTodolistGroups", "CreateTodolistGroup", "RepositionTodolistGroup"),
     ),
     "Untagged" to mapOf(
