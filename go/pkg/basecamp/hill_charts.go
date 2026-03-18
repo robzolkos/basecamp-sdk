@@ -10,9 +10,9 @@ import (
 
 // HillChart represents a hill chart for a todoset.
 type HillChart struct {
-	Enabled      bool           `json:"enabled"`
-	Stale        bool           `json:"stale"`
-	UpdatedAt    time.Time      `json:"updated_at,omitempty"`
+	Enabled        bool           `json:"enabled"`
+	Stale          bool           `json:"stale"`
+	UpdatedAt      time.Time      `json:"updated_at,omitempty"`
 	AppUpdateURL   string         `json:"app_update_url,omitempty"`
 	AppVersionsURL string         `json:"app_versions_url,omitempty"`
 	Dots           []HillChartDot `json:"dots,omitempty"`
@@ -111,9 +111,9 @@ func (s *HillChartsService) UpdateSettings(ctx context.Context, todosetID int64,
 // hillChartFromGenerated converts a generated HillChart to our clean HillChart type.
 func hillChartFromGenerated(ghc generated.HillChart) HillChart {
 	hc := HillChart{
-		Enabled:      ghc.Enabled,
-		Stale:        ghc.Stale,
-		UpdatedAt:    ghc.UpdatedAt,
+		Enabled:        ghc.Enabled,
+		Stale:          ghc.Stale,
+		UpdatedAt:      ghc.UpdatedAt,
 		AppUpdateURL:   ghc.AppUpdateUrl,
 		AppVersionsURL: ghc.AppVersionsUrl,
 	}
