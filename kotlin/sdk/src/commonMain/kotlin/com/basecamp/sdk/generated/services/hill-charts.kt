@@ -16,7 +16,7 @@ class HillChartsService(client: AccountClient) : BaseService(client) {
      * Get the hill chart for a todoset
      * @param todosetId The todoset ID
      */
-    suspend fun get(todosetId: Long): JsonElement {
+    suspend fun get(todosetId: Long): HillChart {
         val info = OperationInfo(
             service = "HillCharts",
             operation = "GetHillChart",
@@ -28,7 +28,7 @@ class HillChartsService(client: AccountClient) : BaseService(client) {
         return request(info, {
             httpGet("/todosets/${todosetId}/hill.json", operationName = info.operation)
         }) { body ->
-            json.decodeFromString<JsonElement>(body)
+            json.decodeFromString<HillChart>(body)
         }
     }
 
@@ -37,7 +37,7 @@ class HillChartsService(client: AccountClient) : BaseService(client) {
      * @param todosetId The todoset ID
      * @param body Request body
      */
-    suspend fun updateSettings(todosetId: Long, body: UpdateHillChartSettingsBody): JsonElement {
+    suspend fun updateSettings(todosetId: Long, body: UpdateHillChartSettingsBody): HillChart {
         val info = OperationInfo(
             service = "HillCharts",
             operation = "UpdateHillChartSettings",
@@ -52,7 +52,7 @@ class HillChartsService(client: AccountClient) : BaseService(client) {
                 body.untracked?.let { put("untracked", kotlinx.serialization.json.JsonArray(it.map { kotlinx.serialization.json.JsonPrimitive(it) })) }
             }), operationName = info.operation)
         }) { body ->
-            json.decodeFromString<JsonElement>(body)
+            json.decodeFromString<HillChart>(body)
         }
     }
 }

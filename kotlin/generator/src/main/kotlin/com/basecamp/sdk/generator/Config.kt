@@ -290,6 +290,8 @@ val TYPE_ALIASES = mapOf(
     "Boost" to "Boost",
     "TimelineEvent" to "TimelineEvent",
     "TimesheetEntry" to "TimesheetEntry",
+    "HillChart" to "HillChart",
+    "HillChartDot" to "HillChartDot",
 )
 
 /**
