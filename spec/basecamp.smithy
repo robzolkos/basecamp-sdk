@@ -67,6 +67,8 @@ service Basecamp {
     UncompleteTodo,
     RepositionTodo,
     GetTodoset,
+    GetHillChart,
+    UpdateHillChartSettings,
     ListTodolists,
     GetTodolistOrGroup,
     CreateTodolist,
@@ -825,6 +827,106 @@ structure GetTodosetInput {
 structure GetTodosetOutput {
 
   todoset: Todoset
+}
+
+// ===== Hill Chart Operations =====
+
+/// Get the hill chart for a todoset
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "GET", uri: "/{accountId}/todosets/{todosetId}/hill.json")
+operation GetHillChart {
+  input: GetHillChartInput
+  output: GetHillChartOutput
+  errors: [NotFoundError, UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure GetHillChartInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  todosetId: TodosetId
+}
+
+structure GetHillChartOutput {
+
+  hillChart: HillChart
+}
+
+/// Track or untrack todolists on a hill chart
+@idempotent
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@basecampIdempotent(natural: true)
+@http(method: "PUT", uri: "/{accountId}/todosets/{todosetId}/hills/settings.json")
+operation UpdateHillChartSettings {
+  input: UpdateHillChartSettingsInput
+  output: UpdateHillChartSettingsOutput
+  errors: [NotFoundError, ValidationError, UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure UpdateHillChartSettingsInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  todosetId: TodosetId
+
+  tracked: TodolistIdList
+  untracked: TodolistIdList
+}
+
+structure UpdateHillChartSettingsOutput {
+
+  hillChart: HillChart
+}
+
+// ===== Hill Chart Shapes =====
+
+structure HillChart {
+  @required
+  enabled: Boolean
+
+  @required
+  stale: Boolean
+
+  updated_at: ISO8601Timestamp
+
+  app_update_url: String
+
+  app_versions_url: String
+
+  dots: HillChartDotList
+}
+
+structure HillChartDot {
+  @required
+  id: Long
+
+  @required
+  label: String
+
+  @required
+  color: String
+
+  @required
+  position: Integer
+
+  url: String
+
+  app_url: String
+}
+
+list HillChartDotList {
+  member: HillChartDot
+}
+
+list TodolistIdList {
+  member: TodolistId
 }
 
 // ===== Todolist Operations =====

@@ -1282,6 +1282,74 @@ module Basecamp
       end
     end
 
+    # HillChart
+    class HillChart
+      include TypeHelpers
+      attr_accessor :enabled, :stale, :app_update_url, :dots, :updated_at
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[enabled stale].freeze
+      end
+
+      def initialize(data = {})
+        @enabled = parse_boolean(data["enabled"])
+        @stale = parse_boolean(data["stale"])
+        @app_update_url = data["app_update_url"]
+        @dots = parse_array(data["dots"], "HillChartDot")
+        @updated_at = parse_datetime(data["updated_at"])
+      end
+
+      def to_h
+        {
+          "enabled" => @enabled,
+          "stale" => @stale,
+          "app_update_url" => @app_update_url,
+          "dots" => @dots,
+          "updated_at" => @updated_at,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # HillChartDot
+    class HillChartDot
+      include TypeHelpers
+      attr_accessor :color, :id, :label, :position, :app_url, :url
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[color id label position].freeze
+      end
+
+      def initialize(data = {})
+        @color = data["color"]
+        @id = parse_integer(data["id"])
+        @label = data["label"]
+        @position = parse_integer(data["position"])
+        @app_url = data["app_url"]
+        @url = data["url"]
+      end
+
+      def to_h
+        {
+          "color" => @color,
+          "id" => @id,
+          "label" => @label,
+          "position" => @position,
+          "app_url" => @app_url,
+          "url" => @url,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
     # Inbox
     class Inbox
       include TypeHelpers

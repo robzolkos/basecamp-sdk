@@ -95,6 +95,7 @@ val SERVICE_SPLITS: Map<String, Map<String, List<String>>> = mapOf(
         "Todos" to listOf("ListTodos", "CreateTodo", "GetTodo", "UpdateTodo", "CompleteTodo", "UncompleteTodo", "TrashTodo"),
         "Todolists" to listOf("GetTodolistOrGroup", "UpdateTodolistOrGroup", "ListTodolists", "CreateTodolist"),
         "Todosets" to listOf("GetTodoset"),
+        "HillCharts" to listOf("GetHillChart", "UpdateHillChartSettings"),
         "TodolistGroups" to listOf("ListTodolistGroups", "CreateTodolistGroup", "RepositionTodolistGroup"),
     ),
     "Untagged" to mapOf(
@@ -235,11 +236,17 @@ val METHOD_NAME_OVERRIDES = mapOf(
     "ListAssignablePeople" to "listAssignable",
     "GetSchedule" to "get",
     "UpdateScheduleSettings" to "updateSettings",
+    "GetHillChart" to "get",
+    "UpdateHillChartSettings" to "updateSettings",
     "GetScheduleEntry" to "getEntry",
     "UpdateScheduleEntry" to "updateEntry",
     "CreateScheduleEntry" to "createEntry",
     "ListScheduleEntries" to "listEntries",
     "GetScheduleEntryOccurrence" to "getEntryOccurrence",
+)
+
+val RESOURCE_TYPE_OVERRIDES = mapOf(
+    "UpdateHillChartSettings" to "hill_chart",
 )
 
 /**
@@ -287,6 +294,8 @@ val TYPE_ALIASES = mapOf(
     "Boost" to "Boost",
     "TimelineEvent" to "TimelineEvent",
     "TimesheetEntry" to "TimesheetEntry",
+    "HillChart" to "HillChart",
+    "HillChartDot" to "HillChartDot",
 )
 
 /**
@@ -310,4 +319,5 @@ val SIMPLE_RESOURCES = setOf(
     "campfireline", "campfirelines", "todolistgroup", "todolistgroups",
     "todolistorgroup", "uploadversions",
     "boost", "boosts",
+    "hillchart", "hillcharts",
 )

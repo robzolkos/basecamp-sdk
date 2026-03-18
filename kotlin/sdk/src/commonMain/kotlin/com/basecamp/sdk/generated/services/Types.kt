@@ -172,6 +172,12 @@ data class CreateForwardReplyBody(
     val content: String
 )
 
+/** Request body for UpdateHillChartSettings. */
+data class UpdateHillChartSettingsBody(
+    val tracked: List<Long>? = null,
+    val untracked: List<Long>? = null
+)
+
 /** Request body for CreateLineupMarker. */
 data class CreateLineupMarkerBody(
     val name: String,

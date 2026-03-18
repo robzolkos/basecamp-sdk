@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "stale": false,
+  "updated_at": "2026-03-11T07:00:00.000Z",
+  "app_update_url": "https://3.basecamp.com/195539477/buckets/2085958504/todosets/1069479393/hill/edit",
+  "dots": [
+    {
+      "id": 1069479424,
+      "label": "Background and research",
+      "color": "blue",
+      "position": 0,
+      "url": "https://3.basecampapi.com/195539477/buckets/2085958504/todolists/1069479424.json",
+      "app_url": "https://3.basecamp.com/195539477/buckets/2085958504/todolists/1069479424"
+    },
+    {
+      "id": 1069479573,
+      "label": "Design mockups",
+      "color": "green",
+      "position": 42,
+      "url": "https://3.basecampapi.com/195539477/buckets/2085958504/todolists/1069479573.json",
+      "app_url": "https://3.basecamp.com/195539477/buckets/2085958504/todolists/1069479573"
+    }
+  ]
+}

@@ -68,6 +68,7 @@ type AccountClient struct {
 	projects              *ProjectsService
 	todos                 *TodosService
 	todosets              *TodosetsService
+	hillCharts            *HillChartsService
 	todolists             *TodolistsService
 	todolistGroups        *TodolistGroupsService
 	people                *PeopleService
@@ -926,6 +927,16 @@ func (ac *AccountClient) Todosets() *TodosetsService {
 		ac.todosets = NewTodosetsService(ac)
 	}
 	return ac.todosets
+}
+
+// HillCharts returns the HillChartsService for hill chart operations.
+func (ac *AccountClient) HillCharts() *HillChartsService {
+	ac.mu.Lock()
+	defer ac.mu.Unlock()
+	if ac.hillCharts == nil {
+		ac.hillCharts = NewHillChartsService(ac)
+	}
+	return ac.hillCharts
 }
 
 // Todolists returns the TodolistsService for todolist operations.

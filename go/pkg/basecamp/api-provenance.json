@@ -1,10 +1,10 @@
 {
   "bc3_api": {
-    "revision": "d223eb505fb99bbd8c5c7a15a378ddc10bab8dfd",
-    "date": "2026-03-11"
+    "revision": "421996190124387dc65db51ce2eb32a82086562e",
+    "date": "2026-03-17"
   },
   "bc3": {
-    "revision": "30169b756c949e67770df53fd18563e78dfa29bb",
-    "date": "2026-03-11"
+    "revision": "d57b6994a74f123aaf1fd685f993befb28a012fd",
+    "date": "2026-03-17"
   }
 }

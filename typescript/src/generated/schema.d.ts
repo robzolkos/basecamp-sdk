@@ -2036,6 +2036,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/todosets/{todosetId}/hill.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the hill chart for a todoset */
+        get: operations["GetHillChart"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/todosets/{todosetId}/hills/settings.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Track or untrack todolists on a hill chart */
+        put: operations["UpdateHillChartSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/todosets/{todosetId}/todolists.json": {
         parameters: {
             query?: never;
@@ -2840,6 +2874,7 @@ export interface components {
         GetDocumentResponseContent: components["schemas"]["Document"];
         GetForwardReplyResponseContent: components["schemas"]["ForwardReply"];
         GetForwardResponseContent: components["schemas"]["Forward"];
+        GetHillChartResponseContent: components["schemas"]["HillChart"];
         GetInboxResponseContent: components["schemas"]["Inbox"];
         GetMessageBoardResponseContent: components["schemas"]["MessageBoard"];
         GetMessageResponseContent: components["schemas"]["Message"];
@@ -2886,6 +2921,24 @@ export interface components {
         GetUploadResponseContent: components["schemas"]["Upload"];
         GetVaultResponseContent: components["schemas"]["Vault"];
         GetWebhookResponseContent: components["schemas"]["Webhook"];
+        HillChart: {
+            enabled: boolean;
+            stale: boolean;
+            updated_at?: string;
+            app_update_url?: string;
+            app_versions_url?: string;
+            dots?: components["schemas"]["HillChartDot"][];
+        };
+        HillChartDot: {
+            /** Format: int64 */
+            id: number;
+            label: string;
+            color: string;
+            /** Format: int32 */
+            position: number;
+            url?: string;
+            app_url?: string;
+        };
         Inbox: {
             /** Format: int64 */
             id: number;
@@ -3624,6 +3677,11 @@ export interface components {
             content?: string;
         };
         UpdateDocumentResponseContent: components["schemas"]["Document"];
+        UpdateHillChartSettingsRequestContent: {
+            tracked?: number[];
+            untracked?: number[];
+        };
+        UpdateHillChartSettingsResponseContent: components["schemas"]["HillChart"];
         UpdateLineupMarkerRequestContent: {
             name?: string;
             date?: string;
@@ -14159,6 +14217,135 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetHillChart: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                todosetId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetHillChart 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetHillChartResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description NotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateHillChartSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                todosetId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateHillChartSettingsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateHillChartSettings 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateHillChartSettingsResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description NotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description ValidationError 422 response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

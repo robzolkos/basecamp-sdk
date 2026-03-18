@@ -236,6 +236,7 @@ const SERVICE_SPLITS: Record<string, Record<string, string[]>> = {
     Todos: ["ListTodos", "CreateTodo", "GetTodo", "UpdateTodo", "CompleteTodo", "UncompleteTodo", "TrashTodo"],
     Todolists: ["GetTodolistOrGroup", "UpdateTodolistOrGroup", "ListTodolists", "CreateTodolist"],
     Todosets: ["GetTodoset"],
+    HillCharts: ["GetHillChart", "UpdateHillChartSettings"],
     TodolistGroups: ["ListTodolistGroups", "CreateTodolistGroup", "RepositionTodolistGroup"],
   },
   Untagged: {
@@ -283,6 +284,10 @@ const VERB_PATTERNS = [
 /**
  * Method name overrides for specific operationIds.
  */
+const RESOURCE_TYPE_OVERRIDES: Record<string, string> = {
+  UpdateHillChartSettings: "hill_chart",
+};
+
 const METHOD_NAME_OVERRIDES: Record<string, string> = {
   GetMyProfile: "me",
   GetTodolistOrGroup: "get",
@@ -381,6 +386,8 @@ const METHOD_NAME_OVERRIDES: Record<string, string> = {
   CreateScheduleEntry: "createEntry",
   ListScheduleEntries: "listEntries",
   GetScheduleEntryOccurrence: "getEntryOccurrence",
+  GetHillChart: "get",
+  UpdateHillChartSettings: "updateSettings",
 };
 
 /**
@@ -591,11 +598,15 @@ function isSimpleResource(resource: string): boolean {
     "campfireline", "campfirelines", "todolistgroup", "todolistgroups",
     "todolistorgroup", "uploadversions",
     "boost", "boosts",
+    "hillchart", "hillcharts",
   ];
   return simpleResources.includes(resource.toLowerCase());
 }
 
 function extractResourceType(operationId: string): string {
+  if (RESOURCE_TYPE_OVERRIDES[operationId]) {
+    return RESOURCE_TYPE_OVERRIDES[operationId];
+  }
   for (const { prefix } of VERB_PATTERNS) {
     if (operationId.startsWith(prefix)) {
       const remainder = operationId.slice(prefix.length);

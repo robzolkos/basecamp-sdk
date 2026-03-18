@@ -708,6 +708,18 @@
         ]
       }
     },
+    "GetHillChart": {
+      "readonly": true,
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "GetInbox": {
       "readonly": true,
       "retry": {
@@ -2056,6 +2068,18 @@
       }
     },
     "UpdateDocument": {
+      "idempotent": true,
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "UpdateHillChartSettings": {
       "idempotent": true,
       "retry": {
         "max": 3,

@@ -320,6 +320,11 @@ module Basecamp
       service(:todosets) { Services::TodosetsService.new(self) }
     end
 
+    # @return [Services::HillChartsService]
+    def hill_charts
+      service(:hill_charts) { Services::HillChartsService.new(self) }
+    end
+
     # @return [Services::TodolistsService]
     def todolists
       service(:todolists) { Services::TodolistsService.new(self) }

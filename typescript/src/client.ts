@@ -28,6 +28,7 @@ import { ProjectsService } from "./generated/services/projects.js";
 import { TodosService } from "./generated/services/todos.js";
 import { TodolistsService } from "./generated/services/todolists.js";
 import { TodosetsService } from "./generated/services/todosets.js";
+import { HillChartsService } from "./generated/services/hill-charts.js";
 import { PeopleService } from "./generated/services/people.js";
 import { MessagesService } from "./generated/services/messages.js";
 import { CommentsService } from "./generated/services/comments.js";
@@ -100,6 +101,8 @@ export interface BasecampClient extends RawClient {
   readonly todolists: TodolistsService;
   /** Todosets service - get todo sets (container for todo lists) */
   readonly todosets: TodosetsService;
+  /** Hill charts service - get and update hill chart settings */
+  readonly hillCharts: HillChartsService;
   /** People service - list, get, and manage people in your account */
   readonly people: PeopleService;
   /** Authorization service - get authorization info and identity */
@@ -328,6 +331,7 @@ export function createBasecampClient(options: BasecampClientOptions): BasecampCl
   defineService("todos", () => new TodosService(client, hooks, fetchPage, maxPages));
   defineService("todolists", () => new TodolistsService(client, hooks, fetchPage, maxPages));
   defineService("todosets", () => new TodosetsService(client, hooks, fetchPage, maxPages));
+  defineService("hillCharts", () => new HillChartsService(client, hooks, fetchPage, maxPages));
   defineService("people", () => new PeopleService(client, hooks, fetchPage, maxPages));
   defineService("authorization", () => new AuthorizationService(client, hooks, authStrategy, userAgent));
   defineService("messages", () => new MessagesService(client, hooks, fetchPage, maxPages));
