@@ -102,16 +102,16 @@ func msgOrDefault(msg, fallback string) string {
 	return fallback
 }
 
-// truncate returns s truncated to max runes, appending "…" if truncated.
-func truncate(s string, max int) string {
-	if len(s) <= max {
+// truncate returns s truncated to maxLen runes, appending "…" if truncated.
+func truncate(s string, maxLen int) string {
+	if len(s) <= maxLen {
 		return s
 	}
 	runes := []rune(s)
-	if len(runes) <= max {
+	if len(runes) <= maxLen {
 		return s
 	}
-	return string(runes[:max]) + "…"
+	return string(runes[:maxLen]) + "…"
 }
 
 // Pointer dereference helpers for converting generated types (which use pointers)
