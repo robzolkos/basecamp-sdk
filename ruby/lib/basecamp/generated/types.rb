@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Auto-generated from OpenAPI spec. Do not edit manually.
-# Generated: 2026-03-16T01:24:22Z
+# Generated: 2026-03-16T07:14:48Z
 
 require "json"
 require "time"
@@ -367,7 +367,7 @@ module Basecamp
     # CardColumn
     class CardColumn
       include TypeHelpers
-      attr_accessor :app_url, :bucket, :created_at, :creator, :id, :inherits_status, :parent, :status, :title, :type, :updated_at, :url, :visible_to_clients, :bookmark_url, :cards_count, :cards_url, :color, :comments_count, :description, :position, :subscribers
+      attr_accessor :app_url, :bucket, :created_at, :creator, :id, :inherits_status, :parent, :status, :title, :type, :updated_at, :url, :visible_to_clients, :bookmark_url, :cards_count, :cards_url, :color, :comments_count, :description, :on_hold, :position, :subscribers
 
       # @return [Array<Symbol>]
       def self.required_fields
@@ -394,6 +394,7 @@ module Basecamp
         @color = data["color"]
         @comments_count = parse_integer(data["comments_count"])
         @description = data["description"]
+        @on_hold = parse_type(data["on_hold"], "CardColumnOnHold")
         @position = parse_integer(data["position"])
         @subscribers = parse_array(data["subscribers"], "Person")
       end
@@ -419,8 +420,48 @@ module Basecamp
           "color" => @color,
           "comments_count" => @comments_count,
           "description" => @description,
+          "on_hold" => @on_hold,
           "position" => @position,
           "subscribers" => @subscribers,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # CardColumnOnHold
+    class CardColumnOnHold
+      include TypeHelpers
+      attr_accessor :cards_count, :cards_url, :created_at, :id, :inherits_status, :status, :title, :updated_at
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[cards_count cards_url created_at id inherits_status status title updated_at].freeze
+      end
+
+      def initialize(data = {})
+        @cards_count = parse_integer(data["cards_count"])
+        @cards_url = data["cards_url"]
+        @created_at = parse_datetime(data["created_at"])
+        @id = parse_integer(data["id"])
+        @inherits_status = parse_boolean(data["inherits_status"])
+        @status = data["status"]
+        @title = data["title"]
+        @updated_at = parse_datetime(data["updated_at"])
+      end
+
+      def to_h
+        {
+          "cards_count" => @cards_count,
+          "cards_url" => @cards_url,
+          "created_at" => @created_at,
+          "id" => @id,
+          "inherits_status" => @inherits_status,
+          "status" => @status,
+          "title" => @title,
+          "updated_at" => @updated_at,
         }.compact
       end
 
@@ -1288,6 +1329,39 @@ module Basecamp
           "forwards_count" => @forwards_count,
           "forwards_url" => @forwards_url,
           "position" => @position,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # LineupMarker
+    class LineupMarker
+      include TypeHelpers
+      attr_accessor :created_at, :date, :id, :name, :updated_at
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[created_at date id name updated_at].freeze
+      end
+
+      def initialize(data = {})
+        @created_at = parse_datetime(data["created_at"])
+        @date = data["date"]
+        @id = parse_integer(data["id"])
+        @name = data["name"]
+        @updated_at = parse_datetime(data["updated_at"])
+      end
+
+      def to_h
+        {
+          "created_at" => @created_at,
+          "date" => @date,
+          "id" => @id,
+          "name" => @name,
+          "updated_at" => @updated_at,
         }.compact
       end
 

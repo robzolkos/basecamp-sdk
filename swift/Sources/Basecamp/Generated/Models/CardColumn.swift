@@ -21,6 +21,7 @@ public struct CardColumn: Codable, Sendable {
     public var color: String?
     public var commentsCount: Int32?
     public var description: String?
+    public var onHold: CardColumnOnHold?
     public var position: Int32?
     public var subscribers: [Person]?
 
@@ -44,6 +45,7 @@ public struct CardColumn: Codable, Sendable {
         color: String? = nil,
         commentsCount: Int32? = nil,
         description: String? = nil,
+        onHold: CardColumnOnHold? = nil,
         position: Int32? = nil,
         subscribers: [Person]? = nil
     ) {
@@ -66,6 +68,7 @@ public struct CardColumn: Codable, Sendable {
         self.color = color
         self.commentsCount = commentsCount
         self.description = description
+        self.onHold = onHold
         self.position = position
         self.subscribers = subscribers
     }

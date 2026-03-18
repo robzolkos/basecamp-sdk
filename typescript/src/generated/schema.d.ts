@@ -2349,6 +2349,19 @@ export interface components {
             bucket: components["schemas"]["TodoBucket"];
             creator: components["schemas"]["Person"];
             subscribers?: components["schemas"]["Person"][];
+            on_hold?: components["schemas"]["CardColumnOnHold"];
+        };
+        CardColumnOnHold: {
+            /** Format: int64 */
+            id: number;
+            status: string;
+            inherits_status: boolean;
+            title: string;
+            created_at: string;
+            updated_at: string;
+            /** Format: int32 */
+            cards_count: number;
+            cards_url: string;
         };
         CardStep: {
             /** Format: int64 */
