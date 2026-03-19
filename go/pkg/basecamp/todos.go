@@ -358,6 +358,11 @@ func (s *TodosService) Update(ctx context.Context, todoID int64, req *UpdateTodo
 	ctx = s.client.parent.hooks.OnOperationStart(ctx, op)
 	defer func() { s.client.parent.hooks.OnOperationEnd(ctx, op, err, time.Since(start)) }()
 
+	if req == nil {
+		err = ErrUsage("update request is required")
+		return nil, err
+	}
+
 	body := map[string]any{}
 	if req.Content != "" {
 		body["content"] = req.Content
