@@ -19,7 +19,6 @@ export { AutomationService } from "./automation.js";
 export { LineupService } from "./lineup.js";
 export { MessageBoardsService } from "./message-boards.js";
 export { MessagesService } from "./messages.js";
-export { MiscellaneousService } from "./miscellaneous.js";
 export { CheckinsService } from "./checkins.js";
 export { ProjectsService } from "./projects.js";
 export { RecordingsService } from "./recordings.js";

@@ -6622,6 +6622,9 @@
             }
           }
         },
+        "tags": [
+          "People"
+        ],
         "x-basecamp-idempotent": {
           "natural": true
         },

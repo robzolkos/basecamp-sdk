@@ -99,10 +99,6 @@ val AccountClient.messageTypes: MessageTypesService
 val AccountClient.messages: MessagesService
     get() = service("Messages") { MessagesService(this) }
 
-/** Miscellaneous operations. */
-val AccountClient.miscellaneous: MiscellaneousService
-    get() = service("Miscellaneous") { MiscellaneousService(this) }
-
 /** People operations. */
 val AccountClient.people: PeopleService
     get() = service("People") { PeopleService(this) }

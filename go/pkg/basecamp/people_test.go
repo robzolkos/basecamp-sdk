@@ -1,7 +1,11 @@
 package basecamp
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"testing"
@@ -337,5 +341,101 @@ func TestCreatePersonRequest_MarshalOmitsEmpty(t *testing.T) {
 	}
 	if _, ok := data["company_name"]; ok {
 		t.Error("expected company_name to be omitted when empty")
+	}
+}
+
+func testPeopleServer(t *testing.T, handler http.HandlerFunc) *PeopleService {
+	t.Helper()
+	server := httptest.NewServer(handler)
+	t.Cleanup(server.Close)
+
+	cfg := DefaultConfig()
+	cfg.BaseURL = server.URL
+	token := &StaticTokenProvider{Token: "test-token"}
+	client := NewClient(cfg, token)
+	account := client.ForAccount("99999")
+	return account.People()
+}
+
+func TestPeopleService_UpdateMyProfile(t *testing.T) {
+	var receivedBody map[string]any
+	var receivedMethod string
+	svc := testPeopleServer(t, func(w http.ResponseWriter, r *http.Request) {
+		receivedMethod = r.Method
+		receivedBody = decodeRequestBody(t, r)
+		w.WriteHeader(204)
+	})
+
+	weekDay := 0 // Sunday — must not be dropped
+	err := svc.UpdateMyProfile(context.Background(), &UpdateMyProfileRequest{
+		Title:        "Chief Strategist",
+		Bio:          "Don't let your dreams be dreams",
+		Location:     "Chicago, IL",
+		FirstWeekDay: &weekDay,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if receivedMethod != "PUT" {
+		t.Errorf("expected PUT, got %s", receivedMethod)
+	}
+	if receivedBody["title"] != "Chief Strategist" {
+		t.Errorf("expected title 'Chief Strategist', got %v", receivedBody["title"])
+	}
+	if receivedBody["bio"] != "Don't let your dreams be dreams" {
+		t.Errorf("expected bio in body, got %v", receivedBody["bio"])
+	}
+	if receivedBody["location"] != "Chicago, IL" {
+		t.Errorf("expected location in body, got %v", receivedBody["location"])
+	}
+	// first_week_day=0 (Sunday) must be present in the request body
+	fwd, ok := receivedBody["first_week_day"]
+	if !ok {
+		t.Fatal("expected first_week_day to be present in request body (value 0 must not be omitted)")
+	}
+	if fwd.(json.Number).String() != "0" {
+		t.Errorf("expected first_week_day 0, got %v", fwd)
+	}
+}
+
+func TestPeopleService_UpdateMyProfilePartial(t *testing.T) {
+	var receivedBody map[string]any
+	svc := testPeopleServer(t, func(w http.ResponseWriter, r *http.Request) {
+		receivedBody = decodeRequestBody(t, r)
+		w.WriteHeader(204)
+	})
+
+	err := svc.UpdateMyProfile(context.Background(), &UpdateMyProfileRequest{
+		Title: "New Title",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if receivedBody["title"] != "New Title" {
+		t.Errorf("expected title 'New Title', got %v", receivedBody["title"])
+	}
+	for _, field := range []string{"name", "email_address", "bio", "location", "time_zone_name", "first_week_day", "time_format"} {
+		if _, ok := receivedBody[field]; ok {
+			t.Errorf("expected %q to be omitted from partial update, but it was present: %v", field, receivedBody[field])
+		}
+	}
+}
+
+func TestPeopleService_UpdateMyProfileValidatesFirstWeekDay(t *testing.T) {
+	svc := testPeopleServer(t, func(w http.ResponseWriter, r *http.Request) {
+		t.Fatal("request should not have been sent")
+	})
+
+	invalid := 5
+	err := svc.UpdateMyProfile(context.Background(), &UpdateMyProfileRequest{
+		FirstWeekDay: &invalid,
+	})
+	if err == nil {
+		t.Fatal("expected validation error for invalid first_week_day")
+	}
+	var sdkErr *Error
+	if !errors.As(err, &sdkErr) || sdkErr.Code != CodeUsage {
+		t.Errorf("expected usage error, got %T: %v", err, err)
 	}
 }
