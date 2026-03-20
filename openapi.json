@@ -7375,6 +7375,9 @@
             }
           }
         },
+        "tags": [
+          "Reports"
+        ],
         "x-basecamp-retry": {
           "maxAttempts": 3,
           "baseDelayMs": 1000,
@@ -7455,6 +7458,9 @@
             }
           }
         },
+        "tags": [
+          "Reports"
+        ],
         "x-basecamp-retry": {
           "maxAttempts": 3,
           "baseDelayMs": 1000,
@@ -7544,6 +7550,9 @@
             }
           }
         },
+        "tags": [
+          "Reports"
+        ],
         "x-basecamp-retry": {
           "maxAttempts": 3,
           "baseDelayMs": 1000,
