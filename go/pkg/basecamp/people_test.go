@@ -217,6 +217,72 @@ func TestUpdateProjectAccessResponse_Unmarshal(t *testing.T) {
 	}
 }
 
+func TestUpdateMyProfileRequest_Marshal(t *testing.T) {
+	weekDay := 1
+	req := UpdateMyProfileRequest{
+		Name:         "Victor Cooper",
+		Title:        "Chief Strategist",
+		Bio:          "Don't let your dreams be dreams",
+		Location:     "Chicago, IL",
+		TimeZoneName: "America/Chicago",
+		FirstWeekDay: &weekDay,
+	}
+
+	out, err := json.Marshal(req)
+	if err != nil {
+		t.Fatalf("failed to marshal UpdateMyProfileRequest: %v", err)
+	}
+
+	var roundtrip UpdateMyProfileRequest
+	if err := json.Unmarshal(out, &roundtrip); err != nil {
+		t.Fatalf("failed to unmarshal round-trip: %v", err)
+	}
+
+	if roundtrip.Name != req.Name {
+		t.Errorf("expected name %q, got %q", req.Name, roundtrip.Name)
+	}
+	if roundtrip.Title != req.Title {
+		t.Errorf("expected title %q, got %q", req.Title, roundtrip.Title)
+	}
+	if roundtrip.Bio != req.Bio {
+		t.Errorf("expected bio %q, got %q", req.Bio, roundtrip.Bio)
+	}
+	if roundtrip.Location != req.Location {
+		t.Errorf("expected location %q, got %q", req.Location, roundtrip.Location)
+	}
+	if roundtrip.TimeZoneName != req.TimeZoneName {
+		t.Errorf("expected time_zone_name %q, got %q", req.TimeZoneName, roundtrip.TimeZoneName)
+	}
+	if roundtrip.FirstWeekDay == nil || *roundtrip.FirstWeekDay != *req.FirstWeekDay {
+		t.Errorf("expected first_week_day %d, got %v", *req.FirstWeekDay, roundtrip.FirstWeekDay)
+	}
+}
+
+func TestUpdateMyProfileRequest_MarshalOmitsEmpty(t *testing.T) {
+	req := UpdateMyProfileRequest{
+		Title: "New Title",
+	}
+
+	out, err := json.Marshal(req)
+	if err != nil {
+		t.Fatalf("failed to marshal UpdateMyProfileRequest: %v", err)
+	}
+
+	var data map[string]any
+	if err := json.Unmarshal(out, &data); err != nil {
+		t.Fatalf("failed to unmarshal to map: %v", err)
+	}
+
+	if _, ok := data["title"]; !ok {
+		t.Error("expected title to be present")
+	}
+	for _, field := range []string{"name", "email_address", "bio", "location", "time_zone_name", "first_week_day", "time_format"} {
+		if _, ok := data[field]; ok {
+			t.Errorf("expected %s to be omitted when empty", field)
+		}
+	}
+}
+
 func TestCreatePersonRequest_Marshal(t *testing.T) {
 	req := CreatePersonRequest{
 		Name:         "Test User",
