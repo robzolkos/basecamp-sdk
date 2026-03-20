@@ -4755,7 +4755,6 @@ structure GetMyProfileOutput {
 
 /// Update the current authenticated user's profile (returns 204 No Content)
 @idempotent
-@tags(["People"])
 @basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
 @basecampIdempotent(natural: true)
 @http(method: "PUT", uri: "/{accountId}/my/profile.json", code: 204)
