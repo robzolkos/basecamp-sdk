@@ -80,6 +80,17 @@ module Basecamp
       single_request_raw(:post, url, body: body, content_type: content_type, attempt: 1)
     end
 
+    # Performs a PUT request with raw binary data.
+    # Used for multipart uploads (e.g., account logo).
+    # @param path [String] URL path
+    # @param body [String, IO] raw binary data
+    # @param content_type [String] MIME content type
+    # @return [Response]
+    def put_raw(path, body:, content_type:)
+      url = build_url(path)
+      single_request_raw(:put, url, body: body, content_type: content_type, attempt: 1)
+    end
+
     # Performs a GET request without retry logic.
     # Used for the download flow where retry is not appropriate.
     # @param url [String] absolute URL

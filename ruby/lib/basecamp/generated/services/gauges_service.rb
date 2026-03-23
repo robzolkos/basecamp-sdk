@@ -59,10 +59,12 @@ module Basecamp
       # Create a gauge needle (progress update) for a project
       # @param project_id [Integer] project id ID
       # @param gauge_needle [String] gauge needle
+      # @param notify [String, nil] Who to notify: "everyone", "working_on", "custom", or omit for nobody
+      # @param subscriptions [Array, nil] Array of people IDs to notify (only used when notify is "custom")
       # @return [Hash] response data
-      def create_gauge_needle(project_id:, gauge_needle:)
+      def create_gauge_needle(project_id:, gauge_needle:, notify: nil, subscriptions: nil)
         with_operation(service: "gauges", operation: "create_gauge_needle", is_mutation: true, project_id: project_id) do
-          http_post("/projects/#{project_id}/gauge/needles.json", body: compact_params(gauge_needle: gauge_needle)).json
+          http_post("/projects/#{project_id}/gauge/needles.json", body: compact_params(gauge_needle: gauge_needle, notify: notify, subscriptions: subscriptions)).json
         end
       end
 

@@ -164,103 +164,6 @@
             503
           ]
         }
-      },
-      "put": {
-        "description": "Upload or replace the account logo via multipart form upload.\nOnly administrators and account owners can use this endpoint.\n\n**Note**: This endpoint uses direct multipart file upload (Content-Type:\nmultipart/form-data) rather than the standard two-stage /attachments flow.\nAccepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Maximum file size: 5 MB.",
-        "operationId": "UpdateAccountLogo",
-        "requestBody": {
-          "content": {
-            "application/octet-stream": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateAccountLogoInputPayload"
-              }
-            }
-          },
-          "required": true
-        },
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "path",
-            "description": "Basecamp account ID (numeric string)",
-            "schema": {
-              "type": "string",
-              "pattern": "^[0-9]+$",
-              "description": "Basecamp account ID (numeric string)"
-            },
-            "required": true
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "UpdateAccountLogo 204 response"
-          },
-          "401": {
-            "description": "UnauthorizedError 401 response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "ForbiddenError 403 response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "ValidationError 422 response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationErrorResponseContent"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "RateLimitError 429 response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "InternalServerError 500 response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Account"
-        ],
-        "x-basecamp-idempotent": {
-          "natural": true
-        },
-        "x-basecamp-retry": {
-          "maxAttempts": 2,
-          "baseDelayMs": 1000,
-          "backoff": "exponential",
-          "retryOn": [
-            429,
-            503
-          ]
-        }
       }
     },
     "/{accountId}/account/name.json": {
@@ -22272,6 +22175,19 @@
         "properties": {
           "gauge_needle": {
             "$ref": "#/components/schemas/GaugeNeedlePayload"
+          },
+          "notify": {
+            "type": "string",
+            "description": "Who to notify: \"everyone\", \"working_on\", \"custom\", or omit for nobody"
+          },
+          "subscriptions": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Array of people IDs to notify (only used when notify is \"custom\")",
+            "x-go-type-skip-optional-pointer": false
           }
         },
         "required": [
@@ -26790,11 +26706,6 @@
         "required": [
           "error"
         ]
-      },
-      "UpdateAccountLogoInputPayload": {
-        "type": "string",
-        "description": "The logo image file as binary data.\nSDK implementations must send this as a multipart/form-data upload\nwith field name \"logo\" (not as a JSON body).\nAccepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Max 5 MB.",
-        "contentEncoding": "byte"
       },
       "UpdateAccountNameRequestContent": {
         "type": "object",

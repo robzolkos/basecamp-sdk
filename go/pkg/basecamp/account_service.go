@@ -1,9 +1,13 @@
 package basecamp
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"net/http"
 	"time"
 
 	"github.com/basecamp/basecamp-sdk/go/pkg/generated"
@@ -155,4 +159,78 @@ func (s *AccountService) RemoveLogo(ctx context.Context) (err error) {
 		return err
 	}
 	return checkResponse(resp.HTTPResponse, resp.Body)
+}
+
+// UpdateLogo uploads or replaces the account logo.
+// logo is the image data, filename is the file name (e.g., "logo.png"),
+// and contentType is the MIME type (e.g., "image/png").
+// Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Maximum 5 MB.
+func (s *AccountService) UpdateLogo(ctx context.Context, logo io.Reader, filename, contentType string) (err error) {
+	op := OperationInfo{
+		Service: "Account", Operation: "UpdateLogo",
+		ResourceType: "account", IsMutation: true,
+	}
+	if gater, ok := s.client.parent.hooks.(GatingHooks); ok {
+		if ctx, err = gater.OnOperationGate(ctx, op); err != nil {
+			return
+		}
+	}
+	start := time.Now()
+	ctx = s.client.parent.hooks.OnOperationStart(ctx, op)
+	defer func() { s.client.parent.hooks.OnOperationEnd(ctx, op, err, time.Since(start)) }()
+
+	if filename == "" {
+		err = ErrUsage("filename is required")
+		return err
+	}
+	if contentType == "" {
+		err = ErrUsage("content type is required")
+		return err
+	}
+
+	// Build multipart/form-data body
+	var buf bytes.Buffer
+	writer := multipart.NewWriter(&buf)
+	part, err := writer.CreateFormFile("logo", filename)
+	if err != nil {
+		return fmt.Errorf("failed to create form file: %w", err)
+	}
+	if _, err = io.Copy(part, logo); err != nil {
+		return fmt.Errorf("failed to write logo data: %w", err)
+	}
+	if err = writer.Close(); err != nil {
+		return fmt.Errorf("failed to close multipart writer: %w", err)
+	}
+
+	// Build the full request URL
+	path := s.client.accountPath("/account/logo.json")
+	fullURL, err := s.client.parent.buildURL(path)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, fullURL, &buf)
+	if err != nil {
+		return err
+	}
+
+	if err = s.client.parent.authStrategy.Authenticate(ctx, req); err != nil {
+		return err
+	}
+	req.Header.Set("User-Agent", s.client.parent.userAgent)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := s.client.parent.httpClient.Do(req)
+	if err != nil {
+		return ErrNetwork(err)
+	}
+	defer func() { _ = resp.Body.Close() }()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	return checkResponse(resp, body)
 }

@@ -43,6 +43,10 @@ export interface ListGaugeNeedlesGaugeOptions extends PaginationOptions {
 export interface CreateGaugeNeedleGaugeRequest {
   /** Gauge needle */
   gaugeNeedle: components["schemas"]["GaugeNeedlePayload"];
+  /** Who to notify: "everyone", "working_on", "custom", or omit for nobody */
+  notify?: string;
+  /** Array of people IDs to notify (only used when notify is "custom") */
+  subscriptions?: number[];
 }
 
 /**
@@ -253,6 +257,8 @@ export class GaugesService extends BaseService {
           },
           body: {
             gauge_needle: req.gaugeNeedle,
+            notify: req.notify,
+            subscriptions: req.subscriptions,
           },
         })
     );

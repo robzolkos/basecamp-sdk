@@ -198,7 +198,6 @@ apply UpdateAnswer @tags(["Automation"])
 // Account
 apply GetAccount @tags(["Account"])
 apply UpdateAccountName @tags(["Account"])
-apply UpdateAccountLogo @tags(["Account"])
 apply RemoveAccountLogo @tags(["Account"])
 
 // Gauges

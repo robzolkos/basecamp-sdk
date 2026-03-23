@@ -517,6 +517,12 @@ type CreateForwardReplyResponseContent = ForwardReply
 // CreateGaugeNeedleRequestContent defines model for CreateGaugeNeedleRequestContent.
 type CreateGaugeNeedleRequestContent struct {
 	GaugeNeedle GaugeNeedlePayload `json:"gauge_needle"`
+
+	// Notify Who to notify: "everyone", "working_on", "custom", or omit for nobody
+	Notify string `json:"notify,omitempty"`
+
+	// Subscriptions Array of people IDs to notify (only used when notify is "custom")
+	Subscriptions *[]int64 `json:"subscriptions,omitempty"`
 }
 
 // CreateGaugeNeedleResponseContent defines model for CreateGaugeNeedleResponseContent.
@@ -2074,12 +2080,6 @@ type UnauthorizedErrorResponseContent struct {
 	Message string `json:"message,omitempty"`
 }
 
-// UpdateAccountLogoInputPayload The logo image file as binary data.
-// SDK implementations must send this as a multipart/form-data upload
-// with field name "logo" (not as a JSON body).
-// Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Max 5 MB.
-type UpdateAccountLogoInputPayload = string
-
 // UpdateAccountNameRequestContent defines model for UpdateAccountNameRequestContent.
 type UpdateAccountNameRequestContent struct {
 	Name string `json:"name"`
@@ -3186,9 +3186,6 @@ type ClientInterface interface {
 	// RemoveAccountLogo request
 	RemoveAccountLogo(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UpdateAccountLogoWithBody request with any body
-	UpdateAccountLogoWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// UpdateAccountNameWithBody request with any body
 	UpdateAccountNameWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -3947,16 +3944,6 @@ func (c *Client) RemoveAccountLogo(ctx context.Context, accountId string, reqEdi
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
 		return NewRemoveAccountLogoRequest(c.Server, accountId)
 	}, true, "RemoveAccountLogo", reqEditors...)
-
-}
-
-// UpdateAccountLogoWithBody is marked as idempotent and will be retried on transient failures.
-
-func (c *Client) UpdateAccountLogoWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-
-	return c.doWithRetry(ctx, func() (*http.Request, error) {
-		return NewUpdateAccountLogoRequestWithBody(c.Server, accountId, contentType, body)
-	}, true, "UpdateAccountLogo", reqEditors...)
 
 }
 
@@ -7004,42 +6991,6 @@ func NewRemoveAccountLogoRequest(server string, accountId string) (*http.Request
 	if err != nil {
 		return nil, err
 	}
-
-	return req, nil
-}
-
-// NewUpdateAccountLogoRequestWithBody generates requests for UpdateAccountLogo with any type of body
-func NewUpdateAccountLogoRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/%s/account/logo.json", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PUT", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -16743,7 +16694,6 @@ type OperationMetadata struct {
 var operationMetadata = map[string]OperationMetadata{
 	"GetAccount":                         {Idempotent: true, HasSensitiveParams: false},
 	"RemoveAccountLogo":                  {Idempotent: true, HasSensitiveParams: false},
-	"UpdateAccountLogo":                  {Idempotent: true, HasSensitiveParams: false},
 	"UpdateAccountName":                  {Idempotent: true, HasSensitiveParams: false},
 	"CreateAttachment":                   {Idempotent: false, HasSensitiveParams: false},
 	"DeleteBoost":                        {Idempotent: true, HasSensitiveParams: false},
@@ -17885,9 +17835,6 @@ type ClientWithResponsesInterface interface {
 	// RemoveAccountLogoWithResponse request
 	RemoveAccountLogoWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*RemoveAccountLogoResponse, error)
 
-	// UpdateAccountLogoWithBodyWithResponse request with any body
-	UpdateAccountLogoWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountLogoResponse, error)
-
 	// UpdateAccountNameWithBodyWithResponse request with any body
 	UpdateAccountNameWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountNameResponse, error)
 
@@ -18673,32 +18620,6 @@ func (r RemoveAccountLogoResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r RemoveAccountLogoResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type UpdateAccountLogoResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON401      *UnauthorizedErrorResponseContent
-	JSON403      *ForbiddenErrorResponseContent
-	JSON422      *ValidationErrorResponseContent
-	JSON429      *RateLimitErrorResponseContent
-	JSON500      *InternalServerErrorResponseContent
-}
-
-// Status returns HTTPResponse.Status
-func (r UpdateAccountLogoResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r UpdateAccountLogoResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -23974,15 +23895,6 @@ func (c *ClientWithResponses) RemoveAccountLogoWithResponse(ctx context.Context,
 	return ParseRemoveAccountLogoResponse(rsp)
 }
 
-// UpdateAccountLogoWithBodyWithResponse request with arbitrary body returning *UpdateAccountLogoResponse
-func (c *ClientWithResponses) UpdateAccountLogoWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountLogoResponse, error) {
-	rsp, err := c.UpdateAccountLogoWithBody(ctx, accountId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateAccountLogoResponse(rsp)
-}
-
 // UpdateAccountNameWithBodyWithResponse request with arbitrary body returning *UpdateAccountNameResponse
 func (c *ClientWithResponses) UpdateAccountNameWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountNameResponse, error) {
 	rsp, err := c.UpdateAccountNameWithBody(ctx, accountId, contentType, body, reqEditors...)
@@ -26417,60 +26329,6 @@ func ParseRemoveAccountLogoResponse(rsp *http.Response) (*RemoveAccountLogoRespo
 			return nil, err
 		}
 		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
-		var dest RateLimitErrorResponseContent
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON429 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
-		var dest InternalServerErrorResponseContent
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON500 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseUpdateAccountLogoResponse parses an HTTP response from a UpdateAccountLogoWithResponse call
-func ParseUpdateAccountLogoResponse(rsp *http.Response) (*UpdateAccountLogoResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &UpdateAccountLogoResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedErrorResponseContent
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenErrorResponseContent
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest ValidationErrorResponseContent
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
 		var dest RateLimitErrorResponseContent

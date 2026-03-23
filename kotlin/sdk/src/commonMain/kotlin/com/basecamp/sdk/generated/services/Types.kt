@@ -217,7 +217,9 @@ data class ToggleGaugeBody(
 
 /** Request body for CreateGaugeNeedle. */
 data class CreateGaugeNeedleBody(
-    val gaugeNeedle: JsonObject
+    val gaugeNeedle: JsonObject,
+    val notify: String? = null,
+    val subscriptions: List<Long>? = null
 )
 
 /** Options for ListGauges. */

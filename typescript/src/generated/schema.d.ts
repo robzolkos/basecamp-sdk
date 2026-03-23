@@ -29,15 +29,7 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /**
-         * @description Upload or replace the account logo via multipart form upload.
-         *     Only administrators and account owners can use this endpoint.
-         *
-         *     **Note**: This endpoint uses direct multipart file upload (Content-Type:
-         *     multipart/form-data) rather than the standard two-stage /attachments flow.
-         *     Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Maximum file size: 5 MB.
-         */
-        put: operations["UpdateAccountLogo"];
+        put?: never;
         post?: never;
         /** @description Remove the account logo. Only administrators and account owners can use this endpoint. */
         delete: operations["RemoveAccountLogo"];
@@ -2954,6 +2946,10 @@ export interface components {
         CreateForwardReplyResponseContent: components["schemas"]["ForwardReply"];
         CreateGaugeNeedleRequestContent: {
             gauge_needle: components["schemas"]["GaugeNeedlePayload"];
+            /** @description Who to notify: "everyone", "working_on", "custom", or omit for nobody */
+            notify?: string;
+            /** @description Array of people IDs to notify (only used when notify is "custom") */
+            subscriptions?: number[];
         };
         CreateGaugeNeedleResponseContent: components["schemas"]["GaugeNeedle"];
         CreateLineupMarkerRequestContent: {
@@ -4183,13 +4179,6 @@ export interface components {
             error: string;
             message?: string;
         };
-        /**
-         * @description The logo image file as binary data.
-         *     SDK implementations must send this as a multipart/form-data upload
-         *     with field name "logo" (not as a JSON body).
-         *     Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Max 5 MB.
-         */
-        UpdateAccountLogoInputPayload: string;
         UpdateAccountNameRequestContent: {
             name: string;
         };
@@ -4545,73 +4534,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateAccountLogo: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/octet-stream": components["schemas"]["UpdateAccountLogoInputPayload"];
-            };
-        };
-        responses: {
-            /** @description UpdateAccountLogo 204 response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description UnauthorizedError 401 response */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
-                };
-            };
-            /** @description ForbiddenError 403 response */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
-                };
-            };
-            /** @description ValidationError 422 response */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description RateLimitError 429 response */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

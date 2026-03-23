@@ -132,6 +132,8 @@ class GaugesService(client: AccountClient) : BaseService(client) {
         return request(info, {
             httpPost("/projects/${projectId}/gauge/needles.json", json.encodeToString(kotlinx.serialization.json.buildJsonObject {
                 put("gauge_needle", body.gaugeNeedle)
+                body.notify?.let { put("notify", kotlinx.serialization.json.JsonPrimitive(it)) }
+                body.subscriptions?.let { put("subscriptions", kotlinx.serialization.json.JsonArray(it.map { kotlinx.serialization.json.JsonPrimitive(it) })) }
             }), operationName = info.operation)
         }) { body ->
             json.decodeFromString<JsonElement>(body)

@@ -265,7 +265,6 @@ service Basecamp {
     // Batch 13 - Account
     GetAccount,
     UpdateAccountName,
-    UpdateAccountLogo,
     RemoveAccountLogo,
 
     // Batch 14 - Gauges
@@ -7585,38 +7584,6 @@ structure UpdateAccountNameOutput {
   account: Account
 }
 
-/// Upload or replace the account logo via multipart form upload.
-/// Only administrators and account owners can use this endpoint.
-///
-/// **Note**: This endpoint uses direct multipart file upload (Content-Type:
-/// multipart/form-data) rather than the standard two-stage /attachments flow.
-/// Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Maximum file size: 5 MB.
-@idempotent
-@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
-@basecampIdempotent(natural: true)
-@http(method: "PUT", uri: "/{accountId}/account/logo.json", code: 204)
-operation UpdateAccountLogo {
-  input: UpdateAccountLogoInput
-  output: UpdateAccountLogoOutput
-  errors: [ValidationError, ForbiddenError, UnauthorizedError, RateLimitError, InternalServerError]
-}
-
-structure UpdateAccountLogoInput {
-  @required
-  @httpLabel
-  accountId: AccountId
-
-  /// The logo image file as binary data.
-  /// SDK implementations must send this as a multipart/form-data upload
-  /// with field name "logo" (not as a JSON body).
-  /// Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Max 5 MB.
-  @required
-  @httpPayload
-  logo: Blob
-}
-
-structure UpdateAccountLogoOutput {}
-
 /// Remove the account logo. Only administrators and account owners can use this endpoint.
 @idempotent
 @basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
@@ -7788,6 +7755,12 @@ structure CreateGaugeNeedleInput {
 
   @required
   gauge_needle: GaugeNeedlePayload
+
+  /// Who to notify: "everyone", "working_on", "custom", or omit for nobody
+  notify: String
+
+  /// Array of people IDs to notify (only used when notify is "custom")
+  subscriptions: PersonIdList
 }
 
 structure GaugeNeedlePayload {

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "securerandom"
+
 module Basecamp
   # Main client for the Basecamp API.
   #
@@ -188,6 +190,16 @@ module Basecamp
       @parent.http.post_raw(account_path(path), body: body, content_type: content_type)
     end
 
+    # Performs a PUT request with raw binary data scoped to this account.
+    # Used for multipart uploads (e.g., account logo).
+    # @param path [String] URL path (without account prefix)
+    # @param body [String, IO] raw binary data
+    # @param content_type [String] MIME content type
+    # @return [Response]
+    def put_raw(path, body:, content_type:)
+      @parent.http.put_raw(account_path(path), body: body, content_type: content_type)
+    end
+
     # Fetches all pages of a paginated resource.
     # @param path [String] URL path (without account prefix)
     # @param params [Hash] query parameters
@@ -300,6 +312,48 @@ module Basecamp
         duration = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - start) * 1000).round
         safe_hook { hooks.on_operation_end(op, OperationResult.new(duration_ms: duration, error: nil)) }
         result
+      end
+    end
+
+    # Uploads or replaces the account logo.
+    # The logo must be sent as multipart/form-data with field name "logo".
+    # Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Maximum 5 MB.
+    #
+    # @param io [IO, StringIO, File] the logo image data
+    # @param filename [String] the filename (e.g., "logo.png")
+    # @param content_type [String] MIME type (e.g., "image/png")
+    # @return [void]
+    # @raise [ApiError] if the upload fails
+    def update_account_logo(io:, filename:, content_type:)
+      op = OperationInfo.new(
+        service: "Account",
+        operation: "UpdateAccountLogo",
+        is_mutation: true
+      )
+      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      safe_hook { hooks.on_operation_start(op) }
+
+      begin
+        boundary = "BasecampSDK#{SecureRandom.hex(16)}"
+        body = build_multipart_body(boundary: boundary, field: "logo", io: io, filename: filename, content_type: content_type)
+
+        response = put_raw(
+          "/account/logo.json",
+          body: body,
+          content_type: "multipart/form-data; boundary=#{boundary}"
+        )
+
+        unless response.status == 204 || response.success?
+          raise Basecamp.error_from_response(response.status, response.body)
+        end
+      rescue => e
+        duration = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - start) * 1000).round
+        safe_hook { hooks.on_operation_end(op, OperationResult.new(duration_ms: duration, error: e)) }
+        raise
+      else
+        duration = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - start) * 1000).round
+        safe_hook { hooks.on_operation_end(op, OperationResult.new(duration_ms: duration, error: nil)) }
+        nil
       end
     end
 
@@ -583,6 +637,19 @@ module Basecamp
 
       parsed = value.to_i
       parsed >= 0 ? parsed : -1
+    end
+
+    def build_multipart_body(boundary:, field:, io:, filename:, content_type:)
+      data = io.respond_to?(:read) ? io.read : io.to_s
+      body = +""
+      body << "--#{boundary}\r\n"
+      body << "Content-Disposition: form-data; name=\"#{field}\"; filename=\"#{filename}\"\r\n"
+      body << "Content-Type: #{content_type}\r\n"
+      body << "\r\n"
+      body << data
+      body << "\r\n"
+      body << "--#{boundary}--\r\n"
+      body.force_encoding(Encoding::BINARY)
     end
   end
 end

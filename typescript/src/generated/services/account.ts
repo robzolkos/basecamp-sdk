@@ -56,39 +56,6 @@ export class AccountService extends BaseService {
   }
 
   /**
-   * Upload or replace the account logo via multipart form upload.
-   * @param data - Binary file data to upload
-   * @param contentType - MIME type of the file (e.g., "image/png", "application/pdf")
-   * @returns void
-   * @throws {BasecampError} If the resource is not found or fields are invalid
-   *
-   * @example
-   * ```ts
-   * await client.account.updateAccountLogo(fileData, "image/png");
-   * ```
-   */
-  async updateAccountLogo(data: ArrayBuffer | Uint8Array | string, contentType: string): Promise<void> {
-    await this.request(
-      {
-        service: "Account",
-        operation: "UpdateAccountLogo",
-        resourceType: "account_logo",
-        isMutation: true,
-      },
-      () =>
-        this.client.PUT("/account/logo.json", {
-          params: {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            header: { "Content-Type": contentType } as any,
-          },
-          body: data as unknown as string,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          bodySerializer: (body: unknown) => body as any,
-        })
-    );
-  }
-
-  /**
    * Remove the account logo. Only administrators and account owners can use this endpoint.
    * @returns void
    * @throws {BasecampError} If the request fails
