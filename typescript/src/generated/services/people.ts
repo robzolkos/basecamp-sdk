@@ -39,7 +39,7 @@ export interface UpdateMyProfilePeopleRequest {
   /** Time zone name */
   timeZoneName?: string;
   /** First week day */
-  firstWeekDay?: number;
+  firstWeekDay?: components["schemas"]["FirstWeekDay"];
   /** Time format */
   timeFormat?: string;
 }

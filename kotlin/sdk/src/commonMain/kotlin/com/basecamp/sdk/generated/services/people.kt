@@ -72,7 +72,7 @@ class PeopleService(client: AccountClient) : BaseService(client) {
                 body.bio?.let { put("bio", kotlinx.serialization.json.JsonPrimitive(it)) }
                 body.location?.let { put("location", kotlinx.serialization.json.JsonPrimitive(it)) }
                 body.timeZoneName?.let { put("time_zone_name", kotlinx.serialization.json.JsonPrimitive(it)) }
-                body.firstWeekDay?.let { put("first_week_day", kotlinx.serialization.json.JsonPrimitive(it)) }
+                body.firstWeekDay?.let { put("first_week_day", it) }
                 body.timeFormat?.let { put("time_format", kotlinx.serialization.json.JsonPrimitive(it)) }
             }), operationName = info.operation)
         }) { Unit }

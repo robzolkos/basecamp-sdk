@@ -4,7 +4,7 @@ import Foundation
 public struct UpdateMyProfileRequest: Codable, Sendable {
     public var bio: String?
     public var emailAddress: String?
-    public var firstWeekDay: Int32?
+    public var firstWeekDay: FirstWeekDay?
     public var location: String?
     public var name: String?
     public var timeFormat: String?
@@ -14,7 +14,7 @@ public struct UpdateMyProfileRequest: Codable, Sendable {
     public init(
         bio: String? = nil,
         emailAddress: String? = nil,
-        firstWeekDay: Int32? = nil,
+        firstWeekDay: FirstWeekDay? = nil,
         location: String? = nil,
         name: String? = nil,
         timeFormat: String? = nil,

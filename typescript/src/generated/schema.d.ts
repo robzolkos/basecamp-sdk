@@ -2804,6 +2804,8 @@ export interface components {
             removed_person_ids?: number[];
             notified_recipient_ids?: number[];
         };
+        /** @enum {string} */
+        FirstWeekDay: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday";
         ForbiddenErrorResponseContent: {
             error: string;
             message?: string;
@@ -3707,8 +3709,7 @@ export interface components {
             /** Format: password */
             location?: string;
             time_zone_name?: string;
-            /** Format: int32 */
-            first_week_day?: number;
+            first_week_day?: components["schemas"]["FirstWeekDay"];
             time_format?: string;
         };
         UpdateProjectAccessRequestContent: {

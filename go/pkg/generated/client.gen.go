@@ -24,6 +24,17 @@ import (
 	"github.com/oapi-codegen/runtime"
 )
 
+// Defines values for FirstWeekDay.
+const (
+	Friday    FirstWeekDay = "Friday"
+	Monday    FirstWeekDay = "Monday"
+	Saturday  FirstWeekDay = "Saturday"
+	Sunday    FirstWeekDay = "Sunday"
+	Thursday  FirstWeekDay = "Thursday"
+	Tuesday   FirstWeekDay = "Tuesday"
+	Wednesday FirstWeekDay = "Wednesday"
+)
+
 // Assignable defines model for Assignable.
 type Assignable struct {
 	AppUrl    string     `json:"app_url,omitempty"`
@@ -696,6 +707,9 @@ type EventDetails struct {
 	NotifiedRecipientIds []int64 `json:"notified_recipient_ids,omitempty"`
 	RemovedPersonIds     []int64 `json:"removed_person_ids,omitempty"`
 }
+
+// FirstWeekDay defines model for FirstWeekDay.
+type FirstWeekDay string
 
 // ForbiddenErrorResponseContent defines model for ForbiddenErrorResponseContent.
 type ForbiddenErrorResponseContent struct {
@@ -1853,14 +1867,14 @@ type UpdateMessageTypeResponseContent = MessageType
 
 // UpdateMyProfileRequestContent defines model for UpdateMyProfileRequestContent.
 type UpdateMyProfileRequestContent struct {
-	Bio          string `json:"bio,omitempty"`
-	EmailAddress string `json:"email_address,omitempty"`
-	FirstWeekDay int32  `json:"first_week_day,omitempty"`
-	Location     string `json:"location,omitempty"`
-	Name         string `json:"name,omitempty"`
-	TimeFormat   string `json:"time_format,omitempty"`
-	TimeZoneName string `json:"time_zone_name,omitempty"`
-	Title        string `json:"title,omitempty"`
+	Bio          string       `json:"bio,omitempty"`
+	EmailAddress string       `json:"email_address,omitempty"`
+	FirstWeekDay FirstWeekDay `json:"first_week_day,omitempty"`
+	Location     string       `json:"location,omitempty"`
+	Name         string       `json:"name,omitempty"`
+	TimeFormat   string       `json:"time_format,omitempty"`
+	TimeZoneName string       `json:"time_zone_name,omitempty"`
+	Title        string       `json:"title,omitempty"`
 }
 
 // UpdateProjectAccessRequestContent defines model for UpdateProjectAccessRequestContent.
