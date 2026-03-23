@@ -4775,8 +4775,18 @@ structure UpdateMyProfileInput {
   bio: PersonBio
   location: PersonLocation
   time_zone_name: String
-  first_week_day: Integer
+  first_week_day: FirstWeekDay
   time_format: String
+}
+
+enum FirstWeekDay {
+  SUNDAY = "Sunday"
+  MONDAY = "Monday"
+  TUESDAY = "Tuesday"
+  WEDNESDAY = "Wednesday"
+  THURSDAY = "Thursday"
+  FRIDAY = "Friday"
+  SATURDAY = "Saturday"
 }
 
 structure UpdateMyProfileOutput {}

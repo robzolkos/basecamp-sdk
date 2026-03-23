@@ -39,24 +39,40 @@ type UpdateProjectAccessResponse struct {
 	Revoked []Person `json:"revoked"`
 }
 
+// FirstWeekDay represents the first day of the week.
+// Use the exported constants (FirstWeekDaySunday, FirstWeekDayMonday, etc.).
+type FirstWeekDay = generated.FirstWeekDay
+
+// FirstWeekDay constants for all seven days.
+const (
+	FirstWeekDaySunday    FirstWeekDay = generated.Sunday
+	FirstWeekDayMonday    FirstWeekDay = generated.Monday
+	FirstWeekDayTuesday   FirstWeekDay = generated.Tuesday
+	FirstWeekDayWednesday FirstWeekDay = generated.Wednesday
+	FirstWeekDayThursday  FirstWeekDay = generated.Thursday
+	FirstWeekDayFriday    FirstWeekDay = generated.Friday
+	FirstWeekDaySaturday  FirstWeekDay = generated.Saturday
+)
+
 // UpdateMyProfileRequest specifies the parameters for updating the current user's profile.
+// Use pointer fields (*string) to distinguish "not provided" (nil) from "clear field" ("").
 type UpdateMyProfileRequest struct {
 	// Name is the person's display name.
-	Name string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty"`
 	// EmailAddress is the person's email address.
-	EmailAddress string `json:"email_address,omitempty"`
+	EmailAddress *string `json:"email_address,omitempty"`
 	// Title is the person's job title.
-	Title string `json:"title,omitempty"`
+	Title *string `json:"title,omitempty"`
 	// Bio is a short biographical text.
-	Bio string `json:"bio,omitempty"`
+	Bio *string `json:"bio,omitempty"`
 	// Location is the person's location.
-	Location string `json:"location,omitempty"`
+	Location *string `json:"location,omitempty"`
 	// TimeZoneName is a Rails time zone name (e.g. "America/Chicago").
-	TimeZoneName string `json:"time_zone_name,omitempty"`
-	// FirstWeekDay is the first day of the week (0 = Sunday, 1 = Monday).
-	FirstWeekDay *int `json:"first_week_day,omitempty"`
+	TimeZoneName *string `json:"time_zone_name,omitempty"`
+	// FirstWeekDay is the first day of the week (e.g. FirstWeekDaySunday).
+	FirstWeekDay *FirstWeekDay `json:"first_week_day,omitempty"`
 	// TimeFormat is the time display format (e.g. "twelve_hour", "twenty_four_hour").
-	TimeFormat string `json:"time_format,omitempty"`
+	TimeFormat *string `json:"time_format,omitempty"`
 }
 
 // PeopleListOptions specifies options for listing people.
@@ -249,33 +265,29 @@ func (s *PeopleService) UpdateMyProfile(ctx context.Context, req *UpdateMyProfil
 	}
 
 	body := map[string]any{}
-	if req.Name != "" {
-		body["name"] = req.Name
+	if req.Name != nil {
+		body["name"] = *req.Name
 	}
-	if req.EmailAddress != "" {
-		body["email_address"] = req.EmailAddress
+	if req.EmailAddress != nil {
+		body["email_address"] = *req.EmailAddress
 	}
-	if req.Title != "" {
-		body["title"] = req.Title
+	if req.Title != nil {
+		body["title"] = *req.Title
 	}
-	if req.Bio != "" {
-		body["bio"] = req.Bio
+	if req.Bio != nil {
+		body["bio"] = *req.Bio
 	}
-	if req.Location != "" {
-		body["location"] = req.Location
+	if req.Location != nil {
+		body["location"] = *req.Location
 	}
-	if req.TimeZoneName != "" {
-		body["time_zone_name"] = req.TimeZoneName
+	if req.TimeZoneName != nil {
+		body["time_zone_name"] = *req.TimeZoneName
 	}
 	if req.FirstWeekDay != nil {
-		if *req.FirstWeekDay < 0 || *req.FirstWeekDay > 1 {
-			err = ErrUsage("first_week_day must be 0 (Sunday) or 1 (Monday)")
-			return err
-		}
-		body["first_week_day"] = *req.FirstWeekDay
+		body["first_week_day"] = string(*req.FirstWeekDay)
 	}
-	if req.TimeFormat != "" {
-		body["time_format"] = req.TimeFormat
+	if req.TimeFormat != nil {
+		body["time_format"] = *req.TimeFormat
 	}
 
 	bodyReader, err := marshalBody(body)
