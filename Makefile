@@ -2,7 +2,7 @@
 #
 # Orchestrates both Smithy spec and Go SDK
 
-.PHONY: all check clean help provenance-sync provenance-check sync-status bump sync-api-version sync-api-version-check release
+.PHONY: all check clean help setup tools provenance-sync provenance-check sync-status bump sync-api-version sync-api-version-check release
 
 # Default: run all checks
 all: check
@@ -14,7 +14,7 @@ all: check
 .PHONY: smithy-validate smithy-build smithy-check smithy-clean smithy-mapper behavior-model behavior-model-check
 
 # Validate Smithy spec
-smithy-validate:
+smithy-validate: smithy-mapper
 	@echo "==> Validating Smithy spec..."
 	cd spec && smithy validate
 
@@ -279,12 +279,18 @@ rb-generate-services:
 	cd ruby && ruby scripts/generate-services.rb
 
 # Build Ruby SDK (install deps)
-rb-build:
-	@echo "==> Building Ruby SDK..."
+RB_STAMP := ruby/.bundle/.install-stamp
+
+$(RB_STAMP): ruby/Gemfile ruby/Gemfile.lock ruby/basecamp-sdk.gemspec
+	@echo "==> Installing Ruby dependencies..."
 	cd ruby && bundle install
+	@mkdir -p $(dir $(RB_STAMP))
+	@touch $(RB_STAMP)
+
+rb-build: $(RB_STAMP)
 
 # Run Ruby tests
-rb-test:
+rb-test: rb-build
 	@echo "==> Running Ruby tests..."
 	cd ruby && bundle exec rake test
 
@@ -295,7 +301,7 @@ rb-check: rb-test
 	@echo "==> Ruby SDK checks passed"
 
 # Generate Ruby documentation
-rb-doc:
+rb-doc: rb-build
 	@echo "==> Generating Ruby documentation..."
 	cd ruby && bundle exec rake doc
 	@echo "Documentation generated in ruby/doc/"
@@ -384,27 +390,50 @@ gradle-stop:
 # Swift SDK targets (delegates to swift/Makefile)
 #------------------------------------------------------------------------------
 
+HAS_SWIFT := $(shell command -v swift 2>/dev/null)
+IS_MACOS  := $(filter Darwin,$(shell uname -s))
+
 .PHONY: swift-build swift-test swift-check swift-clean swift-generate
 
-# Build Swift SDK
+# Build Swift SDK (macOS only — SDK requires Apple platforms)
 swift-build:
+ifdef IS_MACOS
 	@$(MAKE) -C swift build
+else
+	@echo "SKIP: swift-build (macOS only)"
+endif
 
-# Run Swift tests
+# Run Swift tests (macOS only)
 swift-test:
+ifdef IS_MACOS
 	@$(MAKE) -C swift test
+else
+	@echo "SKIP: swift-test (macOS only)"
+endif
 
-# Run all Swift checks
+# Run all Swift checks (macOS only)
 swift-check:
+ifdef IS_MACOS
 	@$(MAKE) -C swift check
+else
+	@echo "SKIP: swift-check (macOS only)"
+endif
 
-# Regenerate Swift SDK services from OpenAPI spec
+# Regenerate Swift SDK services from OpenAPI spec (needs swift on any platform)
 swift-generate:
+ifdef HAS_SWIFT
 	@$(MAKE) -C swift generate
+else
+	$(error swift is required for swift-generate but was not found)
+endif
 
 # Clean Swift build artifacts
 swift-clean:
+ifdef HAS_SWIFT
 	@$(MAKE) -C swift clean
+else
+	rm -rf swift/.build
+endif
 
 #------------------------------------------------------------------------------
 # GitHub Actions lint targets
@@ -418,6 +447,59 @@ lint-actions:
 	@command -v zizmor >/dev/null || (echo "Install zizmor: https://docs.zizmor.sh/installation/" && exit 1)
 	actionlint
 	zizmor .
+
+#------------------------------------------------------------------------------
+# Setup & tool installation
+#------------------------------------------------------------------------------
+
+.PHONY: setup tools
+
+# One-command setup for a fresh clone: install runtimes + dev tools
+setup:
+	@command -v mise >/dev/null 2>&1 || { echo "ERROR: mise not found. Install: https://mise.jdx.dev"; exit 1; }
+	mise install
+	mise exec -- $(MAKE) tools
+
+# Pinned tool versions — update these when bumping tools
+SMITHY_CLI_VERSION    := 1.68.0
+GOLANGCI_LINT_VERSION := v2.11.4
+ACTIONLINT_VERSION    := v1.7.11
+
+# Install development tools and prerequisites
+tools:
+	@echo "==> Installing Smithy CLI..."
+	@command -v smithy >/dev/null 2>&1 || { \
+		if command -v brew >/dev/null 2>&1; then brew tap smithy-lang/tap && brew install smithy-cli; \
+		elif [ "$$(uname -s)" = "Linux" ]; then \
+			command -v curl >/dev/null 2>&1 || { echo "ERROR: curl is required"; exit 1; }; \
+			command -v unzip >/dev/null 2>&1 || { echo "ERROR: unzip is required"; exit 1; }; \
+			ARCH=$$(uname -m); \
+			case "$$ARCH" in x86_64) SUFFIX=linux-x86_64;; aarch64) SUFFIX=linux-aarch64;; *) echo "Unsupported arch: $$ARCH" && exit 1;; esac; \
+			TMPDIR=$$(mktemp -d) && \
+			trap 'rm -rf "$$TMPDIR"' EXIT && \
+			echo "Downloading smithy-cli-$$SUFFIX..." && \
+			curl -fsSL "https://github.com/smithy-lang/smithy/releases/download/$(SMITHY_CLI_VERSION)/smithy-cli-$$SUFFIX.zip" -o "$$TMPDIR/smithy.zip" && \
+			unzip -qo "$$TMPDIR/smithy.zip" -d "$$TMPDIR" && \
+			sudo "$$TMPDIR/smithy-cli-$$SUFFIX/install"; \
+		else echo "Install Smithy CLI: https://smithy.io/2.0/guides/smithy-cli/cli_installation.html" && exit 1; \
+		fi; \
+	}
+	@echo "==> Installing Go tools..."
+	@command -v go >/dev/null 2>&1 || { echo "ERROR: go not found. Run 'make setup' or install Go first."; exit 1; }
+	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
+	go install github.com/rhysd/actionlint/cmd/actionlint@$(ACTIONLINT_VERSION)
+	@echo "==> Installing zizmor..."
+	@command -v zizmor >/dev/null 2>&1 || { \
+		if command -v brew >/dev/null 2>&1; then brew install zizmor; \
+		elif command -v pacman >/dev/null 2>&1; then sudo pacman -S --noconfirm zizmor; \
+		else echo "Install zizmor: https://docs.zizmor.sh/installation/" && exit 1; \
+		fi; \
+	}
+	@command -v jq >/dev/null 2>&1 || echo "NOTE: jq is also required (install via your package manager)"
+	@command -v node >/dev/null 2>&1 || echo "NOTE: node/npm is required for the TypeScript SDK"
+	@command -v ruby >/dev/null 2>&1 || echo "NOTE: ruby/bundler is required for the Ruby SDK"
+	@command -v swift >/dev/null 2>&1 || echo "NOTE: swift is optional (macOS: xcode-select --install, Arch: yay -S swift-bin)"
+	@echo "==> Done"
 
 #------------------------------------------------------------------------------
 # Combined targets
@@ -511,6 +593,10 @@ help:
 	@echo ""
 	@echo "GitHub Actions:"
 	@echo "  lint-actions     Lint GitHub Actions workflows (actionlint + zizmor)"
+	@echo ""
+	@echo "Setup:"
+	@echo "  setup            One-command setup (mise install + tools)"
+	@echo "  tools            Install development tools (smithy, golangci-lint, actionlint, zizmor)"
 	@echo ""
 	@echo "Combined:"
 	@echo "  check            Run all checks (Smithy + behavior-model/drift + Go + TypeScript + Ruby + Swift + Kotlin + Conformance + Provenance + API version sync + Actions lint)"
