@@ -37,6 +37,8 @@ export interface UpdateCardRequest {
 export interface MoveCardRequest {
   /** Column id */
   columnId: number;
+  /** 1-indexed position within the destination column. Defaults to 1 (top). */
+  position?: number;
 }
 
 /**
@@ -167,6 +169,7 @@ export class CardsService extends BaseService {
           },
           body: {
             column_id: req.columnId,
+            position: req.position,
           },
         })
     );

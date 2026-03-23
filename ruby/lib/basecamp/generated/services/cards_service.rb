@@ -32,10 +32,11 @@ module Basecamp
       # Move a card to a different column
       # @param card_id [Integer] card id ID
       # @param column_id [Integer] column id
+      # @param position [Integer, nil] 1-indexed position within the destination column. Defaults to 1 (top).
       # @return [void]
-      def move(card_id:, column_id:)
+      def move(card_id:, column_id:, position: nil)
         with_operation(service: "cards", operation: "move", is_mutation: true, resource_id: card_id) do
-          http_post("/card_tables/cards/#{card_id}/moves.json", body: compact_params(column_id: column_id))
+          http_post("/card_tables/cards/#{card_id}/moves.json", body: compact_params(column_id: column_id, position: position))
           nil
         end
       end

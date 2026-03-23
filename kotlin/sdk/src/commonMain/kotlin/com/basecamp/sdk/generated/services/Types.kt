@@ -10,6 +10,16 @@ import kotlinx.serialization.json.JsonObject
  * @generated from OpenAPI spec — do not edit directly
  */
 
+/** Request body for UpdateAccountLogo. */
+data class UpdateAccountLogoBody(
+    val logo: String
+)
+
+/** Request body for UpdateAccountName. */
+data class UpdateAccountNameBody(
+    val name: String
+)
+
 /** Request body for CreateRecordingBoost. */
 data class CreateRecordingBoostBody(
     val content: String
@@ -97,7 +107,8 @@ data class UpdateCardBody(
 
 /** Request body for MoveCard. */
 data class MoveCardBody(
-    val columnId: Long
+    val columnId: Long,
+    val position: Int? = null
 )
 
 /** Request body for CreateCard. */
@@ -138,6 +149,24 @@ data class UpdateQuestionNotificationSettingsBody(
     val digestIncludeUnanswered: Boolean? = null
 )
 
+/** Options for ListClientApprovals. */
+data class ListClientApprovalsOptions(
+    val sort: String? = null,
+    val direction: String? = null,
+    val maxItems: Int? = null
+) {
+    fun toPaginationOptions(): PaginationOptions = PaginationOptions(maxItems = maxItems)
+}
+
+/** Options for ListClientCorrespondences. */
+data class ListClientCorrespondencesOptions(
+    val sort: String? = null,
+    val direction: String? = null,
+    val maxItems: Int? = null
+) {
+    fun toPaginationOptions(): PaginationOptions = PaginationOptions(maxItems = maxItems)
+}
+
 /** Request body for SetClientVisibility. */
 data class SetClientVisibilityBody(
     val visibleToClients: Boolean
@@ -171,6 +200,38 @@ data class CreateDocumentBody(
 data class CreateForwardReplyBody(
     val content: String
 )
+
+/** Options for ListForwards. */
+data class ListForwardsOptions(
+    val sort: String? = null,
+    val direction: String? = null,
+    val maxItems: Int? = null
+) {
+    fun toPaginationOptions(): PaginationOptions = PaginationOptions(maxItems = maxItems)
+}
+
+/** Request body for UpdateGaugeNeedle. */
+data class UpdateGaugeNeedleBody(
+    val gaugeNeedle: JsonObject? = null
+)
+
+/** Request body for ToggleGauge. */
+data class ToggleGaugeBody(
+    val gauge: JsonObject
+)
+
+/** Request body for CreateGaugeNeedle. */
+data class CreateGaugeNeedleBody(
+    val gaugeNeedle: JsonObject
+)
+
+/** Options for ListGauges. */
+data class ListGaugesOptions(
+    val bucketIds: String? = null,
+    val maxItems: Int? = null
+) {
+    fun toPaginationOptions(): PaginationOptions = PaginationOptions(maxItems = maxItems)
+}
 
 /** Request body for UpdateHillChartSettings. */
 data class UpdateHillChartSettingsBody(
@@ -228,6 +289,28 @@ data class UpdateMessageBody(
     val categoryId: Long? = null
 )
 
+/** Options for GetMyDueAssignments. */
+data class GetMyDueAssignmentsOptions(
+    val scope: String? = null
+) {
+}
+
+/** Options for GetMyNotifications. */
+data class GetMyNotificationsOptions(
+    val page: Long? = null
+) {
+}
+
+/** Request body for MarkAsRead. */
+data class MarkAsReadBody(
+    val readables: List<String>
+)
+
+/** Request body for UpdateMyPreferences. */
+data class UpdateMyPreferencesBody(
+    val person: JsonObject
+)
+
 /** Request body for UpdateMyProfile. */
 data class UpdateMyProfileBody(
     val name: String? = null,
@@ -236,8 +319,13 @@ data class UpdateMyProfileBody(
     val bio: String? = null,
     val location: String? = null,
     val timeZoneName: String? = null,
-    val firstWeekDay: JsonObject? = null,
+    val firstWeekDay: Int? = null,
     val timeFormat: String? = null
+)
+
+/** Request body for EnableOutOfOffice. */
+data class EnableOutOfOfficeBody(
+    val outOfOffice: JsonObject
 )
 
 /** Request body for UpdateProjectAccess. */

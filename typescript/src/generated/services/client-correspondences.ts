@@ -20,6 +20,10 @@ export type ClientCorrespondence = components["schemas"]["ClientCorrespondence"]
  * Options for list.
  */
 export interface ListClientCorrespondenceOptions extends PaginationOptions {
+  /** Filter by sort */
+  sort?: "created_at" | "updated_at";
+  /** Filter by direction */
+  direction?: "asc" | "desc";
 }
 
 
@@ -40,6 +44,9 @@ export class ClientCorrespondencesService extends BaseService {
    * @example
    * ```ts
    * const result = await client.clientCorrespondences.list();
+   *
+   * // With options
+   * const filtered = await client.clientCorrespondences.list({ sort: "created_at" });
    * ```
    */
   async list(options?: ListClientCorrespondenceOptions): Promise<ListResult<ClientCorrespondence>> {
@@ -52,6 +59,9 @@ export class ClientCorrespondencesService extends BaseService {
       },
       () =>
         this.client.GET("/client/correspondences.json", {
+          params: {
+            query: { sort: options?.sort, direction: options?.direction },
+          },
         })
       , options
     );

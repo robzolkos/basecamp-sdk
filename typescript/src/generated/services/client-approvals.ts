@@ -20,6 +20,10 @@ export type ClientApproval = components["schemas"]["ClientApproval"];
  * Options for list.
  */
 export interface ListClientApprovalOptions extends PaginationOptions {
+  /** Filter by sort */
+  sort?: "created_at" | "updated_at";
+  /** Filter by direction */
+  direction?: "asc" | "desc";
 }
 
 
@@ -40,6 +44,9 @@ export class ClientApprovalsService extends BaseService {
    * @example
    * ```ts
    * const result = await client.clientApprovals.list();
+   *
+   * // With options
+   * const filtered = await client.clientApprovals.list({ sort: "created_at" });
    * ```
    */
   async list(options?: ListClientApprovalOptions): Promise<ListResult<ClientApproval>> {
@@ -52,6 +59,9 @@ export class ClientApprovalsService extends BaseService {
       },
       () =>
         this.client.GET("/client/approvals.json", {
+          params: {
+            query: { sort: options?.sort, direction: options?.direction },
+          },
         })
       , options
     );

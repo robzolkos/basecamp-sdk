@@ -56,10 +56,13 @@ module Basecamp
 
       # List all forwards in an inbox
       # @param inbox_id [Integer] inbox id ID
+      # @param sort [String, nil] created_at|updated_at
+      # @param direction [String, nil] asc|desc
       # @return [Enumerator<Hash>] paginated results
-      def list(inbox_id:)
+      def list(inbox_id:, sort: nil, direction: nil)
         wrap_paginated(service: "forwards", operation: "list", is_mutation: false, resource_id: inbox_id) do
-          paginate("/inboxes/#{inbox_id}/forwards.json")
+          params = compact_params(sort: sort, direction: direction)
+          paginate("/inboxes/#{inbox_id}/forwards.json", params: params)
         end
       end
     end

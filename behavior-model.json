@@ -170,6 +170,17 @@
         ]
       }
     },
+    "CreateGaugeNeedle": {
+      "retry": {
+        "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "CreateLineupMarker": {
       "retry": {
         "max": 2,
@@ -442,10 +453,34 @@
         ]
       }
     },
+    "DestroyGaugeNeedle": {
+      "idempotent": true,
+      "retry": {
+        "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "DisableCardColumnOnHold": {
       "idempotent": true,
       "retry": {
         "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "DisableOutOfOffice": {
+      "idempotent": true,
+      "retry": {
+        "max": 2,
         "base_delay_ms": 1000,
         "backoff": "exponential",
         "retry_on": [
@@ -477,9 +512,32 @@
         ]
       }
     },
+    "EnableOutOfOffice": {
+      "retry": {
+        "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "EnableTool": {
       "retry": {
         "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "GetAccount": {
+      "readonly": true,
+      "retry": {
+        "max": 3,
         "base_delay_ms": 1000,
         "backoff": "exponential",
         "retry_on": [
@@ -708,6 +766,18 @@
         ]
       }
     },
+    "GetGaugeNeedle": {
+      "readonly": true,
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "GetHillChart": {
       "readonly": true,
       "retry": {
@@ -768,7 +838,79 @@
         ]
       }
     },
+    "GetMyAssignments": {
+      "readonly": true,
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "GetMyCompletedAssignments": {
+      "readonly": true,
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "GetMyDueAssignments": {
+      "readonly": true,
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "GetMyNotifications": {
+      "readonly": true,
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "GetMyPreferences": {
+      "readonly": true,
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "GetMyProfile": {
+      "readonly": true,
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "GetOutOfOffice": {
       "readonly": true,
       "retry": {
         "max": 3,
@@ -1404,6 +1546,38 @@
         ]
       }
     },
+    "ListGaugeNeedles": {
+      "readonly": true,
+      "pagination": {
+        "style": "link",
+        "maxPageSize": 50
+      },
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "ListGauges": {
+      "readonly": true,
+      "pagination": {
+        "style": "link",
+        "maxPageSize": 50
+      },
+      "retry": {
+        "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "ListLineupMarkers": {
       "readonly": true,
       "retry": {
@@ -1720,6 +1894,18 @@
         ]
       }
     },
+    "MarkAsRead": {
+      "idempotent": true,
+      "retry": {
+        "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "MoveCard": {
       "retry": {
         "max": 2,
@@ -1755,6 +1941,18 @@
       }
     },
     "PinMessage": {
+      "retry": {
+        "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "RemoveAccountLogo": {
+      "idempotent": true,
       "retry": {
         "max": 2,
         "base_delay_ms": 1000,
@@ -1899,6 +2097,18 @@
         ]
       }
     },
+    "ToggleGauge": {
+      "idempotent": true,
+      "retry": {
+        "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "TrashProject": {
       "idempotent": true,
       "retry": {
@@ -1995,6 +2205,30 @@
         ]
       }
     },
+    "UpdateAccountLogo": {
+      "idempotent": true,
+      "retry": {
+        "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "UpdateAccountName": {
+      "idempotent": true,
+      "retry": {
+        "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "UpdateAnswer": {
       "idempotent": true,
       "retry": {
@@ -2079,6 +2313,18 @@
         ]
       }
     },
+    "UpdateGaugeNeedle": {
+      "idempotent": true,
+      "retry": {
+        "max": 2,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
     "UpdateHillChartSettings": {
       "idempotent": true,
       "retry": {
@@ -2119,6 +2365,18 @@
       "idempotent": true,
       "retry": {
         "max": 3,
+        "base_delay_ms": 1000,
+        "backoff": "exponential",
+        "retry_on": [
+          429,
+          503
+        ]
+      }
+    },
+    "UpdateMyPreferences": {
+      "idempotent": true,
+      "retry": {
+        "max": 2,
         "base_delay_ms": 1000,
         "backoff": "exponential",
         "retry_on": [
@@ -2326,6 +2584,13 @@
       "$.email_address",
       "$.title",
       "$.company_name"
+    ],
+    "MyAssignmentAssignee": [
+      "$.name",
+      "$.avatar_url"
+    ],
+    "OutOfOfficePerson": [
+      "$.name"
     ],
     "Person": [
       "$.name",

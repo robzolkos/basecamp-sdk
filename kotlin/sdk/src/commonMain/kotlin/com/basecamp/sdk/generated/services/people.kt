@@ -33,6 +33,47 @@ class PeopleService(client: AccountClient) : BaseService(client) {
     }
 
     /**
+     * Get the current user's preferences
+     */
+    suspend fun myPreferences(): JsonElement {
+        val info = OperationInfo(
+            service = "People",
+            operation = "GetMyPreferences",
+            resourceType = "my_preference",
+            isMutation = false,
+            projectId = null,
+            resourceId = null,
+        )
+        return request(info, {
+            httpGet("/my/preferences.json", operationName = info.operation)
+        }) { body ->
+            json.decodeFromString<JsonElement>(body)
+        }
+    }
+
+    /**
+     * Update the current user's preferences
+     * @param body Request body
+     */
+    suspend fun updateMyPreferences(body: UpdateMyPreferencesBody): JsonElement {
+        val info = OperationInfo(
+            service = "People",
+            operation = "UpdateMyPreferences",
+            resourceType = "my_preference",
+            isMutation = true,
+            projectId = null,
+            resourceId = null,
+        )
+        return request(info, {
+            httpPut("/my/preferences.json", json.encodeToString(kotlinx.serialization.json.buildJsonObject {
+                put("person", body.person)
+            }), operationName = info.operation)
+        }) { body ->
+            json.decodeFromString<JsonElement>(body)
+        }
+    }
+
+    /**
      * Get the current authenticated user's profile
      */
     suspend fun me(): Person {
@@ -52,7 +93,7 @@ class PeopleService(client: AccountClient) : BaseService(client) {
     }
 
     /**
-     * Update the current authenticated user's profile
+     * Update the current user's personal info
      * @param body Request body
      */
     suspend fun updateMyProfile(body: UpdateMyProfileBody): Unit {
@@ -72,7 +113,7 @@ class PeopleService(client: AccountClient) : BaseService(client) {
                 body.bio?.let { put("bio", kotlinx.serialization.json.JsonPrimitive(it)) }
                 body.location?.let { put("location", kotlinx.serialization.json.JsonPrimitive(it)) }
                 body.timeZoneName?.let { put("time_zone_name", kotlinx.serialization.json.JsonPrimitive(it)) }
-                body.firstWeekDay?.let { put("first_week_day", it) }
+                body.firstWeekDay?.let { put("first_week_day", kotlinx.serialization.json.JsonPrimitive(it)) }
                 body.timeFormat?.let { put("time_format", kotlinx.serialization.json.JsonPrimitive(it)) }
             }), operationName = info.operation)
         }) { Unit }
@@ -116,6 +157,67 @@ class PeopleService(client: AccountClient) : BaseService(client) {
         }) { body ->
             json.decodeFromString<Person>(body)
         }
+    }
+
+    /**
+     * Get the out of office status for a person
+     * @param personId The person ID
+     */
+    suspend fun outOfOffice(personId: Long): JsonElement {
+        val info = OperationInfo(
+            service = "People",
+            operation = "GetOutOfOffice",
+            resourceType = "out_of_office",
+            isMutation = false,
+            projectId = null,
+            resourceId = personId,
+        )
+        return request(info, {
+            httpGet("/people/${personId}/out_of_office.json", operationName = info.operation)
+        }) { body ->
+            json.decodeFromString<JsonElement>(body)
+        }
+    }
+
+    /**
+     * Enable or replace out of office for a person.
+     * @param personId The person ID
+     * @param body Request body
+     */
+    suspend fun enableOutOfOffice(personId: Long, body: EnableOutOfOfficeBody): JsonElement {
+        val info = OperationInfo(
+            service = "People",
+            operation = "EnableOutOfOffice",
+            resourceType = "out_of_office",
+            isMutation = true,
+            projectId = null,
+            resourceId = personId,
+        )
+        return request(info, {
+            httpPost("/people/${personId}/out_of_office.json", json.encodeToString(kotlinx.serialization.json.buildJsonObject {
+                put("out_of_office", body.outOfOffice)
+            }), operationName = info.operation)
+        }) { body ->
+            json.decodeFromString<JsonElement>(body)
+        }
+    }
+
+    /**
+     * Disable out of office for a person.
+     * @param personId The person ID
+     */
+    suspend fun disableOutOfOffice(personId: Long): Unit {
+        val info = OperationInfo(
+            service = "People",
+            operation = "DisableOutOfOffice",
+            resourceType = "out_of_office",
+            isMutation = true,
+            projectId = null,
+            resourceId = personId,
+        )
+        request(info, {
+            httpDelete("/people/${personId}/out_of_office.json", operationName = info.operation)
+        }) { Unit }
     }
 
     /**

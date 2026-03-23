@@ -75,6 +75,7 @@ class CardsService(client: AccountClient) : BaseService(client) {
         request(info, {
             httpPost("/card_tables/cards/${cardId}/moves.json", json.encodeToString(kotlinx.serialization.json.buildJsonObject {
                 put("column_id", kotlinx.serialization.json.JsonPrimitive(body.columnId))
+                body.position?.let { put("position", kotlinx.serialization.json.JsonPrimitive(it)) }
             }), operationName = info.operation)
         }) { Unit }
     }

@@ -4,6 +4,46 @@
   "generated": true,
   "routes": [
     {
+      "pattern": "/{accountId}/account",
+      "resource": "Account",
+      "operations": {
+        "GET": "GetAccount"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/account/logo",
+      "resource": "Account",
+      "operations": {
+        "DELETE": "RemoveAccountLogo",
+        "PUT": "UpdateAccountLogo"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/account/name",
+      "resource": "Account",
+      "operations": {
+        "PUT": "UpdateAccountName"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        }
+      }
+    },
+    {
       "pattern": "/{accountId}/attachments",
       "resource": "Files",
       "operations": {
@@ -638,6 +678,25 @@
       }
     },
     {
+      "pattern": "/{accountId}/gauge_needles/{needleId}",
+      "resource": "Gauges",
+      "operations": {
+        "DELETE": "DestroyGaugeNeedle",
+        "GET": "GetGaugeNeedle",
+        "PUT": "UpdateGaugeNeedle"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        },
+        "needleId": {
+          "role": "recording",
+          "type": "int64"
+        }
+      }
+    },
+    {
       "pattern": "/{accountId}/inbox_forwards/{forwardId}",
       "resource": "Forwards",
       "operations": {
@@ -813,6 +872,59 @@
       }
     },
     {
+      "pattern": "/{accountId}/my/assignments",
+      "resource": "MyAssignments",
+      "operations": {
+        "GET": "GetMyAssignments"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/my/assignments/completed",
+      "resource": "MyAssignments",
+      "operations": {
+        "GET": "GetMyCompletedAssignments"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/my/assignments/due",
+      "resource": "MyAssignments",
+      "operations": {
+        "GET": "GetMyDueAssignments"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/my/preferences",
+      "resource": "People",
+      "operations": {
+        "GET": "GetMyPreferences",
+        "PUT": "UpdateMyPreferences"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        }
+      }
+    },
+    {
       "pattern": "/{accountId}/my/profile",
       "resource": "People",
       "operations": {
@@ -831,6 +943,32 @@
       "resource": null,
       "operations": {
         "GET": "GetQuestionReminders"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/my/readings",
+      "resource": "MyNotifications",
+      "operations": {
+        "GET": "GetMyNotifications"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/my/unreads",
+      "resource": "MyNotifications",
+      "operations": {
+        "PUT": "MarkAsRead"
       },
       "params": {
         "accountId": {
@@ -870,6 +1008,25 @@
       }
     },
     {
+      "pattern": "/{accountId}/people/{personId}/out_of_office",
+      "resource": "People",
+      "operations": {
+        "DELETE": "DisableOutOfOffice",
+        "GET": "GetOutOfOffice",
+        "POST": "EnableOutOfOffice"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        },
+        "personId": {
+          "role": "parent",
+          "type": "int64"
+        }
+      }
+    },
+    {
       "pattern": "/{accountId}/projects",
       "resource": "Projects",
       "operations": {
@@ -903,6 +1060,41 @@
         "DELETE": "TrashProject",
         "GET": "GetProject",
         "PUT": "UpdateProject"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        },
+        "projectId": {
+          "role": "bucket",
+          "type": "int64"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/projects/{projectId}/gauge",
+      "resource": "Gauges",
+      "operations": {
+        "PUT": "ToggleGauge"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
+        },
+        "projectId": {
+          "role": "bucket",
+          "type": "int64"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/projects/{projectId}/gauge/needles",
+      "resource": "Gauges",
+      "operations": {
+        "GET": "ListGaugeNeedles",
+        "POST": "CreateGaugeNeedle"
       },
       "params": {
         "accountId": {
@@ -1393,6 +1585,19 @@
         "toolId": {
           "role": "parent",
           "type": "int64"
+        }
+      }
+    },
+    {
+      "pattern": "/{accountId}/reports/gauges",
+      "resource": "Gauges",
+      "operations": {
+        "GET": "ListGauges"
+      },
+      "params": {
+        "accountId": {
+          "role": "account",
+          "type": "string"
         }
       }
     },

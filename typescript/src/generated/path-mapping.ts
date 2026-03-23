@@ -6,10 +6,11 @@
  */
 
 export const PATH_TO_OPERATION: Record<string, string> = {
-  // Attachments
-  "POST:/{accountId}/attachments.json": "CreateAttachment",
-
   // Other
+  "GET:/{accountId}/account.json": "GetAccount",
+  "DELETE:/{accountId}/account/logo.json": "RemoveAccountLogo",
+  "PUT:/{accountId}/account/logo.json": "UpdateAccountLogo",
+  "PUT:/{accountId}/account/name.json": "UpdateAccountName",
   "DELETE:/{accountId}/boosts/{boostId}": "DeleteBoost",
   "GET:/{accountId}/boosts/{boostId}": "GetBoost",
   "GET:/{accountId}/buckets/{bucketId}/webhooks.json": "ListWebhooks",
@@ -66,6 +67,9 @@ export const PATH_TO_OPERATION: Record<string, string> = {
   "PUT:/{accountId}/dock/tools/{toolId}": "UpdateTool",
   "GET:/{accountId}/documents/{documentId}": "GetDocument",
   "PUT:/{accountId}/documents/{documentId}": "UpdateDocument",
+  "DELETE:/{accountId}/gauge_needles/{needleId}": "DestroyGaugeNeedle",
+  "GET:/{accountId}/gauge_needles/{needleId}": "GetGaugeNeedle",
+  "PUT:/{accountId}/gauge_needles/{needleId}": "UpdateGaugeNeedle",
   "GET:/{accountId}/inbox_forwards/{forwardId}": "GetForward",
   "GET:/{accountId}/inbox_forwards/{forwardId}/replies.json": "ListForwardReplies",
   "POST:/{accountId}/inbox_forwards/{forwardId}/replies.json": "CreateForwardReply",
@@ -115,6 +119,7 @@ export const PATH_TO_OPERATION: Record<string, string> = {
   "DELETE:/{accountId}/recordings/{toolId}/position.json": "DisableTool",
   "POST:/{accountId}/recordings/{toolId}/position.json": "EnableTool",
   "PUT:/{accountId}/recordings/{toolId}/position.json": "RepositionTool",
+  "GET:/{accountId}/reports/gauges.json": "ListGauges",
   "GET:/{accountId}/reports/progress.json": "GetProgressReport",
   "GET:/{accountId}/reports/schedules/upcoming.json": "GetUpcomingSchedule",
   "GET:/{accountId}/reports/timesheet.json": "GetTimesheetReport",
@@ -164,15 +169,28 @@ export const PATH_TO_OPERATION: Record<string, string> = {
   "GET:/{accountId}/webhooks/{webhookId}": "GetWebhook",
   "PUT:/{accountId}/webhooks/{webhookId}": "UpdateWebhook",
 
+  // Attachments
+  "POST:/{accountId}/attachments.json": "CreateAttachment",
+
   // People
   "GET:/{accountId}/circles/people.json": "ListPingablePeople",
   "GET:/{accountId}/people.json": "ListPeople",
   "GET:/{accountId}/people/{personId}": "GetPerson",
+  "DELETE:/{accountId}/people/{personId}/out_of_office.json": "DisableOutOfOffice",
+  "GET:/{accountId}/people/{personId}/out_of_office.json": "GetOutOfOffice",
+  "POST:/{accountId}/people/{personId}/out_of_office.json": "EnableOutOfOffice",
 
   // My Profile
+  "GET:/{accountId}/my/assignments.json": "GetMyAssignments",
+  "GET:/{accountId}/my/assignments/completed.json": "GetMyCompletedAssignments",
+  "GET:/{accountId}/my/assignments/due.json": "GetMyDueAssignments",
+  "GET:/{accountId}/my/preferences.json": "GetMyPreferences",
+  "PUT:/{accountId}/my/preferences.json": "UpdateMyPreferences",
   "GET:/{accountId}/my/profile.json": "GetMyProfile",
   "PUT:/{accountId}/my/profile.json": "UpdateMyProfile",
   "GET:/{accountId}/my/question_reminders.json": "GetQuestionReminders",
+  "GET:/{accountId}/my/readings.json": "GetMyNotifications",
+  "PUT:/{accountId}/my/unreads.json": "MarkAsRead",
 
   // Projects
   "GET:/{accountId}/projects.json": "ListProjects",
@@ -180,6 +198,9 @@ export const PATH_TO_OPERATION: Record<string, string> = {
   "DELETE:/{accountId}/projects/{projectId}": "TrashProject",
   "GET:/{accountId}/projects/{projectId}": "GetProject",
   "PUT:/{accountId}/projects/{projectId}": "UpdateProject",
+  "PUT:/{accountId}/projects/{projectId}/gauge.json": "ToggleGauge",
+  "GET:/{accountId}/projects/{projectId}/gauge/needles.json": "ListGaugeNeedles",
+  "POST:/{accountId}/projects/{projectId}/gauge/needles.json": "CreateGaugeNeedle",
   "GET:/{accountId}/projects/{projectId}/people.json": "ListProjectPeople",
   "PUT:/{accountId}/projects/{projectId}/people/users.json": "UpdateProjectAccess",
   "GET:/{accountId}/projects/{projectId}/timeline.json": "GetProjectTimeline",

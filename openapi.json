@@ -14,6 +14,352 @@
     }
   },
   "paths": {
+    "/{accountId}/account.json": {
+      "get": {
+        "description": "Get the account for the current access token",
+        "operationId": "GetAccount",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetAccount 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAccountResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Account"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/account/logo.json": {
+      "delete": {
+        "description": "Remove the account logo. Only administrators and account owners can use this endpoint.",
+        "operationId": "RemoveAccountLogo",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "RemoveAccountLogo 204 response"
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Account"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      },
+      "put": {
+        "description": "Upload or replace the account logo via multipart form upload.\nOnly administrators and account owners can use this endpoint.\n\n**Note**: This endpoint uses direct multipart file upload (Content-Type:\nmultipart/form-data) rather than the standard two-stage /attachments flow.\nAccepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Maximum file size: 5 MB.",
+        "operationId": "UpdateAccountLogo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountLogoRequestContent"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "UpdateAccountLogo 204 response"
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ValidationError 422 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Account"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/account/name.json": {
+      "put": {
+        "description": "Rename the current account. Only account owners can use this endpoint.",
+        "operationId": "UpdateAccountName",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountNameRequestContent"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "UpdateAccountName 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAccountNameResponseContent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "BadRequestError 400 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Account"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
     "/{accountId}/attachments.json": {
       "post": {
         "description": "Create an attachment (upload a file for embedding)",
@@ -4480,6 +4826,24 @@
               "description": "Basecamp account ID (numeric string)"
             },
             "required": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "created_at|updated_at",
+            "schema": {
+              "type": "string",
+              "description": "created_at|updated_at"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "description": "asc|desc",
+            "schema": {
+              "type": "string",
+              "description": "asc|desc"
+            }
           }
         ],
         "responses": {
@@ -4660,6 +5024,24 @@
               "description": "Basecamp account ID (numeric string)"
             },
             "required": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "created_at|updated_at",
+            "schema": {
+              "type": "string",
+              "description": "created_at|updated_at"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "description": "asc|desc",
+            "schema": {
+              "type": "string",
+              "description": "asc|desc"
+            }
           }
         ],
         "responses": {
@@ -5826,6 +6208,310 @@
         }
       }
     },
+    "/{accountId}/gauge_needles/{needleId}": {
+      "delete": {
+        "description": "Destroy a gauge needle",
+        "operationId": "DestroyGaugeNeedle",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "needleId",
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "DestroyGaugeNeedle 204 response"
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NotFoundError 404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Gauges"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      },
+      "get": {
+        "description": "Get a gauge needle by ID",
+        "operationId": "GetGaugeNeedle",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "needleId",
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetGaugeNeedle 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetGaugeNeedleResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NotFoundError 404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Gauges"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      },
+      "put": {
+        "description": "Update a gauge needle's description. Position and color are immutable.",
+        "operationId": "UpdateGaugeNeedle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGaugeNeedleRequestContent"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "needleId",
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "UpdateGaugeNeedle 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateGaugeNeedleResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NotFoundError 404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponseContent"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ValidationError 422 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Gauges"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
     "/{accountId}/inbox_forwards/{forwardId}": {
       "get": {
         "description": "Get a forward by ID",
@@ -6342,6 +7028,24 @@
               "format": "int64"
             },
             "required": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "created_at|updated_at",
+            "schema": {
+              "type": "string",
+              "description": "created_at|updated_at"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "description": "asc|desc",
+            "schema": {
+              "type": "string",
+              "description": "asc|desc"
+            }
           }
         ],
         "responses": {
@@ -7306,6 +8010,418 @@
         }
       }
     },
+    "/{accountId}/my/assignments.json": {
+      "get": {
+        "description": "Get the current user's active assignments grouped into priorities and non_priorities.\nCard table steps are normalized to their parent card with steps as children.\nThis endpoint is not paginated.",
+        "operationId": "GetMyAssignments",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetMyAssignments 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyAssignmentsResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MyAssignments"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/my/assignments/completed.json": {
+      "get": {
+        "description": "Get the current user's completed assignments.\nArchived and trashed recordings are excluded. This endpoint is not paginated.",
+        "operationId": "GetMyCompletedAssignments",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetMyCompletedAssignments 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyCompletedAssignmentsResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MyAssignments"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/my/assignments/due.json": {
+      "get": {
+        "description": "Get the current user's assignments filtered by due date scope.\nDefaults to overdue when no scope is provided. This endpoint is not paginated.",
+        "operationId": "GetMyDueAssignments",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "description": "Filter by due date range: overdue, due_today, due_tomorrow,\ndue_later_this_week, due_next_week, due_later",
+            "schema": {
+              "type": "string",
+              "description": "Filter by due date range: overdue, due_today, due_tomorrow,\ndue_later_this_week, due_next_week, due_later"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetMyDueAssignments 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyDueAssignmentsResponseContent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "BadRequestError 400 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MyAssignments"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/my/preferences.json": {
+      "get": {
+        "description": "Get the current user's preferences",
+        "operationId": "GetMyPreferences",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetMyPreferences 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyPreferencesResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "People"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      },
+      "put": {
+        "description": "Update the current user's preferences",
+        "operationId": "UpdateMyPreferences",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMyPreferencesRequestContent"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "UpdateMyPreferences 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMyPreferencesResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ValidationError 422 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "People"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
     "/{accountId}/my/profile.json": {
       "get": {
         "description": "Get the current authenticated user's profile",
@@ -7389,7 +8505,7 @@
         }
       },
       "put": {
-        "description": "Update the current authenticated user's profile (returns 204 No Content)",
+        "description": "Update the current user's personal info",
         "operationId": "UpdateMyProfile",
         "requestBody": {
           "content": {
@@ -7447,6 +8563,16 @@
               }
             }
           },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
           "500": {
             "description": "InternalServerError 500 response",
             "content": {
@@ -7461,11 +8587,8 @@
         "tags": [
           "People"
         ],
-        "x-basecamp-idempotent": {
-          "natural": true
-        },
         "x-basecamp-retry": {
-          "maxAttempts": 3,
+          "maxAttempts": 2,
           "baseDelayMs": 1000,
           "backoff": "exponential",
           "retryOn": [
@@ -7550,6 +8673,175 @@
         },
         "x-basecamp-retry": {
           "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/my/readings.json": {
+      "get": {
+        "description": "Get the current user's notification inbox (the \"Hey!\" menu).\nNotifications are grouped into unreads, reads, and memories.\nReads are paginated (50 per page). Unreads are capped at 100.",
+        "operationId": "GetMyNotifications",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for paginating through read items. Defaults to 1.",
+            "schema": {
+              "type": "integer",
+              "description": "Page number for paginating through read items. Defaults to 1.",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetMyNotifications 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMyNotificationsResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MyNotifications"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/my/unreads.json": {
+      "put": {
+        "description": "Mark specified items as read",
+        "operationId": "MarkAsRead",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkAsReadRequestContent"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MarkAsRead 200 response"
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MyNotifications"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
           "baseDelayMs": 1000,
           "backoff": "exponential",
           "retryOn": [
@@ -7730,6 +9022,291 @@
         ],
         "x-basecamp-retry": {
           "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/people/{personId}/out_of_office.json": {
+      "delete": {
+        "description": "Disable out of office for a person.\nAdmins on Pro Pack accounts can manage others; otherwise self only.",
+        "operationId": "DisableOutOfOffice",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "personId",
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "DisableOutOfOffice 204 response"
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "People"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      },
+      "get": {
+        "description": "Get the out of office status for a person",
+        "operationId": "GetOutOfOffice",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "personId",
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetOutOfOffice 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOutOfOfficeResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NotFoundError 404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "People"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      },
+      "post": {
+        "description": "Enable or replace out of office for a person.\nAdmins on Pro Pack accounts can manage others; otherwise self only.",
+        "operationId": "EnableOutOfOffice",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnableOutOfOfficeRequestContent"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "personId",
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "EnableOutOfOffice 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnableOutOfOfficeResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ValidationError 422 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "People"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
           "baseDelayMs": 1000,
           "backoff": "exponential",
           "retryOn": [
@@ -8402,6 +9979,318 @@
         },
         "x-basecamp-retry": {
           "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/projects/{projectId}/gauge.json": {
+      "put": {
+        "description": "Enable or disable the gauge for a project. Only project admins can toggle gauges.",
+        "operationId": "ToggleGauge",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToggleGaugeRequestContent"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ToggleGauge 200 response"
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Gauges"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/projects/{projectId}/gauge/needles.json": {
+      "get": {
+        "description": "List gauge needles for a project, ordered newest first.",
+        "operationId": "ListGaugeNeedles",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ListGaugeNeedles 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListGaugeNeedlesResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NotFoundError 404 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Gauges"
+        ],
+        "x-basecamp-pagination": {
+          "style": "link",
+          "totalCountHeader": "X-Total-Count",
+          "maxPageSize": 50
+        },
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      },
+      "post": {
+        "description": "Create a gauge needle (progress update) for a project",
+        "operationId": "CreateGaugeNeedle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGaugeNeedleRequestContent"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "CreateGaugeNeedle 201 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateGaugeNeedleResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "ValidationError 422 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Gauges"
+        ],
+        "x-basecamp-retry": {
+          "maxAttempts": 2,
           "baseDelayMs": 1000,
           "backoff": "exponential",
           "retryOn": [
@@ -12750,6 +14639,103 @@
         ],
         "x-basecamp-idempotent": {
           "natural": true
+        },
+        "x-basecamp-retry": {
+          "maxAttempts": 3,
+          "baseDelayMs": 1000,
+          "backoff": "exponential",
+          "retryOn": [
+            429,
+            503
+          ]
+        }
+      }
+    },
+    "/{accountId}/reports/gauges.json": {
+      "get": {
+        "description": "List gauges across all projects the authenticated user has access to.\nGauges are sorted by risk level (red, yellow, green), then alphabetically.",
+        "operationId": "ListGauges",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Basecamp account ID (numeric string)",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$",
+              "description": "Basecamp account ID (numeric string)"
+            },
+            "required": true
+          },
+          {
+            "name": "bucket_ids",
+            "in": "query",
+            "description": "Comma-separated list of project IDs. When provided, results are returned\nin the order specified instead of by risk level.",
+            "schema": {
+              "type": "string",
+              "description": "Comma-separated list of project IDs. When provided, results are returned\nin the order specified instead of by risk level."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ListGauges 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListGaugesResponseContent"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError 401 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedErrorResponseContent"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ForbiddenError 403 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResponseContent"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RateLimitError 429 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitErrorResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "InternalServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Gauges"
+        ],
+        "x-basecamp-pagination": {
+          "style": "link",
+          "totalCountHeader": "X-Total-Count",
+          "maxPageSize": 50
         },
         "x-basecamp-retry": {
           "maxAttempts": 3,
@@ -18605,6 +20591,137 @@
   },
   "components": {
     "schemas": {
+      "Account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "name": {
+            "type": "string"
+          },
+          "owner_name": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "updated_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "trial": {
+            "type": "boolean"
+          },
+          "trial_ends_on": {
+            "type": "string",
+            "x-go-type": "types.Date",
+            "x-go-type-import": {
+              "path": "github.com/basecamp/basecamp-sdk/go/pkg/types"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "frozen": {
+            "type": "boolean"
+          },
+          "paused": {
+            "type": "boolean"
+          },
+          "limits": {
+            "$ref": "#/components/schemas/AccountLimits"
+          },
+          "subscription": {
+            "$ref": "#/components/schemas/AccountSubscription"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/AccountSettings"
+          },
+          "logo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "name",
+          "updated_at"
+        ]
+      },
+      "AccountLimits": {
+        "type": "object",
+        "properties": {
+          "can_create_projects": {
+            "type": "boolean"
+          },
+          "can_pin_projects": {
+            "type": "boolean"
+          },
+          "can_create_users": {
+            "type": "boolean"
+          },
+          "can_upload_files": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AccountSettings": {
+        "type": "object",
+        "properties": {
+          "company_hq_enabled": {
+            "type": "boolean"
+          },
+          "teams_enabled": {
+            "type": "boolean"
+          },
+          "projects_enabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AccountSubscription": {
+        "type": "object",
+        "properties": {
+          "short_name": {
+            "type": "string"
+          },
+          "proper_name": {
+            "type": "string"
+          },
+          "project_limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teams": {
+            "type": "boolean"
+          },
+          "clients": {
+            "type": "boolean"
+          },
+          "templates": {
+            "type": "boolean"
+          },
+          "logo": {
+            "type": "boolean"
+          },
+          "timesheet": {
+            "type": "boolean"
+          }
+        }
+      },
       "Assignable": {
         "type": "object",
         "properties": {
@@ -20120,6 +22237,20 @@
       "CreateForwardReplyResponseContent": {
         "$ref": "#/components/schemas/ForwardReply"
       },
+      "CreateGaugeNeedleRequestContent": {
+        "type": "object",
+        "properties": {
+          "gauge_needle": {
+            "$ref": "#/components/schemas/GaugeNeedlePayload"
+          }
+        },
+        "required": [
+          "gauge_needle"
+        ]
+      },
+      "CreateGaugeNeedleResponseContent": {
+        "$ref": "#/components/schemas/GaugeNeedle"
+      },
       "CreateLineupMarkerRequestContent": {
         "type": "object",
         "properties": {
@@ -20670,6 +22801,20 @@
       "EnableCardColumnOnHoldResponseContent": {
         "$ref": "#/components/schemas/CardColumn"
       },
+      "EnableOutOfOfficeRequestContent": {
+        "type": "object",
+        "properties": {
+          "out_of_office": {
+            "$ref": "#/components/schemas/OutOfOfficePayload"
+          }
+        },
+        "required": [
+          "out_of_office"
+        ]
+      },
+      "EnableOutOfOfficeResponseContent": {
+        "$ref": "#/components/schemas/OutOfOffice"
+      },
       "Event": {
         "type": "object",
         "properties": {
@@ -20741,18 +22886,6 @@
             }
           }
         }
-      },
-      "FirstWeekDay": {
-        "type": "string",
-        "enum": [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday"
-        ]
       },
       "ForbiddenErrorResponseContent": {
         "type": "object",
@@ -20947,6 +23080,223 @@
           "visible_to_clients"
         ]
       },
+      "Gauge": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "status": {
+            "type": "string"
+          },
+          "visible_to_clients": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "updated_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "title": {
+            "type": "string"
+          },
+          "inherits_status": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "app_url": {
+            "type": "string"
+          },
+          "bookmark_url": {
+            "type": "string"
+          },
+          "bucket": {
+            "$ref": "#/components/schemas/RecordingBucket"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/Person"
+          },
+          "description": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "last_needle_color": {
+            "type": "string"
+          },
+          "last_needle_position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "previous_needle_position": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "updated_at"
+        ]
+      },
+      "GaugeNeedle": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "status": {
+            "type": "string"
+          },
+          "visible_to_clients": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "updated_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "title": {
+            "type": "string"
+          },
+          "inherits_status": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "app_url": {
+            "type": "string"
+          },
+          "bookmark_url": {
+            "type": "string"
+          },
+          "subscription_url": {
+            "type": "string"
+          },
+          "comments_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comments_url": {
+            "type": "string"
+          },
+          "boosts_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "boosts_url": {
+            "type": "string"
+          },
+          "parent": {
+            "$ref": "#/components/schemas/RecordingParent"
+          },
+          "bucket": {
+            "$ref": "#/components/schemas/RecordingBucket"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/Person"
+          },
+          "description": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment_count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "updated_at"
+        ]
+      },
+      "GaugeNeedlePayload": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "integer",
+            "description": "Position of the needle (0-100)",
+            "format": "int32"
+          },
+          "color": {
+            "type": "string",
+            "description": "Status color: green (default), yellow, or red"
+          },
+          "description": {
+            "type": "string",
+            "description": "Rich text (HTML) description of the progress update"
+          }
+        },
+        "required": [
+          "position"
+        ]
+      },
+      "GaugeNeedleUpdatePayload": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Rich text (HTML) description"
+          }
+        }
+      },
+      "GaugeTogglePayload": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled"
+        ]
+      },
+      "GetAccountResponseContent": {
+        "$ref": "#/components/schemas/Account"
+      },
       "GetAnswerResponseContent": {
         "$ref": "#/components/schemas/QuestionAnswer"
       },
@@ -21018,6 +23368,9 @@
       "GetForwardResponseContent": {
         "$ref": "#/components/schemas/Forward"
       },
+      "GetGaugeNeedleResponseContent": {
+        "$ref": "#/components/schemas/GaugeNeedle"
+      },
       "GetHillChartResponseContent": {
         "$ref": "#/components/schemas/HillChart"
       },
@@ -21033,8 +23386,66 @@
       "GetMessageTypeResponseContent": {
         "$ref": "#/components/schemas/MessageType"
       },
+      "GetMyAssignmentsResponseContent": {
+        "type": "object",
+        "properties": {
+          "priorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyAssignment"
+            }
+          },
+          "non_priorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyAssignment"
+            }
+          }
+        }
+      },
+      "GetMyCompletedAssignmentsResponseContent": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/MyAssignment"
+        }
+      },
+      "GetMyDueAssignmentsResponseContent": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/MyAssignment"
+        }
+      },
+      "GetMyNotificationsResponseContent": {
+        "type": "object",
+        "properties": {
+          "unreads": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Notification"
+            }
+          },
+          "reads": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Notification"
+            }
+          },
+          "memories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Notification"
+            }
+          }
+        }
+      },
+      "GetMyPreferencesResponseContent": {
+        "$ref": "#/components/schemas/Preferences"
+      },
       "GetMyProfileResponseContent": {
         "$ref": "#/components/schemas/Person"
+      },
+      "GetOutOfOfficeResponseContent": {
+        "$ref": "#/components/schemas/OutOfOffice"
       },
       "GetOverdueTodosResponseContent": {
         "type": "object",
@@ -21495,6 +23906,18 @@
           "$ref": "#/components/schemas/Forward"
         }
       },
+      "ListGaugeNeedlesResponseContent": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/GaugeNeedle"
+        }
+      },
+      "ListGaugesResponseContent": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Gauge"
+        }
+      },
       "ListLineupMarkersResponseContent": {
         "type": "array",
         "items": {
@@ -21614,6 +24037,21 @@
         "items": {
           "$ref": "#/components/schemas/Webhook"
         }
+      },
+      "MarkAsReadRequestContent": {
+        "type": "object",
+        "properties": {
+          "readables": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of readable_sgid values identifying the items to mark as read"
+          }
+        },
+        "required": [
+          "readables"
+        ]
       },
       "Message": {
         "type": "object",
@@ -21870,10 +24308,146 @@
             "type": "integer",
             "format": "int64",
             "x-go-type-skip-optional-pointer": false
+          },
+          "position": {
+            "type": "integer",
+            "description": "1-indexed position within the destination column. Defaults to 1 (top).",
+            "format": "int32"
           }
         },
         "required": [
           "column_id"
+        ]
+      },
+      "MyAssignment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "app_url": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "starts_on": {
+            "type": "string",
+            "x-go-type": "types.Date",
+            "x-go-type-import": {
+              "path": "github.com/basecamp/basecamp-sdk/go/pkg/types"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "due_on": {
+            "type": "string",
+            "x-go-type": "types.Date",
+            "x-go-type-import": {
+              "path": "github.com/basecamp/basecamp-sdk/go/pkg/types"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "bucket": {
+            "$ref": "#/components/schemas/MyAssignmentBucket"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyAssignmentAssignee"
+            }
+          },
+          "comments_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "has_description": {
+            "type": "boolean"
+          },
+          "priority_recording_id": {
+            "type": "integer",
+            "description": "Present on priority items",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "parent": {
+            "$ref": "#/components/schemas/MyAssignmentParent"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MyAssignment"
+            }
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "MyAssignmentAssignee": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "name": {
+            "type": "string",
+            "format": "password"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "MyAssignmentBucket": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "name": {
+            "type": "string"
+          },
+          "app_url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "MyAssignmentParent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "title": {
+            "type": "string"
+          },
+          "app_url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "NotFoundErrorResponseContent": {
@@ -21888,6 +24462,174 @@
         },
         "required": [
           "error"
+        ]
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "created_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "updated_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "section": {
+            "type": "string"
+          },
+          "unread_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unread_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "read_at": {
+            "type": "string",
+            "x-go-type": "time.Time",
+            "x-go-type-import": {
+              "path": "time"
+            },
+            "x-go-type-skip-optional-pointer": true
+          },
+          "readable_sgid": {
+            "type": "string"
+          },
+          "readable_identifier": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "bucket_name": {
+            "type": "string"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/Person"
+          },
+          "content_excerpt": {
+            "type": "string"
+          },
+          "app_url": {
+            "type": "string"
+          },
+          "unread_url": {
+            "type": "string"
+          },
+          "bookmark_url": {
+            "type": "string"
+          },
+          "memory_url": {
+            "type": "string"
+          },
+          "subscription_url": {
+            "type": "string"
+          },
+          "subscribed": {
+            "type": "boolean"
+          },
+          "previewable_attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreviewableAttachment"
+            }
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Person"
+            },
+            "description": "Present on ping notifications"
+          },
+          "named": {
+            "type": "boolean",
+            "description": "Whether the ping has a custom name (pings only)"
+          },
+          "image_url": {
+            "type": "string",
+            "description": "Custom image URL (pings only)"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "updated_at"
+        ]
+      },
+      "OutOfOffice": {
+        "type": "object",
+        "properties": {
+          "person": {
+            "$ref": "#/components/schemas/OutOfOfficePerson"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "ongoing": {
+            "type": "boolean"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          }
+        }
+      },
+      "OutOfOfficePayload": {
+        "type": "object",
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "Start date in ISO 8601 format (YYYY-MM-DD)"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "End date in ISO 8601 format (YYYY-MM-DD)"
+          }
+        },
+        "required": [
+          "end_date",
+          "start_date"
+        ]
+      },
+      "OutOfOfficePerson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "name": {
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "PauseQuestionResponseContent": {
@@ -22032,6 +24774,77 @@
           "id",
           "name"
         ]
+      },
+      "Preferences": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "app_url": {
+            "type": "string"
+          },
+          "time_zone_name": {
+            "type": "string"
+          },
+          "first_week_day": {
+            "type": "string"
+          },
+          "time_format": {
+            "type": "string"
+          }
+        }
+      },
+      "PreferencesPayload": {
+        "type": "object",
+        "properties": {
+          "time_zone_name": {
+            "type": "string",
+            "description": "Time zone name (e.g. \"America/Chicago\", \"London\", \"UTC\")"
+          },
+          "first_week_day": {
+            "type": "string",
+            "description": "First day of the week: Sunday, Monday, Tuesday, etc."
+          },
+          "time_format": {
+            "type": "string",
+            "description": "Time display format: twelve_hour or twenty_four_hour"
+          }
+        }
+      },
+      "PreviewableAttachment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-type-skip-optional-pointer": false
+          },
+          "url": {
+            "type": "string"
+          },
+          "app_url": {
+            "type": "string"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "filesize": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "width": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "height": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "Project": {
         "type": "object",
@@ -23864,6 +26677,17 @@
           "visible_to_clients"
         ]
       },
+      "ToggleGaugeRequestContent": {
+        "type": "object",
+        "properties": {
+          "gauge": {
+            "$ref": "#/components/schemas/GaugeTogglePayload"
+          }
+        },
+        "required": [
+          "gauge"
+        ]
+      },
       "Tool": {
         "type": "object",
         "properties": {
@@ -23936,6 +26760,33 @@
         "required": [
           "error"
         ]
+      },
+      "UpdateAccountLogoRequestContent": {
+        "type": "object",
+        "properties": {
+          "logo": {
+            "type": "string",
+            "description": "The logo image file sent as multipart/form-data.\nSDK implementations should send this as a multipart upload with field name \"logo\".",
+            "contentEncoding": "byte"
+          }
+        },
+        "required": [
+          "logo"
+        ]
+      },
+      "UpdateAccountNameRequestContent": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateAccountNameResponseContent": {
+        "$ref": "#/components/schemas/Account"
       },
       "UpdateCardColumnRequestContent": {
         "type": "object",
@@ -24051,6 +26902,17 @@
       "UpdateDocumentResponseContent": {
         "$ref": "#/components/schemas/Document"
       },
+      "UpdateGaugeNeedleRequestContent": {
+        "type": "object",
+        "properties": {
+          "gauge_needle": {
+            "$ref": "#/components/schemas/GaugeNeedleUpdatePayload"
+          }
+        }
+      },
+      "UpdateGaugeNeedleResponseContent": {
+        "$ref": "#/components/schemas/GaugeNeedle"
+      },
       "UpdateHillChartSettingsRequestContent": {
         "type": "object",
         "properties": {
@@ -24121,6 +26983,20 @@
       "UpdateMessageTypeResponseContent": {
         "$ref": "#/components/schemas/MessageType"
       },
+      "UpdateMyPreferencesRequestContent": {
+        "type": "object",
+        "properties": {
+          "person": {
+            "$ref": "#/components/schemas/PreferencesPayload"
+          }
+        },
+        "required": [
+          "person"
+        ]
+      },
+      "UpdateMyPreferencesResponseContent": {
+        "$ref": "#/components/schemas/Preferences"
+      },
       "UpdateMyProfileRequestContent": {
         "type": "object",
         "properties": {
@@ -24148,7 +27024,8 @@
             "type": "string"
           },
           "first_week_day": {
-            "$ref": "#/components/schemas/FirstWeekDay"
+            "type": "integer",
+            "format": "int32"
           },
           "time_format": {
             "type": "string"

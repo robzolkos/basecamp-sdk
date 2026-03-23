@@ -169,7 +169,7 @@ func (s *ForwardsService) List(ctx context.Context, inboxID int64, opts *Forward
 	defer func() { s.client.parent.hooks.OnOperationEnd(ctx, op, err, time.Since(start)) }()
 
 	// Call generated client for first page (spec-conformant - no manual path construction)
-	resp, err := s.client.parent.gen.ListForwardsWithResponse(ctx, s.client.accountID, inboxID)
+	resp, err := s.client.parent.gen.ListForwardsWithResponse(ctx, s.client.accountID, inboxID, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -82,7 +82,7 @@ func (s *ClientCorrespondencesService) List(ctx context.Context, opts *ClientCor
 	ctx = s.client.parent.hooks.OnOperationStart(ctx, op)
 	defer func() { s.client.parent.hooks.OnOperationEnd(ctx, op, err, time.Since(start)) }()
 
-	resp, err := s.client.parent.gen.ListClientCorrespondencesWithResponse(ctx, s.client.accountID)
+	resp, err := s.client.parent.gen.ListClientCorrespondencesWithResponse(ctx, s.client.accountID, nil)
 	if err != nil {
 		return nil, err
 	}

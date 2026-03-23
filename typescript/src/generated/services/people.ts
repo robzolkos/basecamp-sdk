@@ -8,6 +8,7 @@ import { BaseService } from "../../services/base.js";
 import type { components } from "../schema.js";
 import { ListResult } from "../../pagination.js";
 import type { PaginationOptions } from "../../pagination.js";
+import { Errors } from "../../errors.js";
 
 // =============================================================================
 // Types
@@ -20,6 +21,14 @@ export type Person = components["schemas"]["Person"];
  * Options for listPingable.
  */
 export interface ListPingablePeopleOptions extends PaginationOptions {
+}
+
+/**
+ * Request parameters for updateMyPreferences.
+ */
+export interface UpdateMyPreferencesPeopleRequest {
+  /** Person */
+  person: components["schemas"]["PreferencesPayload"];
 }
 
 /**
@@ -39,7 +48,7 @@ export interface UpdateMyProfilePeopleRequest {
   /** Time zone name */
   timeZoneName?: string;
   /** First week day */
-  firstWeekDay?: components["schemas"]["FirstWeekDay"];
+  firstWeekDay?: number;
   /** Time format */
   timeFormat?: string;
 }
@@ -48,6 +57,14 @@ export interface UpdateMyProfilePeopleRequest {
  * Options for list.
  */
 export interface ListPeopleOptions extends PaginationOptions {
+}
+
+/**
+ * Request parameters for enableOutOfOffice.
+ */
+export interface EnableOutOfOfficePeopleRequest {
+  /** Out of office */
+  outOfOffice: components["schemas"]["OutOfOfficePayload"];
 }
 
 /**
@@ -104,6 +121,62 @@ export class PeopleService extends BaseService {
   }
 
   /**
+   * Get the current user's preferences
+   * @returns The my_preference
+   *
+   * @example
+   * ```ts
+   * const result = await client.people.myPreferences();
+   * ```
+   */
+  async myPreferences(): Promise<components["schemas"]["GetMyPreferencesResponseContent"]> {
+    const response = await this.request(
+      {
+        service: "People",
+        operation: "GetMyPreferences",
+        resourceType: "my_preference",
+        isMutation: false,
+      },
+      () =>
+        this.client.GET("/my/preferences.json", {
+        })
+    );
+    return response;
+  }
+
+  /**
+   * Update the current user's preferences
+   * @param req - My_preference update parameters
+   * @returns The my_preference
+   * @throws {BasecampError} If the resource is not found or fields are invalid
+   *
+   * @example
+   * ```ts
+   * const result = await client.people.updateMyPreferences({ person: "example" });
+   * ```
+   */
+  async updateMyPreferences(req: UpdateMyPreferencesPeopleRequest): Promise<components["schemas"]["UpdateMyPreferencesResponseContent"]> {
+    if (!req.person) {
+      throw Errors.validation("Person is required");
+    }
+    const response = await this.request(
+      {
+        service: "People",
+        operation: "UpdateMyPreferences",
+        resourceType: "my_preference",
+        isMutation: true,
+      },
+      () =>
+        this.client.PUT("/my/preferences.json", {
+          body: {
+            person: req.person,
+          },
+        })
+    );
+    return response;
+  }
+
+  /**
    * Get the current authenticated user's profile
    * @returns The Person
    *
@@ -128,7 +201,7 @@ export class PeopleService extends BaseService {
   }
 
   /**
-   * Update the current authenticated user's profile
+   * Update the current user's personal info
    * @param req - My_profile update parameters
    * @returns void
    * @throws {BasecampError} If the resource is not found or fields are invalid
@@ -215,6 +288,101 @@ export class PeopleService extends BaseService {
         })
     );
     return response;
+  }
+
+  /**
+   * Get the out of office status for a person
+   * @param personId - The person ID
+   * @returns The out_of_office
+   *
+   * @example
+   * ```ts
+   * const result = await client.people.outOfOffice(123);
+   * ```
+   */
+  async outOfOffice(personId: number): Promise<components["schemas"]["GetOutOfOfficeResponseContent"]> {
+    const response = await this.request(
+      {
+        service: "People",
+        operation: "GetOutOfOffice",
+        resourceType: "out_of_office",
+        isMutation: false,
+        resourceId: personId,
+      },
+      () =>
+        this.client.GET("/people/{personId}/out_of_office.json", {
+          params: {
+            path: { personId },
+          },
+        })
+    );
+    return response;
+  }
+
+  /**
+   * Enable or replace out of office for a person.
+   * @param personId - The person ID
+   * @param req - Out_of_office request parameters
+   * @returns The out_of_office
+   * @throws {BasecampError} If the request fails
+   *
+   * @example
+   * ```ts
+   * const result = await client.people.enableOutOfOffice(123, { outOfOffice: "example" });
+   * ```
+   */
+  async enableOutOfOffice(personId: number, req: EnableOutOfOfficePeopleRequest): Promise<components["schemas"]["EnableOutOfOfficeResponseContent"]> {
+    if (!req.outOfOffice) {
+      throw Errors.validation("Out of office is required");
+    }
+    const response = await this.request(
+      {
+        service: "People",
+        operation: "EnableOutOfOffice",
+        resourceType: "out_of_office",
+        isMutation: true,
+        resourceId: personId,
+      },
+      () =>
+        this.client.POST("/people/{personId}/out_of_office.json", {
+          params: {
+            path: { personId },
+          },
+          body: {
+            out_of_office: req.outOfOffice,
+          },
+        })
+    );
+    return response;
+  }
+
+  /**
+   * Disable out of office for a person.
+   * @param personId - The person ID
+   * @returns void
+   * @throws {BasecampError} If the request fails
+   *
+   * @example
+   * ```ts
+   * await client.people.disableOutOfOffice(123);
+   * ```
+   */
+  async disableOutOfOffice(personId: number): Promise<void> {
+    await this.request(
+      {
+        service: "People",
+        operation: "DisableOutOfOffice",
+        resourceType: "out_of_office",
+        isMutation: true,
+        resourceId: personId,
+      },
+      () =>
+        this.client.DELETE("/people/{personId}/out_of_office.json", {
+          params: {
+            path: { personId },
+          },
+        })
+    );
   }
 
   /**

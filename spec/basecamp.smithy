@@ -260,7 +260,41 @@ service Basecamp {
     GetBoost,
     CreateRecordingBoost,
     CreateEventBoost,
-    DeleteBoost
+    DeleteBoost,
+
+    // Batch 13 - Account
+    GetAccount,
+    UpdateAccountName,
+    UpdateAccountLogo,
+    RemoveAccountLogo,
+
+    // Batch 14 - Gauges
+    ListGauges,
+    ListGaugeNeedles,
+    GetGaugeNeedle,
+    CreateGaugeNeedle,
+    UpdateGaugeNeedle,
+    DestroyGaugeNeedle,
+    ToggleGauge,
+
+    // Batch 15 - My Assignments
+    GetMyAssignments,
+    GetMyCompletedAssignments,
+    GetMyDueAssignments,
+
+    // Batch 16 - My Notifications
+    GetMyNotifications,
+    MarkAsRead,
+
+    // Batch 17 - Out of Office
+    GetOutOfOffice,
+    EnableOutOfOffice,
+    DisableOutOfOffice,
+
+    // Batch 18 - People (Profile & Preferences)
+    UpdateMyProfile,
+    GetMyPreferences,
+    UpdateMyPreferences
   ]
 }
 
@@ -3580,6 +3614,12 @@ structure ListForwardsInput {
   @required
   @httpLabel
   inboxId: InboxId
+
+  @httpQuery("sort")
+  sort: RecordingSortField
+
+  @httpQuery("direction")
+  direction: SortDirection
 }
 
 structure ListForwardsOutput {
@@ -4095,6 +4135,9 @@ structure MoveCardInput {
 
   @required
   column_id: CardColumnId
+
+  /// 1-indexed position within the destination column. Defaults to 1 (top).
+  position: Integer
 }
 
 structure MoveCardOutput {}
@@ -5035,6 +5078,11 @@ structure ListClientApprovalsInput {
   @httpLabel
   accountId: AccountId
 
+  @httpQuery("sort")
+  sort: RecordingSortField
+
+  @httpQuery("direction")
+  direction: SortDirection
 }
 
 structure ListClientApprovalsOutput {
@@ -5088,6 +5136,11 @@ structure ListClientCorrespondencesInput {
   @httpLabel
   accountId: AccountId
 
+  @httpQuery("sort")
+  sort: RecordingSortField
+
+  @httpQuery("direction")
+  direction: SortDirection
 }
 
 structure ListClientCorrespondencesOutput {
@@ -7478,5 +7531,871 @@ structure Boost {
   created_at: ISO8601Timestamp
   booster: Person
   recording: RecordingParent
+}
+
+// =============================================================================
+// BATCH 13 - Account
+// =============================================================================
+
+// ===== Account Operations =====
+
+/// Get the account for the current access token
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "GET", uri: "/{accountId}/account.json")
+operation GetAccount {
+  input: GetAccountInput
+  output: GetAccountOutput
+  errors: [UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure GetAccountInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+}
+
+structure GetAccountOutput {
+
+  account: Account
+}
+
+/// Rename the current account. Only account owners can use this endpoint.
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "PUT", uri: "/{accountId}/account/name.json")
+operation UpdateAccountName {
+  input: UpdateAccountNameInput
+  output: UpdateAccountNameOutput
+  errors: [BadRequestError, ForbiddenError, UnauthorizedError, RateLimitError, InternalServerError]
+}
+
+structure UpdateAccountNameInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  name: String
+}
+
+structure UpdateAccountNameOutput {
+
+  account: Account
+}
+
+/// Upload or replace the account logo via multipart form upload.
+/// Only administrators and account owners can use this endpoint.
+///
+/// **Note**: This endpoint uses direct multipart file upload (Content-Type:
+/// multipart/form-data) rather than the standard two-stage /attachments flow.
+/// Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Maximum file size: 5 MB.
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "PUT", uri: "/{accountId}/account/logo.json", code: 204)
+operation UpdateAccountLogo {
+  input: UpdateAccountLogoInput
+  output: UpdateAccountLogoOutput
+  errors: [ValidationError, ForbiddenError, UnauthorizedError, RateLimitError, InternalServerError]
+}
+
+structure UpdateAccountLogoInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  /// The logo image file sent as multipart/form-data.
+  /// SDK implementations should send this as a multipart upload with field name "logo".
+  @required
+  logo: Blob
+}
+
+structure UpdateAccountLogoOutput {}
+
+/// Remove the account logo. Only administrators and account owners can use this endpoint.
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "DELETE", uri: "/{accountId}/account/logo.json", code: 204)
+operation RemoveAccountLogo {
+  input: RemoveAccountLogoInput
+  output: RemoveAccountLogoOutput
+  errors: [ForbiddenError, UnauthorizedError, RateLimitError, InternalServerError]
+}
+
+structure RemoveAccountLogoInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+}
+
+structure RemoveAccountLogoOutput {}
+
+// ===== Account Shapes =====
+
+structure Account {
+  @required
+  id: Long
+  @required
+  name: String
+  owner_name: String
+  active: Boolean
+  @required
+  created_at: ISO8601Timestamp
+  @required
+  updated_at: ISO8601Timestamp
+  trial: Boolean
+  trial_ends_on: ISO8601Date
+  frozen: Boolean
+  paused: Boolean
+  limits: AccountLimits
+  subscription: AccountSubscription
+  settings: AccountSettings
+  logo: String
+}
+
+structure AccountLimits {
+  can_create_projects: Boolean
+  can_pin_projects: Boolean
+  can_create_users: Boolean
+  can_upload_files: Boolean
+}
+
+structure AccountSubscription {
+  short_name: String
+  proper_name: String
+  project_limit: Integer
+  teams: Boolean
+  clients: Boolean
+  templates: Boolean
+  logo: Boolean
+  timesheet: Boolean
+}
+
+structure AccountSettings {
+  company_hq_enabled: Boolean
+  teams_enabled: Boolean
+  projects_enabled: Boolean
+}
+
+// =============================================================================
+// BATCH 14 - Gauges
+// =============================================================================
+
+// ===== Gauge Operations =====
+
+/// List gauges across all projects the authenticated user has access to.
+/// Gauges are sorted by risk level (red, yellow, green), then alphabetically.
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@basecampPagination(style: "link", totalCountHeader: "X-Total-Count", maxPageSize: 50)
+@http(method: "GET", uri: "/{accountId}/reports/gauges.json")
+operation ListGauges {
+  input: ListGaugesInput
+  output: ListGaugesOutput
+  errors: [UnauthorizedError, ForbiddenError, RateLimitError, InternalServerError]
+}
+
+structure ListGaugesInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  /// Comma-separated list of project IDs. When provided, results are returned
+  /// in the order specified instead of by risk level.
+  @httpQuery("bucket_ids")
+  bucket_ids: String
+}
+
+structure ListGaugesOutput {
+
+  gauges: GaugeList
+}
+
+/// List gauge needles for a project, ordered newest first.
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@basecampPagination(style: "link", totalCountHeader: "X-Total-Count", maxPageSize: 50)
+@http(method: "GET", uri: "/{accountId}/projects/{projectId}/gauge/needles.json")
+operation ListGaugeNeedles {
+  input: ListGaugeNeedlesInput
+  output: ListGaugeNeedlesOutput
+  errors: [NotFoundError, UnauthorizedError, ForbiddenError, RateLimitError, InternalServerError]
+}
+
+structure ListGaugeNeedlesInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  projectId: ProjectId
+}
+
+structure ListGaugeNeedlesOutput {
+
+  needles: GaugeNeedleList
+}
+
+/// Get a gauge needle by ID
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "GET", uri: "/{accountId}/gauge_needles/{needleId}")
+operation GetGaugeNeedle {
+  input: GetGaugeNeedleInput
+  output: GetGaugeNeedleOutput
+  errors: [NotFoundError, UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure GetGaugeNeedleInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  needleId: GaugeNeedleId
+}
+
+structure GetGaugeNeedleOutput {
+
+  needle: GaugeNeedle
+}
+
+/// Create a gauge needle (progress update) for a project
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "POST", uri: "/{accountId}/projects/{projectId}/gauge/needles.json", code: 201)
+operation CreateGaugeNeedle {
+  input: CreateGaugeNeedleInput
+  output: CreateGaugeNeedleOutput
+  errors: [ValidationError, UnauthorizedError, ForbiddenError, RateLimitError, InternalServerError]
+}
+
+structure CreateGaugeNeedleInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  projectId: ProjectId
+
+  @required
+  gauge_needle: GaugeNeedlePayload
+}
+
+structure GaugeNeedlePayload {
+  /// Position of the needle (0-100)
+  @required
+  position: Integer
+
+  /// Status color: green (default), yellow, or red
+  color: String
+
+  /// Rich text (HTML) description of the progress update
+  description: String
+}
+
+structure CreateGaugeNeedleOutput {
+
+  needle: GaugeNeedle
+}
+
+/// Update a gauge needle's description. Position and color are immutable.
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "PUT", uri: "/{accountId}/gauge_needles/{needleId}")
+operation UpdateGaugeNeedle {
+  input: UpdateGaugeNeedleInput
+  output: UpdateGaugeNeedleOutput
+  errors: [NotFoundError, ValidationError, UnauthorizedError, ForbiddenError, RateLimitError, InternalServerError]
+}
+
+structure UpdateGaugeNeedleInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  needleId: GaugeNeedleId
+
+  gauge_needle: GaugeNeedleUpdatePayload
+}
+
+structure GaugeNeedleUpdatePayload {
+  /// Rich text (HTML) description
+  description: String
+}
+
+structure UpdateGaugeNeedleOutput {
+
+  needle: GaugeNeedle
+}
+
+/// Destroy a gauge needle
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "DELETE", uri: "/{accountId}/gauge_needles/{needleId}", code: 204)
+operation DestroyGaugeNeedle {
+  input: DestroyGaugeNeedleInput
+  output: DestroyGaugeNeedleOutput
+  errors: [NotFoundError, UnauthorizedError, ForbiddenError, RateLimitError, InternalServerError]
+}
+
+structure DestroyGaugeNeedleInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  needleId: GaugeNeedleId
+}
+
+structure DestroyGaugeNeedleOutput {}
+
+/// Enable or disable the gauge for a project. Only project admins can toggle gauges.
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "PUT", uri: "/{accountId}/projects/{projectId}/gauge.json")
+operation ToggleGauge {
+  input: ToggleGaugeInput
+  output: ToggleGaugeOutput
+  errors: [ForbiddenError, UnauthorizedError, RateLimitError, InternalServerError]
+}
+
+structure ToggleGaugeInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  projectId: ProjectId
+
+  @required
+  gauge: GaugeTogglePayload
+}
+
+structure GaugeTogglePayload {
+  @required
+  enabled: Boolean
+}
+
+structure ToggleGaugeOutput {}
+
+// ===== Gauge Shapes =====
+
+long GaugeNeedleId
+
+list GaugeList {
+  member: Gauge
+}
+
+list GaugeNeedleList {
+  member: GaugeNeedle
+}
+
+structure Gauge {
+  @required
+  id: Long
+  status: String
+  visible_to_clients: Boolean
+  @required
+  created_at: ISO8601Timestamp
+  @required
+  updated_at: ISO8601Timestamp
+  title: String
+  inherits_status: Boolean
+  type: String
+  url: String
+  app_url: String
+  bookmark_url: String
+  bucket: RecordingBucket
+  creator: Person
+  description: String
+  enabled: Boolean
+  last_needle_color: String
+  last_needle_position: Integer
+  previous_needle_position: Integer
+}
+
+structure GaugeNeedle {
+  @required
+  id: GaugeNeedleId
+  status: String
+  visible_to_clients: Boolean
+  @required
+  created_at: ISO8601Timestamp
+  @required
+  updated_at: ISO8601Timestamp
+  title: String
+  inherits_status: Boolean
+  type: String
+  url: String
+  app_url: String
+  bookmark_url: String
+  subscription_url: String
+  comments_count: Integer
+  comments_url: String
+  boosts_count: Integer
+  boosts_url: String
+  parent: RecordingParent
+  bucket: RecordingBucket
+  creator: Person
+  description: String
+  color: String
+  position: Integer
+  comment_count: Integer
+}
+
+// =============================================================================
+// BATCH 15 - My Assignments
+// =============================================================================
+
+// ===== My Assignment Operations =====
+
+/// Get the current user's active assignments grouped into priorities and non_priorities.
+/// Card table steps are normalized to their parent card with steps as children.
+/// This endpoint is not paginated.
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "GET", uri: "/{accountId}/my/assignments.json")
+operation GetMyAssignments {
+  input: GetMyAssignmentsInput
+  output: GetMyAssignmentsOutput
+  errors: [UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure GetMyAssignmentsInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+}
+
+structure GetMyAssignmentsOutput {
+  priorities: MyAssignmentList
+  non_priorities: MyAssignmentList
+}
+
+/// Get the current user's completed assignments.
+/// Archived and trashed recordings are excluded. This endpoint is not paginated.
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "GET", uri: "/{accountId}/my/assignments/completed.json")
+operation GetMyCompletedAssignments {
+  input: GetMyCompletedAssignmentsInput
+  output: GetMyCompletedAssignmentsOutput
+  errors: [UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure GetMyCompletedAssignmentsInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+}
+
+structure GetMyCompletedAssignmentsOutput {
+
+  assignments: MyAssignmentList
+}
+
+/// Get the current user's assignments filtered by due date scope.
+/// Defaults to overdue when no scope is provided. This endpoint is not paginated.
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "GET", uri: "/{accountId}/my/assignments/due.json")
+operation GetMyDueAssignments {
+  input: GetMyDueAssignmentsInput
+  output: GetMyDueAssignmentsOutput
+  errors: [BadRequestError, UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure GetMyDueAssignmentsInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  /// Filter by due date range: overdue, due_today, due_tomorrow,
+  /// due_later_this_week, due_next_week, due_later
+  @httpQuery("scope")
+  scope: String
+}
+
+structure GetMyDueAssignmentsOutput {
+
+  assignments: MyAssignmentList
+}
+
+// ===== My Assignment Shapes =====
+
+list MyAssignmentList {
+  member: MyAssignment
+}
+
+structure MyAssignment {
+  @required
+  id: Long
+  app_url: String
+  content: String
+  starts_on: ISO8601Date
+  due_on: ISO8601Date
+  bucket: MyAssignmentBucket
+  completed: Boolean
+  type: String
+  assignees: MyAssignmentAssigneeList
+  comments_count: Integer
+  has_description: Boolean
+  /// Present on priority items
+  priority_recording_id: Long
+  parent: MyAssignmentParent
+  children: MyAssignmentList
+}
+
+structure MyAssignmentBucket {
+  @required
+  id: Long
+  name: String
+  app_url: String
+}
+
+structure MyAssignmentParent {
+  @required
+  id: Long
+  title: String
+  app_url: String
+}
+
+structure MyAssignmentAssignee {
+  @required
+  id: PersonId
+  name: PersonName
+  avatar_url: AvatarUrl
+}
+
+list MyAssignmentAssigneeList {
+  member: MyAssignmentAssignee
+}
+
+// =============================================================================
+// BATCH 16 - My Notifications
+// =============================================================================
+
+// ===== Notification Operations =====
+
+/// Get the current user's notification inbox (the "Hey!" menu).
+/// Notifications are grouped into unreads, reads, and memories.
+/// Reads are paginated (50 per page). Unreads are capped at 100.
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "GET", uri: "/{accountId}/my/readings.json")
+operation GetMyNotifications {
+  input: GetMyNotificationsInput
+  output: GetMyNotificationsOutput
+  errors: [UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure GetMyNotificationsInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  /// Page number for paginating through read items. Defaults to 1.
+  @httpQuery("page")
+  page: Integer
+}
+
+structure GetMyNotificationsOutput {
+  unreads: NotificationList
+  reads: NotificationList
+  memories: NotificationList
+}
+
+/// Mark specified items as read
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "PUT", uri: "/{accountId}/my/unreads.json")
+operation MarkAsRead {
+  input: MarkAsReadInput
+  output: MarkAsReadOutput
+  errors: [UnauthorizedError, ForbiddenError, RateLimitError, InternalServerError]
+}
+
+structure MarkAsReadInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  /// Array of readable_sgid values identifying the items to mark as read
+  @required
+  readables: StringList
+}
+
+structure MarkAsReadOutput {}
+
+// ===== Notification Shapes =====
+
+list NotificationList {
+  member: Notification
+}
+
+list StringList {
+  member: String
+}
+
+structure Notification {
+  @required
+  id: Long
+  @required
+  created_at: ISO8601Timestamp
+  @required
+  updated_at: ISO8601Timestamp
+  section: String
+  unread_count: Integer
+  unread_at: ISO8601Timestamp
+  read_at: ISO8601Timestamp
+  readable_sgid: String
+  readable_identifier: String
+  title: String
+  type: String
+  bucket_name: String
+  creator: Person
+  content_excerpt: String
+  app_url: String
+  unread_url: String
+  bookmark_url: String
+  memory_url: String
+  subscription_url: String
+  subscribed: Boolean
+  previewable_attachments: PreviewableAttachmentList
+  /// Present on ping notifications
+  participants: PersonList
+  /// Whether the ping has a custom name (pings only)
+  named: Boolean
+  /// Custom image URL (pings only)
+  image_url: String
+}
+
+list PreviewableAttachmentList {
+  member: PreviewableAttachment
+}
+
+structure PreviewableAttachment {
+  id: Long
+  url: String
+  app_url: String
+  content_type: String
+  filename: String
+  filesize: Long
+  width: Integer
+  height: Integer
+}
+
+// =============================================================================
+// BATCH 17 - Out of Office
+// =============================================================================
+
+// ===== Out of Office Operations =====
+
+/// Get the out of office status for a person
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "GET", uri: "/{accountId}/people/{personId}/out_of_office.json")
+operation GetOutOfOffice {
+  input: GetOutOfOfficeInput
+  output: GetOutOfOfficeOutput
+  errors: [NotFoundError, UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure GetOutOfOfficeInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  personId: PersonId
+}
+
+structure GetOutOfOfficeOutput {
+
+  outOfOffice: OutOfOffice
+}
+
+/// Enable or replace out of office for a person.
+/// Admins on Pro Pack accounts can manage others; otherwise self only.
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "POST", uri: "/{accountId}/people/{personId}/out_of_office.json")
+operation EnableOutOfOffice {
+  input: EnableOutOfOfficeInput
+  output: EnableOutOfOfficeOutput
+  errors: [ValidationError, ForbiddenError, UnauthorizedError, RateLimitError, InternalServerError]
+}
+
+structure EnableOutOfOfficeInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  personId: PersonId
+
+  @required
+  out_of_office: OutOfOfficePayload
+}
+
+structure OutOfOfficePayload {
+  /// Start date in ISO 8601 format (YYYY-MM-DD)
+  @required
+  start_date: ISO8601Date
+
+  /// End date in ISO 8601 format (YYYY-MM-DD)
+  @required
+  end_date: ISO8601Date
+}
+
+structure EnableOutOfOfficeOutput {
+
+  outOfOffice: OutOfOffice
+}
+
+/// Disable out of office for a person.
+/// Admins on Pro Pack accounts can manage others; otherwise self only.
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "DELETE", uri: "/{accountId}/people/{personId}/out_of_office.json", code: 204)
+operation DisableOutOfOffice {
+  input: DisableOutOfOfficeInput
+  output: DisableOutOfOfficeOutput
+  errors: [ForbiddenError, UnauthorizedError, RateLimitError, InternalServerError]
+}
+
+structure DisableOutOfOfficeInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  @httpLabel
+  personId: PersonId
+}
+
+structure DisableOutOfOfficeOutput {}
+
+// ===== Out of Office Shapes =====
+
+structure OutOfOffice {
+  person: OutOfOfficePerson
+  enabled: Boolean
+  ongoing: Boolean
+  start_date: ISO8601Date
+  end_date: ISO8601Date
+}
+
+structure OutOfOfficePerson {
+  @required
+  id: PersonId
+  name: PersonName
+}
+
+// =============================================================================
+// BATCH 18 - People (Profile & Preferences)
+// =============================================================================
+
+// ===== Profile & Preferences Operations =====
+
+/// Update the current user's personal info
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "PUT", uri: "/{accountId}/my/profile.json", code: 204)
+operation UpdateMyProfile {
+  input: UpdateMyProfileInput
+  output: UpdateMyProfileOutput
+  errors: [ValidationError, UnauthorizedError, ForbiddenError, RateLimitError, InternalServerError]
+}
+
+structure UpdateMyProfileInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  name: PersonName
+  email_address: EmailAddress
+  title: PersonTitle
+  bio: PersonBio
+  location: PersonLocation
+  time_zone_name: String
+  first_week_day: Integer
+  time_format: String
+}
+
+structure UpdateMyProfileOutput {}
+
+/// Get the current user's preferences
+@readonly
+@basecampRetry(maxAttempts: 3, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "GET", uri: "/{accountId}/my/preferences.json")
+operation GetMyPreferences {
+  input: GetMyPreferencesInput
+  output: GetMyPreferencesOutput
+  errors: [UnauthorizedError, ForbiddenError, InternalServerError]
+}
+
+structure GetMyPreferencesInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+}
+
+structure GetMyPreferencesOutput {
+
+  preferences: Preferences
+}
+
+/// Update the current user's preferences
+@idempotent
+@basecampRetry(maxAttempts: 2, baseDelayMs: 1000, backoff: "exponential", retryOn: [429, 503])
+@http(method: "PUT", uri: "/{accountId}/my/preferences.json")
+operation UpdateMyPreferences {
+  input: UpdateMyPreferencesInput
+  output: UpdateMyPreferencesOutput
+  errors: [ValidationError, UnauthorizedError, ForbiddenError, RateLimitError, InternalServerError]
+}
+
+structure UpdateMyPreferencesInput {
+  @required
+  @httpLabel
+  accountId: AccountId
+
+  @required
+  person: PreferencesPayload
+}
+
+structure PreferencesPayload {
+  /// Time zone name (e.g. "America/Chicago", "London", "UTC")
+  time_zone_name: String
+
+  /// First day of the week: Sunday, Monday, Tuesday, etc.
+  first_week_day: String
+
+  /// Time display format: twelve_hour or twenty_four_hour
+  time_format: String
+}
+
+structure UpdateMyPreferencesOutput {
+
+  preferences: Preferences
+}
+
+// ===== Preferences Shapes =====
+
+structure Preferences {
+  url: String
+  app_url: String
+  time_zone_name: String
+  first_week_day: String
+  time_format: String
 }
 
