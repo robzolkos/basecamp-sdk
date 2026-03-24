@@ -92,4 +92,40 @@ describe("updateAccountLogo", () => {
       expect.objectContaining({ durationMs: expect.any(Number) }),
     );
   });
+
+  it("should retry on 429 and fire onRetry hook", async () => {
+    let attempts = 0;
+
+    server.use(
+      http.put(`${BASE_URL}/account/logo.json`, () => {
+        attempts++;
+        if (attempts === 1) {
+          return new HttpResponse(null, {
+            status: 429,
+            headers: { "Retry-After": "0" },
+          });
+        }
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+
+    const onRetry = vi.fn();
+
+    const client = createBasecampClient({
+      accountId: "12345",
+      accessToken: "test-token",
+      hooks: { onRetry },
+    });
+
+    const blob = new Blob(["data"], { type: "image/png" });
+    await client.account.updateAccountLogo(blob, "logo.png");
+
+    expect(attempts).toBe(2);
+    expect(onRetry).toHaveBeenCalledWith(
+      expect.objectContaining({ method: "PUT", url: expect.stringContaining("/account/logo.json") }),
+      expect.any(Number),
+      expect.any(Error),
+      expect.any(Number),
+    );
+  });
 });
