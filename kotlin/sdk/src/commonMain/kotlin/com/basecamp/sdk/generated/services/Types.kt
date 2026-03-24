@@ -316,7 +316,7 @@ data class UpdateMyProfileBody(
     val bio: String? = null,
     val location: String? = null,
     val timeZoneName: String? = null,
-    val firstWeekDay: Int? = null,
+    val firstWeekDay: JsonObject? = null,
     val timeFormat: String? = null
 )
 
