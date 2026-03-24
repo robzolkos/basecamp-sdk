@@ -234,9 +234,9 @@ func (s *AccountService) UpdateLogo(ctx context.Context, logo io.Reader, filenam
 // the body on each retry attempt. Safe against partial reads: once EOF
 // is returned, the next Read starts from position 0.
 type rewindableReader struct {
-	data    []byte
-	pos     int
-	atEOF   bool
+	data  []byte
+	pos   int
+	atEOF bool
 }
 
 func (r *rewindableReader) Read(p []byte) (int, error) {
