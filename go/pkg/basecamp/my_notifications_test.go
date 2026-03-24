@@ -62,6 +62,48 @@ func TestMyNotificationsService_Get_WithPage(t *testing.T) {
 	}
 }
 
+func TestMyNotificationsService_Get_AllowsLocalPersonCreatorIDs(t *testing.T) {
+	svc := testMyNotificationsServer(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Fatalf("expected GET, got %s", r.Method)
+		}
+		if r.URL.Path != "/99999/my/readings.json" {
+			t.Fatalf("unexpected path: %s", r.URL.Path)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{
+			"unreads": [],
+			"reads": [
+				{
+					"id": 123,
+					"title": "Welcome",
+					"readable_sgid": "SGID-123",
+					"creator": {
+						"id": "bulletins",
+						"name": "Basecamp",
+						"personable_type": "LocalPerson"
+					},
+					"created_at": "2026-03-24T12:00:00Z",
+					"updated_at": "2026-03-24T12:00:00Z"
+				}
+			],
+			"memories": []
+		}`))
+	})
+
+	result, err := svc.Get(context.Background(), 0)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if got := len(result.Reads); got != 1 {
+		t.Fatalf("expected 1 read notification, got %d", got)
+	}
+	if result.Reads[0].ReadableSGID != "SGID-123" {
+		t.Fatalf("unexpected readable_sgid: %q", result.Reads[0].ReadableSGID)
+	}
+}
+
 func TestMyNotificationsService_MarkAsRead(t *testing.T) {
 	var receivedBody map[string]any
 	svc := testMyNotificationsServer(t, func(w http.ResponseWriter, r *http.Request) {
