@@ -200,7 +200,8 @@ func (s *AccountService) UpdateLogo(ctx context.Context, logo io.Reader, filenam
 	partHeader := make(textproto.MIMEHeader)
 	safeFilename := strings.NewReplacer("\r", "", "\n", "", `\`, `\\`, `"`, `\"`).Replace(filename)
 	partHeader.Set("Content-Disposition", fmt.Sprintf(`form-data; name="logo"; filename="%s"`, safeFilename))
-	partHeader.Set("Content-Type", contentType)
+	safeContentType := strings.NewReplacer("\r", "", "\n", "").Replace(contentType)
+	partHeader.Set("Content-Type", safeContentType)
 	part, err := writer.CreatePart(partHeader)
 	if err != nil {
 		return fmt.Errorf("failed to create form file: %w", err)
