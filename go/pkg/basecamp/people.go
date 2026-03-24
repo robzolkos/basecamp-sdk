@@ -41,17 +41,17 @@ type UpdateProjectAccessResponse struct {
 
 // FirstWeekDay represents the first day of the week.
 // Use the exported constants (FirstWeekDaySunday, FirstWeekDayMonday, etc.).
-type FirstWeekDay = generated.FirstWeekDay
+type FirstWeekDay string
 
 // FirstWeekDay constants for all seven days.
 const (
-	FirstWeekDaySunday    FirstWeekDay = generated.Sunday
-	FirstWeekDayMonday    FirstWeekDay = generated.Monday
-	FirstWeekDayTuesday   FirstWeekDay = generated.Tuesday
-	FirstWeekDayWednesday FirstWeekDay = generated.Wednesday
-	FirstWeekDayThursday  FirstWeekDay = generated.Thursday
-	FirstWeekDayFriday    FirstWeekDay = generated.Friday
-	FirstWeekDaySaturday  FirstWeekDay = generated.Saturday
+	FirstWeekDaySunday    FirstWeekDay = "Sunday"
+	FirstWeekDayMonday    FirstWeekDay = "Monday"
+	FirstWeekDayTuesday   FirstWeekDay = "Tuesday"
+	FirstWeekDayWednesday FirstWeekDay = "Wednesday"
+	FirstWeekDayThursday  FirstWeekDay = "Thursday"
+	FirstWeekDayFriday    FirstWeekDay = "Friday"
+	FirstWeekDaySaturday  FirstWeekDay = "Saturday"
 )
 
 // UpdateMyProfileRequest specifies the parameters for updating the current user's profile.
@@ -517,18 +517,6 @@ func (s *PeopleService) UpdateProjectAccess(ctx context.Context, projectID int64
 	return accessResult, nil
 }
 
-// UpdateMyProfileRequest specifies the parameters for updating the current user's profile.
-type UpdateMyProfileRequest struct {
-	Name         string `json:"name,omitempty"`
-	EmailAddress string `json:"email_address,omitempty"`
-	Title        string `json:"title,omitempty"`
-	Bio          string `json:"bio,omitempty"`
-	Location     string `json:"location,omitempty"`
-	TimeZoneName string `json:"time_zone_name,omitempty"`
-	TimeFormat   string `json:"time_format,omitempty"`
-	FirstWeekDay int32  `json:"first_week_day,omitempty"`
-}
-
 // Preferences represents user preferences.
 type Preferences struct {
 	FirstWeekDay string `json:"first_week_day,omitempty"`
@@ -566,44 +554,6 @@ type EnableOutOfOfficeRequest struct {
 	StartDate string `json:"start_date"`
 	// EndDate is the end date in ISO 8601 format (YYYY-MM-DD), required.
 	EndDate string `json:"end_date"`
-}
-
-// UpdateMyProfile updates the current user's profile.
-func (s *PeopleService) UpdateMyProfile(ctx context.Context, req *UpdateMyProfileRequest) (err error) {
-	op := OperationInfo{
-		Service: "People", Operation: "UpdateMyProfile",
-		ResourceType: "person", IsMutation: true,
-	}
-	if gater, ok := s.client.parent.hooks.(GatingHooks); ok {
-		if ctx, err = gater.OnOperationGate(ctx, op); err != nil {
-			return
-		}
-	}
-	start := time.Now()
-	ctx = s.client.parent.hooks.OnOperationStart(ctx, op)
-	defer func() { s.client.parent.hooks.OnOperationEnd(ctx, op, err, time.Since(start)) }()
-
-	if req == nil {
-		err = ErrUsage("update profile request is required")
-		return err
-	}
-
-	body := generated.UpdateMyProfileJSONRequestBody{
-		Name:         req.Name,
-		EmailAddress: req.EmailAddress,
-		Title:        req.Title,
-		Bio:          req.Bio,
-		Location:     req.Location,
-		TimeZoneName: req.TimeZoneName,
-		TimeFormat:   req.TimeFormat,
-		FirstWeekDay: req.FirstWeekDay,
-	}
-
-	resp, err := s.client.parent.gen.UpdateMyProfileWithResponse(ctx, s.client.accountID, body)
-	if err != nil {
-		return err
-	}
-	return checkResponse(resp.HTTPResponse, resp.Body)
 }
 
 // GetMyPreferences returns the current user's preferences.
