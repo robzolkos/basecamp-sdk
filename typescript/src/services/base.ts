@@ -139,10 +139,24 @@ export abstract class BaseService {
 
       let response: Response | undefined;
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
-        response = await this.authenticatedFetch(url, {
-          method,
-          body: formData,
-        });
+        const reqInfo = { method, url, attempt: attempt + 1 };
+        try { this.hooks?.onRequestStart?.(reqInfo); } catch { /* hooks should not interrupt */ }
+
+        const reqStart = performance.now();
+        try {
+          response = await this.authenticatedFetch(url, {
+            method,
+            body: formData,
+          });
+        } catch (fetchErr) {
+          const durationMs = Math.round(performance.now() - reqStart);
+          const error = fetchErr instanceof Error ? fetchErr : new Error(String(fetchErr));
+          try { this.hooks?.onRequestEnd?.(reqInfo, { statusCode: 0, durationMs, fromCache: false, error }); } catch { /* */ }
+          throw error;
+        }
+
+        const reqDurationMs = Math.round(performance.now() - reqStart);
+        try { this.hooks?.onRequestEnd?.(reqInfo, { statusCode: response.status, durationMs: reqDurationMs, fromCache: false }); } catch { /* */ }
 
         if (!retryOn.includes(response.status) || attempt >= maxAttempts - 1) {
           break;
