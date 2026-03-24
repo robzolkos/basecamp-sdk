@@ -128,7 +128,6 @@ apply GetMyProfile @tags(["People"])
 apply ListProjectPeople @tags(["People"])
 apply ListPingablePeople @tags(["People"])
 apply UpdateProjectAccess @tags(["People"])
-apply UpdateMyProfile @tags(["People"])
 apply GetSubscription @tags(["People"])
 apply Subscribe @tags(["People"])
 apply Unsubscribe @tags(["People"])
@@ -194,3 +193,37 @@ apply ListAnswers @tags(["Automation"])
 apply GetAnswer @tags(["Automation"])
 apply CreateAnswer @tags(["Automation"])
 apply UpdateAnswer @tags(["Automation"])
+
+// Account
+apply GetAccount @tags(["Account"])
+apply UpdateAccountName @tags(["Account"])
+apply UpdateAccountLogo @tags(["Account"])
+apply RemoveAccountLogo @tags(["Account"])
+
+// Gauges
+apply ListGauges @tags(["Gauges"])
+apply ListGaugeNeedles @tags(["Gauges"])
+apply GetGaugeNeedle @tags(["Gauges"])
+apply CreateGaugeNeedle @tags(["Gauges"])
+apply UpdateGaugeNeedle @tags(["Gauges"])
+apply DestroyGaugeNeedle @tags(["Gauges"])
+apply ToggleGauge @tags(["Gauges"])
+
+// My Assignments
+apply GetMyAssignments @tags(["MyAssignments"])
+apply GetMyCompletedAssignments @tags(["MyAssignments"])
+apply GetMyDueAssignments @tags(["MyAssignments"])
+
+// My Notifications
+apply GetMyNotifications @tags(["MyNotifications"])
+apply MarkAsRead @tags(["MyNotifications"])
+
+// Out of Office
+apply GetOutOfOffice @tags(["People"])
+apply EnableOutOfOffice @tags(["People"])
+apply DisableOutOfOffice @tags(["People"])
+
+// People (Profile & Preferences)
+apply UpdateMyProfile @tags(["People"])
+apply GetMyPreferences @tags(["People"])
+apply UpdateMyPreferences @tags(["People"])

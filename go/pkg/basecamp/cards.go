@@ -509,8 +509,15 @@ func (s *CardsService) Update(ctx context.Context, cardID int64, req *UpdateCard
 	return &card, nil
 }
 
-// Move moves a card to a different column.
-func (s *CardsService) Move(ctx context.Context, cardID, columnID int64) (err error) {
+// MoveCardOptions specifies optional parameters for moving a card.
+type MoveCardOptions struct {
+	// Position is the 1-indexed position within the destination column.
+	// When zero, defaults to 1 (top of column).
+	Position int32 `json:"position,omitempty"`
+}
+
+// Move moves a card to a different column, optionally at a specific position.
+func (s *CardsService) Move(ctx context.Context, cardID, columnID int64, opts *MoveCardOptions) (err error) {
 	op := OperationInfo{
 		Service: "Cards", Operation: "Move",
 		ResourceType: "card", IsMutation: true,
@@ -527,6 +534,9 @@ func (s *CardsService) Move(ctx context.Context, cardID, columnID int64) (err er
 
 	body := generated.MoveCardJSONRequestBody{
 		ColumnId: columnID,
+	}
+	if opts != nil && opts.Position > 0 {
+		body.Position = opts.Position
 	}
 
 	resp, err := s.client.parent.gen.MoveCardWithResponse(ctx, s.client.accountID, cardID, body)

@@ -83,6 +83,15 @@ class CampfiresServiceTest < Minitest::Test
     assert_equal "Hi there!", lines[1]["content"]
   end
 
+  def test_list_lines_with_sort_direction
+    stub_get("/12345/chats/200/lines.json?sort=created_at&direction=desc",
+             response_body: [ sample_line ])
+
+    lines = @account.campfires.list_lines(campfire_id: 200, sort: "created_at", direction: "desc").to_a
+
+    assert_equal 1, lines.length
+  end
+
   def test_list_lines_with_mixed_text_and_upload
     upload = sample_upload_line(id: 3, filename: "photo.png", content_type: "image/png", byte_size: 2048)
     stub_get("/12345/chats/200/lines.json",
@@ -212,6 +221,15 @@ class CampfiresServiceTest < Minitest::Test
     assert_equal "application/pdf", uploads[0]["attachments"][0]["content_type"]
     assert_equal 1_048_576, uploads[0]["attachments"][0]["byte_size"]
     assert_equal "screenshot.png", uploads[1]["attachments"][0]["filename"]
+  end
+
+  def test_list_uploads_with_sort_direction
+    stub_get("/12345/chats/200/uploads.json?sort=created_at&direction=desc",
+             response_body: [ sample_upload_line ])
+
+    uploads = @account.campfires.list_uploads(campfire_id: 200, sort: "created_at", direction: "desc").to_a
+
+    assert_equal 1, uploads.length
   end
 
   def test_create_upload

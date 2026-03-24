@@ -39,6 +39,10 @@ export interface CreateReplyForwardRequest {
  * Options for list.
  */
 export interface ListForwardOptions extends PaginationOptions {
+  /** Filter by sort */
+  sort?: "created_at" | "updated_at";
+  /** Filter by direction */
+  direction?: "asc" | "desc";
 }
 
 
@@ -218,6 +222,9 @@ export class ForwardsService extends BaseService {
    * @example
    * ```ts
    * const result = await client.forwards.list(123);
+   *
+   * // With options
+   * const filtered = await client.forwards.list(123, { sort: "created_at" });
    * ```
    */
   async list(inboxId: number, options?: ListForwardOptions): Promise<ListResult<Forward>> {
@@ -233,6 +240,7 @@ export class ForwardsService extends BaseService {
         this.client.GET("/inboxes/{inboxId}/forwards.json", {
           params: {
             path: { inboxId },
+            query: { sort: options?.sort, direction: options?.direction },
           },
         })
       , options

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "cgi/escape"
+require "securerandom"
 
 module Basecamp
   module Services
@@ -162,10 +163,41 @@ module Basecamp
       #   @see AccountClient#post_raw
       # @!method paginate(path, params: {}, &block)
       #   @see AccountClient#paginate
-      %i[get post put delete post_raw].each do |method|
+      %i[get post put delete post_raw put_raw].each do |method|
         define_method(:"http_#{method}") do |*args, **kwargs, &block|
           @client.public_send(method, *args, **kwargs, &block)
         end
+      end
+
+      # Upload a file as multipart/form-data.
+      # @param path [String] API path
+      # @param io [IO, String] file data
+      # @param filename [String] display filename
+      # @param content_type [String] MIME type
+      # @param field [String] form field name
+      def http_put_multipart(path, io:, filename:, content_type:, field: "file")
+        boundary = "BasecampSDK#{SecureRandom.hex(16)}"
+        body = build_multipart_body(boundary: boundary, field: field, io: io, \
+          filename: filename, content_type: content_type)
+        http_put_raw(path, body: body, content_type: "multipart/form-data; boundary=#{boundary}")
+        nil
+      end
+
+      private
+
+      def build_multipart_body(boundary:, field:, io:, filename:, content_type:)
+        data = io.respond_to?(:read) ? io.read : io.to_s
+        safe_filename = filename.tr("\r\n", "").gsub("\\", "\\\\").gsub('"', '\\"')
+        safe_content_type = content_type.tr("\r\n", "")
+        body = "".b
+        body << "--#{boundary}\r\n"
+        body << "Content-Disposition: form-data; name=\"#{field}\"; filename=\"#{safe_filename}\"\r\n"
+        body << "Content-Type: #{safe_content_type}\r\n"
+        body << "\r\n"
+        body << data
+        body << "\r\n"
+        body << "--#{boundary}--\r\n"
+        body.force_encoding(Encoding::BINARY)
       end
 
       # Paginate doesn't conflict with service methods, keep as-is

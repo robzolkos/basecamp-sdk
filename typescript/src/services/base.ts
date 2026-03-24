@@ -24,6 +24,9 @@
 
 import type { BasecampHooks, OperationInfo, OperationResult } from "../hooks.js";
 import { BasecampError, errorFromResponse } from "../errors.js";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const metadata = require("../generated/metadata.json") as { operations: Record<string, { retry?: { maxAttempts?: number; baseDelayMs?: number; backoff?: string; retryOn?: number[] } }> };
 import { ListResult, parseTotalCount, type PaginationOptions } from "../pagination.js";
 import { parseNextLink, resolveURL, isSameOrigin } from "../pagination-utils.js";
 import type { paths } from "../generated/schema.js";
@@ -76,16 +79,134 @@ export abstract class BaseService {
   /** Maximum pages to follow before stopping (safety cap). */
   protected readonly maxPages: number;
 
+  /** Base URL for building multipart upload URLs. */
+  protected readonly baseUrl: string;
+
+  /**
+   * Authenticated fetch for multipart uploads and other raw requests.
+   * Provided by the client factory with Bearer token and User-Agent.
+   */
+  protected readonly authenticatedFetch: (url: string, init: RequestInit) => Promise<Response>;
+
   constructor(
     client: RawClient,
     hooks?: BasecampHooks,
     fetchPage?: (url: string) => Promise<Response>,
     maxPages?: number,
+    authenticatedFetch?: (url: string, init: RequestInit) => Promise<Response>,
+    baseUrl?: string,
   ) {
     this.client = client;
     this.hooks = hooks;
     this.fetchPage = fetchPage ?? ((url) => fetch(url, { headers: { Accept: "application/json" } }));
     this.maxPages = maxPages ?? DEFAULT_MAX_PAGES;
+    this.authenticatedFetch = authenticatedFetch ?? ((url, init) => fetch(url, init));
+    this.baseUrl = baseUrl ?? "";
+  }
+
+  /**
+   * Uploads a file as multipart/form-data with hooks integration.
+   *
+   * @param info - Operation metadata for hooks
+   * @param url - The full API URL
+   * @param method - HTTP method (PUT, POST)
+   * @param file - File or Blob to upload
+   * @param fieldName - The form field name
+   * @param filename - Display name for the uploaded file
+   */
+  protected async requestMultipartUpload(
+    info: OperationInfo,
+    url: string,
+    method: string,
+    file: Blob | File,
+    fieldName: string,
+    filename?: string,
+  ): Promise<void> {
+    const start = performance.now();
+    let result: OperationResult = { durationMs: 0 };
+
+    try { this.hooks?.onOperationStart?.(info); } catch { /* hooks should not interrupt */ }
+
+    try {
+      const formData = new FormData();
+      formData.append(fieldName, file, filename ?? (file instanceof File ? file.name : fieldName));
+
+      // Look up retry config from operation metadata
+      const opMeta = (metadata as any).operations?.[info.operation];
+      const retryConfig = opMeta?.retry ?? { maxAttempts: 1, baseDelayMs: 1000, backoff: "exponential", retryOn: [] };
+      const maxAttempts: number = retryConfig.maxAttempts ?? 1;
+      const retryOn: number[] = retryConfig.retryOn ?? [];
+
+      let response: Response | undefined;
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        const reqInfo = { method, url, attempt: attempt + 1 };
+        try { this.hooks?.onRequestStart?.(reqInfo); } catch { /* hooks should not interrupt */ }
+
+        const reqStart = performance.now();
+        try {
+          response = await this.authenticatedFetch(url, {
+            method,
+            body: formData,
+          });
+        } catch (fetchErr) {
+          const durationMs = Math.round(performance.now() - reqStart);
+          const error = fetchErr instanceof Error ? fetchErr : new Error(String(fetchErr));
+          try { this.hooks?.onRequestEnd?.(reqInfo, { statusCode: 0, durationMs, fromCache: false, error }); } catch { /* */ }
+          throw error;
+        }
+
+        const reqDurationMs = Math.round(performance.now() - reqStart);
+        try { this.hooks?.onRequestEnd?.(reqInfo, { statusCode: response.status, durationMs: reqDurationMs, fromCache: false }); } catch { /* */ }
+
+        if (!retryOn.includes(response.status) || attempt >= maxAttempts - 1) {
+          break;
+        }
+
+        // Drain response body before retry to free resources and enable connection reuse
+        response.body?.cancel();
+
+        // Backoff before retry
+        const retryAfter = response.status === 429
+          ? parseInt(response.headers.get("Retry-After") ?? "", 10) * 1000
+          : NaN;
+        const delay = !isNaN(retryAfter) && retryAfter >= 0
+          ? retryAfter
+          : (retryConfig.baseDelayMs ?? 1000) * Math.pow(2, attempt);
+
+        try {
+          const retryError = new Error(`${response.status} ${response.statusText}`);
+          this.hooks?.onRetry?.(
+            { method, url, attempt: attempt + 1 },
+            attempt + 1,
+            retryError,
+            delay,
+          );
+        } catch { /* hooks should not interrupt */ }
+
+        await new Promise((r) => setTimeout(r, delay));
+      }
+
+      result.durationMs = Math.round(performance.now() - start);
+
+      if (!response!.ok) {
+        const basecampError = await errorFromResponse(response!);
+        result.error = basecampError;
+        throw basecampError;
+      }
+
+      // Drain body for 204 No Content
+      if (response!.status === 204) {
+        response!.body?.cancel();
+      }
+    } catch (err) {
+      result.durationMs = Math.round(performance.now() - start);
+      if (err instanceof BasecampError || err instanceof Error) {
+        result.error = err;
+      }
+      throw err;
+    } finally {
+      try { this.hooks?.onOperationEnd?.(info, result); } catch { /* hooks should not interrupt */ }
+    }
   }
 
   /**

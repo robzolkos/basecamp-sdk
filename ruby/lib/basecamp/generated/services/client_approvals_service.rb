@@ -8,10 +8,13 @@ module Basecamp
     class ClientApprovalsService < BaseService
 
       # List all client approvals in a project
+      # @param sort [String, nil] created_at|updated_at
+      # @param direction [String, nil] asc|desc
       # @return [Enumerator<Hash>] paginated results
-      def list()
+      def list(sort: nil, direction: nil)
         wrap_paginated(service: "clientapprovals", operation: "list", is_mutation: false) do
-          paginate("/client/approvals.json")
+          params = compact_params(sort: sort, direction: direction)
+          paginate("/client/approvals.json", params: params)
         end
       end
 

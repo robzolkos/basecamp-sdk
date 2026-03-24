@@ -15,6 +15,23 @@ module Basecamp
         end
       end
 
+      # Get the current user's preferences
+      # @return [Hash] response data
+      def get_my_preferences()
+        with_operation(service: "people", operation: "get_my_preferences", is_mutation: false) do
+          http_get("/my/preferences.json").json
+        end
+      end
+
+      # Update the current user's preferences
+      # @param person [String] person
+      # @return [Hash] response data
+      def update_my_preferences(person:)
+        with_operation(service: "people", operation: "update_my_preferences", is_mutation: true) do
+          http_put("/my/preferences.json", body: compact_params(person: person)).json
+        end
+      end
+
       # Get the current authenticated user's profile
       # @return [Hash] response data
       def my_profile()
@@ -54,6 +71,35 @@ module Basecamp
       def get(person_id:)
         with_operation(service: "people", operation: "get", is_mutation: false, resource_id: person_id) do
           http_get("/people/#{person_id}").json
+        end
+      end
+
+      # Get the out of office status for a person
+      # @param person_id [Integer] person id ID
+      # @return [Hash] response data
+      def get_out_of_office(person_id:)
+        with_operation(service: "people", operation: "get_out_of_office", is_mutation: false, resource_id: person_id) do
+          http_get("/people/#{person_id}/out_of_office.json").json
+        end
+      end
+
+      # Enable or replace out of office for a person.
+      # @param person_id [Integer] person id ID
+      # @param out_of_office [String] out of office
+      # @return [Hash] response data
+      def enable_out_of_office(person_id:, out_of_office:)
+        with_operation(service: "people", operation: "enable_out_of_office", is_mutation: true, resource_id: person_id) do
+          http_post("/people/#{person_id}/out_of_office.json", body: compact_params(out_of_office: out_of_office)).json
+        end
+      end
+
+      # Disable out of office for a person.
+      # @param person_id [Integer] person id ID
+      # @return [void]
+      def disable_out_of_office(person_id:)
+        with_operation(service: "people", operation: "disable_out_of_office", is_mutation: true, resource_id: person_id) do
+          http_delete("/people/#{person_id}/out_of_office.json")
+          nil
         end
       end
 

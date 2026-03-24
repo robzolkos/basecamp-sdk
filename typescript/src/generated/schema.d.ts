@@ -4,6 +4,62 @@
  */
 
 export interface paths {
+    "/account.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the account for the current access token */
+        get: operations["GetAccount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/account/logo.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * @description Upload or replace the account logo.
+         *     Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Maximum 5 MB.
+         *     Owners and admins only.
+         */
+        put: operations["UpdateAccountLogo"];
+        post?: never;
+        /** @description Remove the account logo. Only administrators and account owners can use this endpoint. */
+        delete: operations["RemoveAccountLogo"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/account/name.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Rename the current account. Only account owners can use this endpoint. */
+        put: operations["UpdateAccountName"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/attachments.json": {
         parameters: {
             query?: never;
@@ -709,6 +765,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/gauge_needles/{needleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a gauge needle by ID */
+        get: operations["GetGaugeNeedle"];
+        /** @description Update a gauge needle's description. Position and color are immutable. */
+        put: operations["UpdateGaugeNeedle"];
+        post?: never;
+        /** @description Destroy a gauge needle */
+        delete: operations["DestroyGaugeNeedle"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/inbox_forwards/{forwardId}": {
         parameters: {
             query?: never;
@@ -899,6 +974,85 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/my/assignments.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get the current user's active assignments grouped into priorities and non_priorities.
+         *     Card table steps are normalized to their parent card with steps as children.
+         *     This endpoint is not paginated.
+         */
+        get: operations["GetMyAssignments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/my/assignments/completed.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get the current user's completed assignments.
+         *     Archived and trashed recordings are excluded. This endpoint is not paginated.
+         */
+        get: operations["GetMyCompletedAssignments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/my/assignments/due.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get the current user's assignments filtered by due date scope.
+         *     Defaults to overdue when no scope is provided. This endpoint is not paginated.
+         */
+        get: operations["GetMyDueAssignments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/my/preferences.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the current user's preferences */
+        get: operations["GetMyPreferences"];
+        /** @description Update the current user's preferences */
+        put: operations["UpdateMyPreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/my/profile.json": {
         parameters: {
             query?: never;
@@ -941,6 +1095,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/my/readings.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get the current user's notification inbox (the "Hey!" menu).
+         *     Notifications are grouped into unreads, reads, and memories.
+         *     Reads are paginated (50 per page). Unreads are capped at 100.
+         */
+        get: operations["GetMyNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/my/unreads.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Mark specified items as read */
+        put: operations["MarkAsRead"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/people.json": {
         parameters: {
             query?: never;
@@ -975,6 +1167,31 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/people/{personId}/out_of_office.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the out of office status for a person */
+        get: operations["GetOutOfOffice"];
+        put?: never;
+        /**
+         * @description Enable or replace out of office for a person.
+         *     Admins on Pro Pack accounts can manage others; otherwise self only.
+         */
+        post: operations["EnableOutOfOffice"];
+        /**
+         * @description Disable out of office for a person.
+         *     Admins on Pro Pack accounts can manage others; otherwise self only.
+         */
+        delete: operations["DisableOutOfOffice"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1039,6 +1256,41 @@ export interface paths {
         post?: never;
         /** @description Trash a project (returns 204 No Content) */
         delete: operations["TrashProject"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{projectId}/gauge.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Enable or disable the gauge for a project. Only project admins can toggle gauges. */
+        put: operations["ToggleGauge"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{projectId}/gauge/needles.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List gauge needles for a project, ordered newest first. */
+        get: operations["ListGaugeNeedles"];
+        put?: never;
+        /** @description Create a gauge needle (progress update) for a project */
+        post: operations["CreateGaugeNeedle"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1547,6 +1799,26 @@ export interface paths {
         post: operations["EnableTool"];
         /** @description Disable a tool (hide it from the project dock) */
         delete: operations["DisableTool"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reports/gauges.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description List gauges across all projects the authenticated user has access to.
+         *     Gauges are sorted by risk level (red, yellow, green), then alphabetically.
+         */
+        get: operations["ListGauges"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -2244,6 +2516,45 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Account: {
+            /** Format: int64 */
+            id: number;
+            name: string;
+            owner_name?: string;
+            active?: boolean;
+            created_at: string;
+            updated_at: string;
+            trial?: boolean;
+            trial_ends_on?: string;
+            frozen?: boolean;
+            paused?: boolean;
+            limits?: components["schemas"]["AccountLimits"];
+            subscription?: components["schemas"]["AccountSubscription"];
+            settings?: components["schemas"]["AccountSettings"];
+            logo?: string;
+        };
+        AccountLimits: {
+            can_create_projects?: boolean;
+            can_pin_projects?: boolean;
+            can_create_users?: boolean;
+            can_upload_files?: boolean;
+        };
+        AccountSettings: {
+            company_hq_enabled?: boolean;
+            teams_enabled?: boolean;
+            projects_enabled?: boolean;
+        };
+        AccountSubscription: {
+            short_name?: string;
+            proper_name?: string;
+            /** Format: int32 */
+            project_limit?: number;
+            teams?: boolean;
+            clients?: boolean;
+            templates?: boolean;
+            logo?: boolean;
+            timesheet?: boolean;
+        };
         Assignable: {
             /** Format: int64 */
             id?: number;
@@ -2638,6 +2949,14 @@ export interface components {
             content: string;
         };
         CreateForwardReplyResponseContent: components["schemas"]["ForwardReply"];
+        CreateGaugeNeedleRequestContent: {
+            gauge_needle: components["schemas"]["GaugeNeedlePayload"];
+            /** @description Who to notify: "everyone", "working_on", "custom", or omit for nobody */
+            notify?: string;
+            /** @description Array of people IDs to notify (only used when notify is "custom") */
+            subscriptions?: number[];
+        };
+        CreateGaugeNeedleResponseContent: components["schemas"]["GaugeNeedle"];
         CreateLineupMarkerRequestContent: {
             name: string;
             date: string;
@@ -2786,6 +3105,10 @@ export interface components {
             boosts_url?: string;
         };
         EnableCardColumnOnHoldResponseContent: components["schemas"]["CardColumn"];
+        EnableOutOfOfficeRequestContent: {
+            out_of_office: components["schemas"]["OutOfOfficePayload"];
+        };
+        EnableOutOfOfficeResponseContent: components["schemas"]["OutOfOffice"];
         Event: {
             /** Format: int64 */
             id: number;
@@ -2855,6 +3178,76 @@ export interface components {
             boosts_count?: number;
             boosts_url?: string;
         };
+        Gauge: {
+            /** Format: int64 */
+            id: number;
+            status?: string;
+            visible_to_clients?: boolean;
+            created_at: string;
+            updated_at: string;
+            title?: string;
+            inherits_status?: boolean;
+            type?: string;
+            url?: string;
+            app_url?: string;
+            bookmark_url?: string;
+            bucket?: components["schemas"]["RecordingBucket"];
+            creator?: components["schemas"]["Person"];
+            description?: string;
+            enabled?: boolean;
+            last_needle_color?: string;
+            /** Format: int32 */
+            last_needle_position?: number;
+            /** Format: int32 */
+            previous_needle_position?: number;
+        };
+        GaugeNeedle: {
+            /** Format: int64 */
+            id: number;
+            status?: string;
+            visible_to_clients?: boolean;
+            created_at: string;
+            updated_at: string;
+            title?: string;
+            inherits_status?: boolean;
+            type?: string;
+            url?: string;
+            app_url?: string;
+            bookmark_url?: string;
+            subscription_url?: string;
+            /** Format: int32 */
+            comments_count?: number;
+            comments_url?: string;
+            /** Format: int32 */
+            boosts_count?: number;
+            boosts_url?: string;
+            parent?: components["schemas"]["RecordingParent"];
+            bucket?: components["schemas"]["RecordingBucket"];
+            creator?: components["schemas"]["Person"];
+            description?: string;
+            color?: string;
+            /** Format: int32 */
+            position?: number;
+        };
+        GaugeNeedlePayload: {
+            /**
+             * Format: int32
+             * @description Position of the needle (0-100)
+             */
+            position: number;
+            /** @description Status color: green (default), yellow, or red */
+            color?: string;
+            /** @description Rich text (HTML) description of the progress update */
+            description?: string;
+        };
+        GaugeNeedleUpdatePayload: {
+            /** @description Rich text (HTML) description */
+            description?: string;
+        };
+        GaugeTogglePayload: {
+            enabled: boolean;
+        };
+        GetAccountResponseContent: components["schemas"]["Account"];
         GetAnswerResponseContent: components["schemas"]["QuestionAnswer"];
         GetAnswersByPersonResponseContent: components["schemas"]["QuestionAnswer"][];
         GetAssignedTodosResponseContent: {
@@ -2877,12 +3270,26 @@ export interface components {
         GetDocumentResponseContent: components["schemas"]["Document"];
         GetForwardReplyResponseContent: components["schemas"]["ForwardReply"];
         GetForwardResponseContent: components["schemas"]["Forward"];
+        GetGaugeNeedleResponseContent: components["schemas"]["GaugeNeedle"];
         GetHillChartResponseContent: components["schemas"]["HillChart"];
         GetInboxResponseContent: components["schemas"]["Inbox"];
         GetMessageBoardResponseContent: components["schemas"]["MessageBoard"];
         GetMessageResponseContent: components["schemas"]["Message"];
         GetMessageTypeResponseContent: components["schemas"]["MessageType"];
+        GetMyAssignmentsResponseContent: {
+            priorities?: components["schemas"]["MyAssignment"][];
+            non_priorities?: components["schemas"]["MyAssignment"][];
+        };
+        GetMyCompletedAssignmentsResponseContent: components["schemas"]["MyAssignment"][];
+        GetMyDueAssignmentsResponseContent: components["schemas"]["MyAssignment"][];
+        GetMyNotificationsResponseContent: {
+            unreads?: components["schemas"]["Notification"][];
+            reads?: components["schemas"]["Notification"][];
+            memories?: components["schemas"]["Notification"][];
+        };
+        GetMyPreferencesResponseContent: components["schemas"]["Preferences"];
         GetMyProfileResponseContent: components["schemas"]["Person"];
+        GetOutOfOfficeResponseContent: components["schemas"]["OutOfOffice"];
         GetOverdueTodosResponseContent: {
             under_a_week_late?: components["schemas"]["Todo"][];
             over_a_week_late?: components["schemas"]["Todo"][];
@@ -2991,6 +3398,8 @@ export interface components {
         ListEventsResponseContent: components["schemas"]["Event"][];
         ListForwardRepliesResponseContent: components["schemas"]["ForwardReply"][];
         ListForwardsResponseContent: components["schemas"]["Forward"][];
+        ListGaugeNeedlesResponseContent: components["schemas"]["GaugeNeedle"][];
+        ListGaugesResponseContent: components["schemas"]["Gauge"][];
         ListLineupMarkersResponseContent: components["schemas"]["LineupMarker"][];
         ListMessageTypesResponseContent: components["schemas"]["MessageType"][];
         ListMessagesResponseContent: components["schemas"]["Message"][];
@@ -3011,6 +3420,10 @@ export interface components {
         ListUploadsResponseContent: components["schemas"]["Upload"][];
         ListVaultsResponseContent: components["schemas"]["Vault"][];
         ListWebhooksResponseContent: components["schemas"]["Webhook"][];
+        MarkAsReadRequestContent: {
+            /** @description Array of readable_sgid values identifying the items to mark as read */
+            readables: string[];
+        };
         Message: {
             /** Format: int64 */
             id: number;
@@ -3079,10 +3492,107 @@ export interface components {
         MoveCardRequestContent: {
             /** Format: int64 */
             column_id: number;
+            /**
+             * Format: int32
+             * @description 1-indexed position within the destination column. Defaults to 1 (top).
+             */
+            position?: number;
+        };
+        MyAssignment: {
+            /** Format: int64 */
+            id: number;
+            app_url?: string;
+            content?: string;
+            starts_on?: string;
+            due_on?: string;
+            bucket?: components["schemas"]["MyAssignmentBucket"];
+            completed?: boolean;
+            type?: string;
+            assignees?: components["schemas"]["MyAssignmentAssignee"][];
+            /** Format: int32 */
+            comments_count?: number;
+            has_description?: boolean;
+            /**
+             * Format: int64
+             * @description Present on priority items
+             */
+            priority_recording_id?: number;
+            parent?: components["schemas"]["MyAssignmentParent"];
+            children?: components["schemas"]["MyAssignment"][];
+        };
+        MyAssignmentAssignee: {
+            /** Format: int64 */
+            id: number;
+            /** Format: password */
+            name?: string;
+            /** Format: password */
+            avatar_url?: string;
+        };
+        MyAssignmentBucket: {
+            /** Format: int64 */
+            id: number;
+            name?: string;
+            app_url?: string;
+        };
+        MyAssignmentParent: {
+            /** Format: int64 */
+            id: number;
+            title?: string;
+            app_url?: string;
         };
         NotFoundErrorResponseContent: {
             error: string;
             message?: string;
+        };
+        Notification: {
+            /** Format: int64 */
+            id: number;
+            created_at: string;
+            updated_at: string;
+            section?: string;
+            /** Format: int32 */
+            unread_count?: number;
+            unread_at?: string;
+            read_at?: string;
+            readable_sgid?: string;
+            readable_identifier?: string;
+            title?: string;
+            type?: string;
+            bucket_name?: string;
+            creator?: components["schemas"]["Person"];
+            content_excerpt?: string;
+            app_url?: string;
+            unread_url?: string;
+            bookmark_url?: string;
+            memory_url?: string;
+            subscription_url?: string;
+            subscribed?: boolean;
+            previewable_attachments?: components["schemas"]["PreviewableAttachment"][];
+            /** @description Present on ping notifications */
+            participants?: components["schemas"]["Person"][];
+            /** @description Whether the ping has a custom name (pings only) */
+            named?: boolean;
+            /** @description Custom image URL (pings only) */
+            image_url?: string;
+        };
+        OutOfOffice: {
+            person?: components["schemas"]["OutOfOfficePerson"];
+            enabled?: boolean;
+            ongoing?: boolean;
+            start_date?: string;
+            end_date?: string;
+        };
+        OutOfOfficePayload: {
+            /** @description Start date in ISO 8601 format (YYYY-MM-DD) */
+            start_date: string;
+            /** @description End date in ISO 8601 format (YYYY-MM-DD) */
+            end_date: string;
+        };
+        OutOfOfficePerson: {
+            /** Format: int64 */
+            id: number;
+            /** Format: password */
+            name?: string;
         };
         PauseQuestionResponseContent: {
             paused?: boolean;
@@ -3123,6 +3633,35 @@ export interface components {
             id: number;
             /** Format: password */
             name: string;
+        };
+        Preferences: {
+            url?: string;
+            app_url?: string;
+            time_zone_name?: string;
+            first_week_day?: string;
+            time_format?: string;
+        };
+        PreferencesPayload: {
+            /** @description Time zone name (e.g. "America/Chicago", "London", "UTC") */
+            time_zone_name?: string;
+            /** @description First day of the week: Sunday, Monday, Tuesday, etc. */
+            first_week_day?: string;
+            /** @description Time display format: twelve_hour or twenty_four_hour */
+            time_format?: string;
+        };
+        PreviewableAttachment: {
+            /** Format: int64 */
+            id?: number;
+            url?: string;
+            app_url?: string;
+            content_type?: string;
+            filename?: string;
+            /** Format: int64 */
+            filesize?: number;
+            /** Format: int32 */
+            width?: number;
+            /** Format: int32 */
+            height?: number;
         };
         Project: {
             /** Format: int64 */
@@ -3623,6 +4162,9 @@ export interface components {
             completed?: boolean;
             app_todolists_url?: string;
         };
+        ToggleGaugeRequestContent: {
+            gauge: components["schemas"]["GaugeTogglePayload"];
+        };
         Tool: {
             /** Format: int64 */
             id: number;
@@ -3642,6 +4184,11 @@ export interface components {
             error: string;
             message?: string;
         };
+        UpdateAccountLogoInputPayload: string;
+        UpdateAccountNameRequestContent: {
+            name: string;
+        };
+        UpdateAccountNameResponseContent: components["schemas"]["Account"];
         UpdateCardColumnRequestContent: {
             title?: string;
             description?: string;
@@ -3674,6 +4221,10 @@ export interface components {
             content?: string;
         };
         UpdateDocumentResponseContent: components["schemas"]["Document"];
+        UpdateGaugeNeedleRequestContent: {
+            gauge_needle?: components["schemas"]["GaugeNeedleUpdatePayload"];
+        };
+        UpdateGaugeNeedleResponseContent: components["schemas"]["GaugeNeedle"];
         UpdateHillChartSettingsRequestContent: {
             tracked?: number[];
             untracked?: number[];
@@ -3697,6 +4248,10 @@ export interface components {
             icon?: string;
         };
         UpdateMessageTypeResponseContent: components["schemas"]["MessageType"];
+        UpdateMyPreferencesRequestContent: {
+            person: components["schemas"]["PreferencesPayload"];
+        };
+        UpdateMyPreferencesResponseContent: components["schemas"]["Preferences"];
         UpdateMyProfileRequestContent: {
             /** Format: password */
             name?: string;
@@ -3950,6 +4505,246 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    GetAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetAccount 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetAccountResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateAccountLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    logo: string;
+                };
+            };
+        };
+        responses: {
+            /** @description UpdateAccountLogo 204 response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description ValidationError 422 response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    RemoveAccountLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description RemoveAccountLogo 204 response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateAccountName: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAccountNameRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateAccountName 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateAccountNameResponseContent"];
+                };
+            };
+            /** @description BadRequestError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     CreateAttachment: {
         parameters: {
             query: {
@@ -6327,7 +7122,12 @@ export interface operations {
     };
     ListCampfireLines: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description created_at|updated_at */
+                sort?: string;
+                /** @description asc|desc */
+                direction?: string;
+            };
             header?: never;
             path: {
                 campfireId: number;
@@ -6572,7 +7372,12 @@ export interface operations {
     };
     ListCampfireUploads: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description created_at|updated_at */
+                sort?: string;
+                /** @description asc|desc */
+                direction?: string;
+            };
             header?: never;
             path: {
                 campfireId: number;
@@ -6760,7 +7565,12 @@ export interface operations {
     };
     ListClientApprovals: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description created_at|updated_at */
+                sort?: string;
+                /** @description asc|desc */
+                direction?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -6874,7 +7684,12 @@ export interface operations {
     };
     ListClientCorrespondences: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description created_at|updated_at */
+                sort?: string;
+                /** @description asc|desc */
+                direction?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -7615,6 +8430,209 @@ export interface operations {
             };
         };
     };
+    GetGaugeNeedle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                needleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetGaugeNeedle 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetGaugeNeedleResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description NotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateGaugeNeedle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                needleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateGaugeNeedleRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateGaugeNeedle 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateGaugeNeedleResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description NotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description ValidationError 422 response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DestroyGaugeNeedle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                needleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DestroyGaugeNeedle 204 response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description NotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     GetForward: {
         parameters: {
             query?: never;
@@ -7921,7 +8939,12 @@ export interface operations {
     };
     ListForwards: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description created_at|updated_at */
+                sort?: string;
+                /** @description asc|desc */
+                direction?: string;
+            };
             header?: never;
             path: {
                 inboxId: number;
@@ -8546,6 +9569,278 @@ export interface operations {
             };
         };
     };
+    GetMyAssignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetMyAssignments 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMyAssignmentsResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetMyCompletedAssignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetMyCompletedAssignments 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMyCompletedAssignmentsResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetMyDueAssignments: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Filter by due date range: overdue, due_today, due_tomorrow,
+                 *     due_later_this_week, due_next_week, due_later
+                 */
+                scope?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetMyDueAssignments 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMyDueAssignmentsResponseContent"];
+                };
+            };
+            /** @description BadRequestError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetMyPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetMyPreferences 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMyPreferencesResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateMyPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMyPreferencesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateMyPreferences 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateMyPreferencesResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description ValidationError 422 response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     GetMyProfile: {
         parameters: {
             query?: never;
@@ -8716,6 +10011,114 @@ export interface operations {
             };
         };
     };
+    GetMyNotifications: {
+        parameters: {
+            query?: {
+                /** @description Page number for paginating through read items. Defaults to 1. */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetMyNotifications 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMyNotificationsResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    MarkAsRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkAsReadRequestContent"];
+            };
+        };
+        responses: {
+            /** @description MarkAsRead 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     ListPeople: {
         parameters: {
             query?: never;
@@ -8817,6 +10220,191 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetOutOfOffice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                personId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetOutOfOffice 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetOutOfOfficeResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description NotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    EnableOutOfOffice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                personId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EnableOutOfOfficeRequestContent"];
+            };
+        };
+        responses: {
+            /** @description EnableOutOfOffice 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnableOutOfOfficeResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description ValidationError 422 response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DisableOutOfOffice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                personId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DisableOutOfOffice 204 response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -9196,6 +10784,204 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ToggleGauge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ToggleGaugeRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ToggleGauge 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListGaugeNeedles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ListGaugeNeedles 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListGaugeNeedlesResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description NotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateGaugeNeedle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateGaugeNeedleRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateGaugeNeedle 201 response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateGaugeNeedleResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description ValidationError 422 response */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -11833,6 +13619,68 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListGauges: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Comma-separated list of project IDs. When provided, results are returned
+                 *     in the order specified instead of by risk level.
+                 */
+                bucket_ids?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ListGauges 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListGaugesResponseContent"];
+                };
+            };
+            /** @description UnauthorizedError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorResponseContent"];
+                };
+            };
+            /** @description ForbiddenError 403 response */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForbiddenErrorResponseContent"];
+                };
+            };
+            /** @description RateLimitError 429 response */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RateLimitErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

@@ -11,6 +11,10 @@ import com.basecamp.sdk.generated.services.*
  * @generated from OpenAPI spec — do not edit directly
  */
 
+/** Account operations. */
+val AccountClient.account: AccountService
+    get() = service("Account") { AccountService(this) }
+
 /** Attachments operations. */
 val AccountClient.attachments: AttachmentsService
     get() = service("Attachments") { AttachmentsService(this) }
@@ -79,6 +83,10 @@ val AccountClient.events: EventsService
 val AccountClient.forwards: ForwardsService
     get() = service("Forwards") { ForwardsService(this) }
 
+/** Gauges operations. */
+val AccountClient.gauges: GaugesService
+    get() = service("Gauges") { GaugesService(this) }
+
 /** HillCharts operations. */
 val AccountClient.hillCharts: HillChartsService
     get() = service("HillCharts") { HillChartsService(this) }
@@ -98,6 +106,14 @@ val AccountClient.messageTypes: MessageTypesService
 /** Messages operations. */
 val AccountClient.messages: MessagesService
     get() = service("Messages") { MessagesService(this) }
+
+/** MyAssignments operations. */
+val AccountClient.myAssignments: MyAssignmentsService
+    get() = service("MyAssignments") { MyAssignmentsService(this) }
+
+/** MyNotifications operations. */
+val AccountClient.myNotifications: MyNotificationsService
+    get() = service("MyNotifications") { MyNotificationsService(this) }
 
 /** People operations. */
 val AccountClient.people: PeopleService

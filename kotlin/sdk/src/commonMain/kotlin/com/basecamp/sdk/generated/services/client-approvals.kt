@@ -16,7 +16,7 @@ class ClientApprovalsService(client: AccountClient) : BaseService(client) {
      * List all client approvals in a project
      * @param options Optional query parameters and pagination control
      */
-    suspend fun list(options: PaginationOptions? = null): ListResult<ClientApproval> {
+    suspend fun list(options: ListClientApprovalsOptions? = null): ListResult<ClientApproval> {
         val info = OperationInfo(
             service = "ClientApprovals",
             operation = "ListClientApprovals",
@@ -25,8 +25,12 @@ class ClientApprovalsService(client: AccountClient) : BaseService(client) {
             projectId = null,
             resourceId = null,
         )
-        return requestPaginated(info, options, {
-            httpGet("/client/approvals.json", operationName = info.operation)
+        val qs = buildQueryString(
+            "sort" to options?.sort,
+            "direction" to options?.direction,
+        )
+        return requestPaginated(info, options?.toPaginationOptions(), {
+            httpGet("/client/approvals.json" + qs, operationName = info.operation)
         }) { body ->
             json.decodeFromString<List<ClientApproval>>(body)
         }

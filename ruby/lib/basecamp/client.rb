@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+
 module Basecamp
   # Main client for the Basecamp API.
   #
@@ -186,6 +187,16 @@ module Basecamp
     # @return [Response]
     def post_raw(path, body:, content_type:)
       @parent.http.post_raw(account_path(path), body: body, content_type: content_type)
+    end
+
+    # Performs a PUT request with raw binary data scoped to this account.
+    # Used for multipart uploads (e.g., account logo).
+    # @param path [String] URL path (without account prefix)
+    # @param body [String, IO] raw binary data
+    # @param content_type [String] MIME content type
+    # @return [Response]
+    def put_raw(path, body:, content_type:)
+      @parent.http.put_raw(account_path(path), body: body, content_type: content_type)
     end
 
     # Fetches all pages of a paginated resource.
@@ -503,6 +514,26 @@ module Basecamp
     # @return [Services::BoostsService]
     def boosts
       service(:boosts) { Services::BoostsService.new(self) }
+    end
+
+    # @return [Services::AccountService]
+    def account
+      service(:account) { Services::AccountService.new(self) }
+    end
+
+    # @return [Services::GaugesService]
+    def gauges
+      service(:gauges) { Services::GaugesService.new(self) }
+    end
+
+    # @return [Services::MyAssignmentsService]
+    def my_assignments
+      service(:my_assignments) { Services::MyAssignmentsService.new(self) }
+    end
+
+    # @return [Services::MyNotificationsService]
+    def my_notifications
+      service(:my_notifications) { Services::MyNotificationsService.new(self) }
     end
 
     # @!endgroup

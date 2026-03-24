@@ -10,7 +10,7 @@ import createClient, { type Middleware } from "openapi-fetch";
 import { createRequire } from "node:module";
 import type { paths } from "./generated/schema.js";
 import { PATH_TO_OPERATION } from "./generated/path-mapping.js";
-import type { BasecampHooks, RequestInfo, RequestResult } from "./hooks.js";
+import type { BasecampHooks, OperationInfo, RequestInfo, RequestResult } from "./hooks.js";
 import { BasecampError } from "./errors.js";
 import { isLocalhost } from "./security.js";
 import { parseNextLink, resolveURL, isSameOrigin } from "./pagination-utils.js";
@@ -64,6 +64,10 @@ import { TimesheetsService } from "./generated/services/timesheets.js";
 import { TimelineService } from "./generated/services/timeline.js";
 import { ClientVisibilityService } from "./generated/services/client-visibility.js";
 import { BoostsService } from "./generated/services/boosts.js";
+import { AccountService } from "./generated/services/account.js";
+import { GaugesService } from "./generated/services/gauges.js";
+import { MyAssignmentsService } from "./generated/services/my-assignments.js";
+import { MyNotificationsService } from "./generated/services/my-notifications.js";
 
 // ============================================================================
 // Services - Hand-written (not spec-driven, e.g., OAuth flows)
@@ -175,6 +179,14 @@ export interface BasecampClient extends RawClient {
   readonly clientVisibility: ClientVisibilityService;
   /** Boosts service - manage recording boosts */
   readonly boosts: BoostsService;
+  /** Account service - get and update account settings */
+  readonly account: AccountService;
+  /** Gauges service - manage project progress gauges */
+  readonly gauges: GaugesService;
+  /** My assignments service - get current user's assignments */
+  readonly myAssignments: MyAssignmentsService;
+  /** My notifications service - get and manage notifications */
+  readonly myNotifications: MyNotificationsService;
   /** Download file content from any API-routable download URL */
   downloadURL(rawURL: string): Promise<DownloadResult>;
 }
@@ -310,6 +322,20 @@ export function createBasecampClient(options: BasecampClientOptions): BasecampCl
     return fetch(url, { headers });
   };
 
+  // Authenticated fetch for multipart uploads — adds auth + User-Agent, caller controls body/method
+  const authenticatedFetch = async (url: string, init: RequestInit): Promise<Response> => {
+    const headers = new Headers(init.headers);
+    headers.set("User-Agent", userAgent);
+    await authStrategy.authenticate(headers);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), requestTimeoutMs);
+    try {
+      return await fetch(url, { ...init, headers, signal: controller.signal });
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  };
+
   // Add lazy-initialized service accessors
   // Services are created on first access and cached
   // Uses nullish coalescing assignment for atomic check-and-set in single-threaded JS
@@ -368,6 +394,10 @@ export function createBasecampClient(options: BasecampClientOptions): BasecampCl
   defineService("timeline", () => new TimelineService(client, hooks, fetchPage, maxPages));
   defineService("clientVisibility", () => new ClientVisibilityService(client, hooks, fetchPage, maxPages));
   defineService("boosts", () => new BoostsService(client, hooks, fetchPage, maxPages));
+  defineService("account", () => new AccountService(client, hooks, fetchPage, maxPages, authenticatedFetch, baseUrl));
+  defineService("gauges", () => new GaugesService(client, hooks, fetchPage, maxPages));
+  defineService("myAssignments", () => new MyAssignmentsService(client, hooks, fetchPage, maxPages));
+  defineService("myNotifications", () => new MyNotificationsService(client, hooks, fetchPage, maxPages));
 
   // Wire downloadURL — raw fetch, not openapi-fetch (like fetchPage)
   const downloadURLFn = createDownloadURL({

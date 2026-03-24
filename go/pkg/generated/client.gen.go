@@ -22,6 +22,7 @@ import (
 
 	"github.com/basecamp/basecamp-sdk/go/pkg/types"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // Defines values for FirstWeekDay.
@@ -34,6 +35,51 @@ const (
 	Tuesday   FirstWeekDay = "Tuesday"
 	Wednesday FirstWeekDay = "Wednesday"
 )
+
+// Account defines model for Account.
+type Account struct {
+	Active       bool                `json:"active,omitempty"`
+	CreatedAt    time.Time           `json:"created_at"`
+	Frozen       bool                `json:"frozen,omitempty"`
+	Id           int64               `json:"id"`
+	Limits       AccountLimits       `json:"limits,omitempty"`
+	Logo         string              `json:"logo,omitempty"`
+	Name         string              `json:"name"`
+	OwnerName    string              `json:"owner_name,omitempty"`
+	Paused       bool                `json:"paused,omitempty"`
+	Settings     AccountSettings     `json:"settings,omitempty"`
+	Subscription AccountSubscription `json:"subscription,omitempty"`
+	Trial        bool                `json:"trial,omitempty"`
+	TrialEndsOn  types.Date          `json:"trial_ends_on,omitempty"`
+	UpdatedAt    time.Time           `json:"updated_at"`
+}
+
+// AccountLimits defines model for AccountLimits.
+type AccountLimits struct {
+	CanCreateProjects bool `json:"can_create_projects,omitempty"`
+	CanCreateUsers    bool `json:"can_create_users,omitempty"`
+	CanPinProjects    bool `json:"can_pin_projects,omitempty"`
+	CanUploadFiles    bool `json:"can_upload_files,omitempty"`
+}
+
+// AccountSettings defines model for AccountSettings.
+type AccountSettings struct {
+	CompanyHqEnabled bool `json:"company_hq_enabled,omitempty"`
+	ProjectsEnabled  bool `json:"projects_enabled,omitempty"`
+	TeamsEnabled     bool `json:"teams_enabled,omitempty"`
+}
+
+// AccountSubscription defines model for AccountSubscription.
+type AccountSubscription struct {
+	Clients      bool   `json:"clients,omitempty"`
+	Logo         bool   `json:"logo,omitempty"`
+	ProjectLimit int32  `json:"project_limit,omitempty"`
+	ProperName   string `json:"proper_name,omitempty"`
+	ShortName    string `json:"short_name,omitempty"`
+	Teams        bool   `json:"teams,omitempty"`
+	Templates    bool   `json:"templates,omitempty"`
+	Timesheet    bool   `json:"timesheet,omitempty"`
+}
 
 // Assignable defines model for Assignable.
 type Assignable struct {
@@ -480,6 +526,20 @@ type CreateForwardReplyRequestContent struct {
 // CreateForwardReplyResponseContent defines model for CreateForwardReplyResponseContent.
 type CreateForwardReplyResponseContent = ForwardReply
 
+// CreateGaugeNeedleRequestContent defines model for CreateGaugeNeedleRequestContent.
+type CreateGaugeNeedleRequestContent struct {
+	GaugeNeedle GaugeNeedlePayload `json:"gauge_needle"`
+
+	// Notify Who to notify: "everyone", "working_on", "custom", or omit for nobody
+	Notify string `json:"notify,omitempty"`
+
+	// Subscriptions Array of people IDs to notify (only used when notify is "custom")
+	Subscriptions *[]int64 `json:"subscriptions,omitempty"`
+}
+
+// CreateGaugeNeedleResponseContent defines model for CreateGaugeNeedleResponseContent.
+type CreateGaugeNeedleResponseContent = GaugeNeedle
+
 // CreateLineupMarkerRequestContent defines model for CreateLineupMarkerRequestContent.
 type CreateLineupMarkerRequestContent struct {
 	Date string `json:"date"`
@@ -689,6 +749,14 @@ type Document struct {
 // EnableCardColumnOnHoldResponseContent defines model for EnableCardColumnOnHoldResponseContent.
 type EnableCardColumnOnHoldResponseContent = CardColumn
 
+// EnableOutOfOfficeRequestContent defines model for EnableOutOfOfficeRequestContent.
+type EnableOutOfOfficeRequestContent struct {
+	OutOfOffice OutOfOfficePayload `json:"out_of_office"`
+}
+
+// EnableOutOfOfficeResponseContent defines model for EnableOutOfOfficeResponseContent.
+type EnableOutOfOfficeResponseContent = OutOfOffice
+
 // Event defines model for Event.
 type Event struct {
 	Action      string       `json:"action"`
@@ -762,6 +830,80 @@ type ForwardReply struct {
 	VisibleToClients bool            `json:"visible_to_clients"`
 }
 
+// Gauge defines model for Gauge.
+type Gauge struct {
+	AppUrl                 string          `json:"app_url,omitempty"`
+	BookmarkUrl            string          `json:"bookmark_url,omitempty"`
+	Bucket                 RecordingBucket `json:"bucket,omitempty"`
+	CreatedAt              time.Time       `json:"created_at"`
+	Creator                Person          `json:"creator,omitempty"`
+	Description            string          `json:"description,omitempty"`
+	Enabled                bool            `json:"enabled,omitempty"`
+	Id                     int64           `json:"id"`
+	InheritsStatus         bool            `json:"inherits_status,omitempty"`
+	LastNeedleColor        string          `json:"last_needle_color,omitempty"`
+	LastNeedlePosition     int32           `json:"last_needle_position,omitempty"`
+	PreviousNeedlePosition int32           `json:"previous_needle_position,omitempty"`
+	Status                 string          `json:"status,omitempty"`
+	Title                  string          `json:"title,omitempty"`
+	Type                   string          `json:"type,omitempty"`
+	UpdatedAt              time.Time       `json:"updated_at"`
+	Url                    string          `json:"url,omitempty"`
+	VisibleToClients       bool            `json:"visible_to_clients,omitempty"`
+}
+
+// GaugeNeedle defines model for GaugeNeedle.
+type GaugeNeedle struct {
+	AppUrl           string          `json:"app_url,omitempty"`
+	BookmarkUrl      string          `json:"bookmark_url,omitempty"`
+	BoostsCount      int32           `json:"boosts_count,omitempty"`
+	BoostsUrl        string          `json:"boosts_url,omitempty"`
+	Bucket           RecordingBucket `json:"bucket,omitempty"`
+	Color            string          `json:"color,omitempty"`
+	CommentsCount    int32           `json:"comments_count,omitempty"`
+	CommentsUrl      string          `json:"comments_url,omitempty"`
+	CreatedAt        time.Time       `json:"created_at"`
+	Creator          Person          `json:"creator,omitempty"`
+	Description      string          `json:"description,omitempty"`
+	Id               int64           `json:"id"`
+	InheritsStatus   bool            `json:"inherits_status,omitempty"`
+	Parent           RecordingParent `json:"parent,omitempty"`
+	Position         int32           `json:"position,omitempty"`
+	Status           string          `json:"status,omitempty"`
+	SubscriptionUrl  string          `json:"subscription_url,omitempty"`
+	Title            string          `json:"title,omitempty"`
+	Type             string          `json:"type,omitempty"`
+	UpdatedAt        time.Time       `json:"updated_at"`
+	Url              string          `json:"url,omitempty"`
+	VisibleToClients bool            `json:"visible_to_clients,omitempty"`
+}
+
+// GaugeNeedlePayload defines model for GaugeNeedlePayload.
+type GaugeNeedlePayload struct {
+	// Color Status color: green (default), yellow, or red
+	Color string `json:"color,omitempty"`
+
+	// Description Rich text (HTML) description of the progress update
+	Description string `json:"description,omitempty"`
+
+	// Position Position of the needle (0-100)
+	Position int32 `json:"position"`
+}
+
+// GaugeNeedleUpdatePayload defines model for GaugeNeedleUpdatePayload.
+type GaugeNeedleUpdatePayload struct {
+	// Description Rich text (HTML) description
+	Description string `json:"description,omitempty"`
+}
+
+// GaugeTogglePayload defines model for GaugeTogglePayload.
+type GaugeTogglePayload struct {
+	Enabled bool `json:"enabled"`
+}
+
+// GetAccountResponseContent defines model for GetAccountResponseContent.
+type GetAccountResponseContent = Account
+
 // GetAnswerResponseContent defines model for GetAnswerResponseContent.
 type GetAnswerResponseContent = QuestionAnswer
 
@@ -820,6 +962,9 @@ type GetForwardReplyResponseContent = ForwardReply
 // GetForwardResponseContent defines model for GetForwardResponseContent.
 type GetForwardResponseContent = Forward
 
+// GetGaugeNeedleResponseContent defines model for GetGaugeNeedleResponseContent.
+type GetGaugeNeedleResponseContent = GaugeNeedle
+
 // GetHillChartResponseContent defines model for GetHillChartResponseContent.
 type GetHillChartResponseContent = HillChart
 
@@ -835,8 +980,33 @@ type GetMessageResponseContent = Message
 // GetMessageTypeResponseContent defines model for GetMessageTypeResponseContent.
 type GetMessageTypeResponseContent = MessageType
 
+// GetMyAssignmentsResponseContent defines model for GetMyAssignmentsResponseContent.
+type GetMyAssignmentsResponseContent struct {
+	NonPriorities []MyAssignment `json:"non_priorities,omitempty"`
+	Priorities    []MyAssignment `json:"priorities,omitempty"`
+}
+
+// GetMyCompletedAssignmentsResponseContent defines model for GetMyCompletedAssignmentsResponseContent.
+type GetMyCompletedAssignmentsResponseContent = []MyAssignment
+
+// GetMyDueAssignmentsResponseContent defines model for GetMyDueAssignmentsResponseContent.
+type GetMyDueAssignmentsResponseContent = []MyAssignment
+
+// GetMyNotificationsResponseContent defines model for GetMyNotificationsResponseContent.
+type GetMyNotificationsResponseContent struct {
+	Memories []Notification `json:"memories,omitempty"`
+	Reads    []Notification `json:"reads,omitempty"`
+	Unreads  []Notification `json:"unreads,omitempty"`
+}
+
+// GetMyPreferencesResponseContent defines model for GetMyPreferencesResponseContent.
+type GetMyPreferencesResponseContent = Preferences
+
 // GetMyProfileResponseContent defines model for GetMyProfileResponseContent.
 type GetMyProfileResponseContent = Person
+
+// GetOutOfOfficeResponseContent defines model for GetOutOfOfficeResponseContent.
+type GetOutOfOfficeResponseContent = OutOfOffice
 
 // GetOverdueTodosResponseContent defines model for GetOverdueTodosResponseContent.
 type GetOverdueTodosResponseContent struct {
@@ -1040,6 +1210,12 @@ type ListForwardRepliesResponseContent = []ForwardReply
 // ListForwardsResponseContent defines model for ListForwardsResponseContent.
 type ListForwardsResponseContent = []Forward
 
+// ListGaugeNeedlesResponseContent defines model for ListGaugeNeedlesResponseContent.
+type ListGaugeNeedlesResponseContent = []GaugeNeedle
+
+// ListGaugesResponseContent defines model for ListGaugesResponseContent.
+type ListGaugesResponseContent = []Gauge
+
 // ListLineupMarkersResponseContent defines model for ListLineupMarkersResponseContent.
 type ListLineupMarkersResponseContent = []LineupMarker
 
@@ -1099,6 +1275,12 @@ type ListVaultsResponseContent = []Vault
 
 // ListWebhooksResponseContent defines model for ListWebhooksResponseContent.
 type ListWebhooksResponseContent = []Webhook
+
+// MarkAsReadRequestContent defines model for MarkAsReadRequestContent.
+type MarkAsReadRequestContent struct {
+	// Readables Array of readable_sgid values identifying the items to mark as read
+	Readables []string `json:"readables"`
+}
 
 // Message defines model for Message.
 type Message struct {
@@ -1166,12 +1348,114 @@ type MoveCardColumnRequestContent struct {
 // MoveCardRequestContent defines model for MoveCardRequestContent.
 type MoveCardRequestContent struct {
 	ColumnId int64 `json:"column_id"`
+
+	// Position 1-indexed position within the destination column. Defaults to 1 (top).
+	Position int32 `json:"position,omitempty"`
+}
+
+// MyAssignment defines model for MyAssignment.
+type MyAssignment struct {
+	AppUrl         string                 `json:"app_url,omitempty"`
+	Assignees      []MyAssignmentAssignee `json:"assignees,omitempty"`
+	Bucket         MyAssignmentBucket     `json:"bucket,omitempty"`
+	Children       []MyAssignment         `json:"children,omitempty"`
+	CommentsCount  int32                  `json:"comments_count,omitempty"`
+	Completed      bool                   `json:"completed,omitempty"`
+	Content        string                 `json:"content,omitempty"`
+	DueOn          types.Date             `json:"due_on,omitempty"`
+	HasDescription bool                   `json:"has_description,omitempty"`
+	Id             int64                  `json:"id"`
+	Parent         MyAssignmentParent     `json:"parent,omitempty"`
+
+	// PriorityRecordingId Present on priority items
+	PriorityRecordingId *int64     `json:"priority_recording_id,omitempty"`
+	StartsOn            types.Date `json:"starts_on,omitempty"`
+	Type                string     `json:"type,omitempty"`
+}
+
+// MyAssignmentAssignee defines model for MyAssignmentAssignee.
+type MyAssignmentAssignee struct {
+	AvatarUrl string `json:"avatar_url,omitempty"`
+	Id        int64  `json:"id"`
+	Name      string `json:"name,omitempty"`
+}
+
+// MyAssignmentBucket defines model for MyAssignmentBucket.
+type MyAssignmentBucket struct {
+	AppUrl string `json:"app_url,omitempty"`
+	Id     int64  `json:"id"`
+	Name   string `json:"name,omitempty"`
+}
+
+// MyAssignmentParent defines model for MyAssignmentParent.
+type MyAssignmentParent struct {
+	AppUrl string `json:"app_url,omitempty"`
+	Id     int64  `json:"id"`
+	Title  string `json:"title,omitempty"`
 }
 
 // NotFoundErrorResponseContent defines model for NotFoundErrorResponseContent.
 type NotFoundErrorResponseContent struct {
 	Error   string `json:"error"`
 	Message string `json:"message,omitempty"`
+}
+
+// Notification defines model for Notification.
+type Notification struct {
+	AppUrl         string    `json:"app_url,omitempty"`
+	BookmarkUrl    string    `json:"bookmark_url,omitempty"`
+	BucketName     string    `json:"bucket_name,omitempty"`
+	ContentExcerpt string    `json:"content_excerpt,omitempty"`
+	CreatedAt      time.Time `json:"created_at"`
+	Creator        Person    `json:"creator,omitempty"`
+	Id             int64     `json:"id"`
+
+	// ImageUrl Custom image URL (pings only)
+	ImageUrl  string `json:"image_url,omitempty"`
+	MemoryUrl string `json:"memory_url,omitempty"`
+
+	// Named Whether the ping has a custom name (pings only)
+	Named bool `json:"named,omitempty"`
+
+	// Participants Present on ping notifications
+	Participants           []Person                `json:"participants,omitempty"`
+	PreviewableAttachments []PreviewableAttachment `json:"previewable_attachments,omitempty"`
+	ReadAt                 time.Time               `json:"read_at,omitempty"`
+	ReadableIdentifier     string                  `json:"readable_identifier,omitempty"`
+	ReadableSgid           string                  `json:"readable_sgid,omitempty"`
+	Section                string                  `json:"section,omitempty"`
+	Subscribed             bool                    `json:"subscribed,omitempty"`
+	SubscriptionUrl        string                  `json:"subscription_url,omitempty"`
+	Title                  string                  `json:"title,omitempty"`
+	Type                   string                  `json:"type,omitempty"`
+	UnreadAt               time.Time               `json:"unread_at,omitempty"`
+	UnreadCount            int32                   `json:"unread_count,omitempty"`
+	UnreadUrl              string                  `json:"unread_url,omitempty"`
+	UpdatedAt              time.Time               `json:"updated_at"`
+}
+
+// OutOfOffice defines model for OutOfOffice.
+type OutOfOffice struct {
+	Enabled   bool              `json:"enabled,omitempty"`
+	EndDate   string            `json:"end_date,omitempty"`
+	Ongoing   bool              `json:"ongoing,omitempty"`
+	Person    OutOfOfficePerson `json:"person,omitempty"`
+	StartDate string            `json:"start_date,omitempty"`
+}
+
+// OutOfOfficePayload defines model for OutOfOfficePayload.
+type OutOfOfficePayload struct {
+	// EndDate End date in ISO 8601 format (YYYY-MM-DD)
+	EndDate string `json:"end_date"`
+
+	// StartDate Start date in ISO 8601 format (YYYY-MM-DD)
+	StartDate string `json:"start_date"`
+}
+
+// OutOfOfficePerson defines model for OutOfOfficePerson.
+type OutOfOfficePerson struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name,omitempty"`
 }
 
 // PauseQuestionResponseContent defines model for PauseQuestionResponseContent.
@@ -1209,6 +1493,39 @@ type Person struct {
 type PersonCompany struct {
 	Id   int64  `json:"id"`
 	Name string `json:"name"`
+}
+
+// Preferences defines model for Preferences.
+type Preferences struct {
+	AppUrl       string `json:"app_url,omitempty"`
+	FirstWeekDay string `json:"first_week_day,omitempty"`
+	TimeFormat   string `json:"time_format,omitempty"`
+	TimeZoneName string `json:"time_zone_name,omitempty"`
+	Url          string `json:"url,omitempty"`
+}
+
+// PreferencesPayload defines model for PreferencesPayload.
+type PreferencesPayload struct {
+	// FirstWeekDay First day of the week: Sunday, Monday, Tuesday, etc.
+	FirstWeekDay string `json:"first_week_day,omitempty"`
+
+	// TimeFormat Time display format: twelve_hour or twenty_four_hour
+	TimeFormat string `json:"time_format,omitempty"`
+
+	// TimeZoneName Time zone name (e.g. "America/Chicago", "London", "UTC")
+	TimeZoneName string `json:"time_zone_name,omitempty"`
+}
+
+// PreviewableAttachment defines model for PreviewableAttachment.
+type PreviewableAttachment struct {
+	AppUrl      string `json:"app_url,omitempty"`
+	ContentType string `json:"content_type,omitempty"`
+	Filename    string `json:"filename,omitempty"`
+	Filesize    int64  `json:"filesize,omitempty"`
+	Height      int32  `json:"height,omitempty"`
+	Id          *int64 `json:"id,omitempty"`
+	Url         string `json:"url,omitempty"`
+	Width       int32  `json:"width,omitempty"`
 }
 
 // Project defines model for Project.
@@ -1751,6 +2068,11 @@ type Todoset struct {
 	VisibleToClients bool       `json:"visible_to_clients"`
 }
 
+// ToggleGaugeRequestContent defines model for ToggleGaugeRequestContent.
+type ToggleGaugeRequestContent struct {
+	Gauge GaugeTogglePayload `json:"gauge"`
+}
+
 // Tool defines model for Tool.
 type Tool struct {
 	AppUrl    string          `json:"app_url,omitempty"`
@@ -1771,6 +2093,14 @@ type UnauthorizedErrorResponseContent struct {
 	Error   string `json:"error"`
 	Message string `json:"message,omitempty"`
 }
+
+// UpdateAccountNameRequestContent defines model for UpdateAccountNameRequestContent.
+type UpdateAccountNameRequestContent struct {
+	Name string `json:"name"`
+}
+
+// UpdateAccountNameResponseContent defines model for UpdateAccountNameResponseContent.
+type UpdateAccountNameResponseContent = Account
 
 // UpdateCardColumnRequestContent defines model for UpdateCardColumnRequestContent.
 type UpdateCardColumnRequestContent struct {
@@ -1828,6 +2158,14 @@ type UpdateDocumentRequestContent struct {
 // UpdateDocumentResponseContent defines model for UpdateDocumentResponseContent.
 type UpdateDocumentResponseContent = Document
 
+// UpdateGaugeNeedleRequestContent defines model for UpdateGaugeNeedleRequestContent.
+type UpdateGaugeNeedleRequestContent struct {
+	GaugeNeedle GaugeNeedleUpdatePayload `json:"gauge_needle,omitempty"`
+}
+
+// UpdateGaugeNeedleResponseContent defines model for UpdateGaugeNeedleResponseContent.
+type UpdateGaugeNeedleResponseContent = GaugeNeedle
+
 // UpdateHillChartSettingsRequestContent defines model for UpdateHillChartSettingsRequestContent.
 type UpdateHillChartSettingsRequestContent struct {
 	Tracked   []int64 `json:"tracked,omitempty"`
@@ -1864,6 +2202,14 @@ type UpdateMessageTypeRequestContent struct {
 
 // UpdateMessageTypeResponseContent defines model for UpdateMessageTypeResponseContent.
 type UpdateMessageTypeResponseContent = MessageType
+
+// UpdateMyPreferencesRequestContent defines model for UpdateMyPreferencesRequestContent.
+type UpdateMyPreferencesRequestContent struct {
+	Person PreferencesPayload `json:"person"`
+}
+
+// UpdateMyPreferencesResponseContent defines model for UpdateMyPreferencesResponseContent.
+type UpdateMyPreferencesResponseContent = Preferences
 
 // UpdateMyProfileRequestContent defines model for UpdateMyProfileRequestContent.
 type UpdateMyProfileRequestContent struct {
@@ -2193,15 +2539,65 @@ func (s SensitiveString) Value() string {
 	return string(s)
 }
 
+// UpdateAccountLogoMultipartBody defines parameters for UpdateAccountLogo.
+type UpdateAccountLogoMultipartBody struct {
+	Logo openapi_types.File `json:"logo"`
+}
+
 // CreateAttachmentParams defines parameters for CreateAttachment.
 type CreateAttachmentParams struct {
 	Name string `form:"name" json:"name"`
+}
+
+// ListCampfireLinesParams defines parameters for ListCampfireLines.
+type ListCampfireLinesParams struct {
+	// Sort created_at|updated_at
+	Sort string `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// Direction asc|desc
+	Direction string `form:"direction,omitempty" json:"direction,omitempty"`
+}
+
+// ListCampfireUploadsParams defines parameters for ListCampfireUploads.
+type ListCampfireUploadsParams struct {
+	// Sort created_at|updated_at
+	Sort string `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// Direction asc|desc
+	Direction string `form:"direction,omitempty" json:"direction,omitempty"`
 }
 
 // CreateCampfireUploadParams defines parameters for CreateCampfireUpload.
 type CreateCampfireUploadParams struct {
 	// Name Filename for the uploaded file (e.g. "report.pdf").
 	Name string `form:"name" json:"name"`
+}
+
+// ListClientApprovalsParams defines parameters for ListClientApprovals.
+type ListClientApprovalsParams struct {
+	// Sort created_at|updated_at
+	Sort string `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// Direction asc|desc
+	Direction string `form:"direction,omitempty" json:"direction,omitempty"`
+}
+
+// ListClientCorrespondencesParams defines parameters for ListClientCorrespondences.
+type ListClientCorrespondencesParams struct {
+	// Sort created_at|updated_at
+	Sort string `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// Direction asc|desc
+	Direction string `form:"direction,omitempty" json:"direction,omitempty"`
+}
+
+// ListForwardsParams defines parameters for ListForwards.
+type ListForwardsParams struct {
+	// Sort created_at|updated_at
+	Sort string `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// Direction asc|desc
+	Direction string `form:"direction,omitempty" json:"direction,omitempty"`
 }
 
 // ListMessagesParams defines parameters for ListMessages.
@@ -2211,6 +2607,19 @@ type ListMessagesParams struct {
 
 	// Direction asc|desc
 	Direction string `form:"direction,omitempty" json:"direction,omitempty"`
+}
+
+// GetMyDueAssignmentsParams defines parameters for GetMyDueAssignments.
+type GetMyDueAssignmentsParams struct {
+	// Scope Filter by due date range: overdue, due_today, due_tomorrow,
+	// due_later_this_week, due_next_week, due_later
+	Scope string `form:"scope,omitempty" json:"scope,omitempty"`
+}
+
+// GetMyNotificationsParams defines parameters for GetMyNotifications.
+type GetMyNotificationsParams struct {
+	// Page Page number for paginating through read items. Defaults to 1.
+	Page int32 `form:"page,omitempty" json:"page,omitempty"`
 }
 
 // ListProjectsParams defines parameters for ListProjects.
@@ -2247,6 +2656,13 @@ type GetRecordingTimesheetParams struct {
 	From     string `form:"from,omitempty" json:"from,omitempty"`
 	To       string `form:"to,omitempty" json:"to,omitempty"`
 	PersonId int64  `form:"person_id,omitempty" json:"person_id,omitempty"`
+}
+
+// ListGaugesParams defines parameters for ListGauges.
+type ListGaugesParams struct {
+	// BucketIds Comma-separated list of project IDs. When provided, results are returned
+	// in the order specified instead of by risk level.
+	BucketIds string `form:"bucket_ids,omitempty" json:"bucket_ids,omitempty"`
 }
 
 // GetUpcomingScheduleParams defines parameters for GetUpcomingSchedule.
@@ -2300,6 +2716,12 @@ type ListTodolistsParams struct {
 	// Status active|archived|trashed
 	Status string `form:"status,omitempty" json:"status,omitempty"`
 }
+
+// UpdateAccountLogoMultipartRequestBody defines body for UpdateAccountLogo for multipart/form-data ContentType.
+type UpdateAccountLogoMultipartRequestBody UpdateAccountLogoMultipartBody
+
+// UpdateAccountNameJSONRequestBody defines body for UpdateAccountName for application/json ContentType.
+type UpdateAccountNameJSONRequestBody = UpdateAccountNameRequestContent
 
 // CreateWebhookJSONRequestBody defines body for CreateWebhook for application/json ContentType.
 type CreateWebhookJSONRequestBody = CreateWebhookRequestContent
@@ -2364,6 +2786,9 @@ type UpdateToolJSONRequestBody = UpdateToolRequestContent
 // UpdateDocumentJSONRequestBody defines body for UpdateDocument for application/json ContentType.
 type UpdateDocumentJSONRequestBody = UpdateDocumentRequestContent
 
+// UpdateGaugeNeedleJSONRequestBody defines body for UpdateGaugeNeedle for application/json ContentType.
+type UpdateGaugeNeedleJSONRequestBody = UpdateGaugeNeedleRequestContent
+
 // CreateForwardReplyJSONRequestBody defines body for CreateForwardReply for application/json ContentType.
 type CreateForwardReplyJSONRequestBody = CreateForwardReplyRequestContent
 
@@ -2379,14 +2804,29 @@ type CreateMessageJSONRequestBody = CreateMessageRequestContent
 // UpdateMessageJSONRequestBody defines body for UpdateMessage for application/json ContentType.
 type UpdateMessageJSONRequestBody = UpdateMessageRequestContent
 
+// UpdateMyPreferencesJSONRequestBody defines body for UpdateMyPreferences for application/json ContentType.
+type UpdateMyPreferencesJSONRequestBody = UpdateMyPreferencesRequestContent
+
 // UpdateMyProfileJSONRequestBody defines body for UpdateMyProfile for application/json ContentType.
 type UpdateMyProfileJSONRequestBody = UpdateMyProfileRequestContent
+
+// MarkAsReadJSONRequestBody defines body for MarkAsRead for application/json ContentType.
+type MarkAsReadJSONRequestBody = MarkAsReadRequestContent
+
+// EnableOutOfOfficeJSONRequestBody defines body for EnableOutOfOffice for application/json ContentType.
+type EnableOutOfOfficeJSONRequestBody = EnableOutOfOfficeRequestContent
 
 // CreateProjectJSONRequestBody defines body for CreateProject for application/json ContentType.
 type CreateProjectJSONRequestBody = CreateProjectRequestContent
 
 // UpdateProjectJSONRequestBody defines body for UpdateProject for application/json ContentType.
 type UpdateProjectJSONRequestBody = UpdateProjectRequestContent
+
+// ToggleGaugeJSONRequestBody defines body for ToggleGauge for application/json ContentType.
+type ToggleGaugeJSONRequestBody = ToggleGaugeRequestContent
+
+// CreateGaugeNeedleJSONRequestBody defines body for CreateGaugeNeedle for application/json ContentType.
+type CreateGaugeNeedleJSONRequestBody = CreateGaugeNeedleRequestContent
 
 // UpdateProjectAccessJSONRequestBody defines body for UpdateProjectAccess for application/json ContentType.
 type UpdateProjectAccessJSONRequestBody = UpdateProjectAccessRequestContent
@@ -2780,6 +3220,20 @@ func (c *Client) doWithRetry(ctx context.Context, buildRequest func() (*http.Req
 
 // The interface specification for the client above.
 type ClientInterface interface {
+	// GetAccount request
+	GetAccount(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveAccountLogo request
+	RemoveAccountLogo(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAccountLogoWithBody request with any body
+	UpdateAccountLogoWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAccountNameWithBody request with any body
+	UpdateAccountNameWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateAccountName(ctx context.Context, accountId string, body UpdateAccountNameJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CreateAttachmentWithBody request with any body
 	CreateAttachmentWithBody(ctx context.Context, accountId string, params *CreateAttachmentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2924,7 +3378,7 @@ type ClientInterface interface {
 	UpdateChatbot(ctx context.Context, accountId string, campfireId int64, chatbotId int64, body UpdateChatbotJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListCampfireLines request
-	ListCampfireLines(ctx context.Context, accountId string, campfireId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListCampfireLines(ctx context.Context, accountId string, campfireId int64, params *ListCampfireLinesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateCampfireLineWithBody request with any body
 	CreateCampfireLineWithBody(ctx context.Context, accountId string, campfireId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2938,7 +3392,7 @@ type ClientInterface interface {
 	GetCampfireLine(ctx context.Context, accountId string, campfireId int64, lineId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListCampfireUploads request
-	ListCampfireUploads(ctx context.Context, accountId string, campfireId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListCampfireUploads(ctx context.Context, accountId string, campfireId int64, params *ListCampfireUploadsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateCampfireUploadWithBody request with any body
 	CreateCampfireUploadWithBody(ctx context.Context, accountId string, campfireId int64, params *CreateCampfireUploadParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2947,13 +3401,13 @@ type ClientInterface interface {
 	ListPingablePeople(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListClientApprovals request
-	ListClientApprovals(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListClientApprovals(ctx context.Context, accountId string, params *ListClientApprovalsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetClientApproval request
 	GetClientApproval(ctx context.Context, accountId string, approvalId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListClientCorrespondences request
-	ListClientCorrespondences(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListClientCorrespondences(ctx context.Context, accountId string, params *ListClientCorrespondencesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetClientCorrespondence request
 	GetClientCorrespondence(ctx context.Context, accountId string, correspondenceId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2996,6 +3450,17 @@ type ClientInterface interface {
 
 	UpdateDocument(ctx context.Context, accountId string, documentId int64, body UpdateDocumentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DestroyGaugeNeedle request
+	DestroyGaugeNeedle(ctx context.Context, accountId string, needleId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetGaugeNeedle request
+	GetGaugeNeedle(ctx context.Context, accountId string, needleId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateGaugeNeedleWithBody request with any body
+	UpdateGaugeNeedleWithBody(ctx context.Context, accountId string, needleId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateGaugeNeedle(ctx context.Context, accountId string, needleId int64, body UpdateGaugeNeedleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetForward request
 	GetForward(ctx context.Context, accountId string, forwardId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -3014,7 +3479,7 @@ type ClientInterface interface {
 	GetInbox(ctx context.Context, accountId string, inboxId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListForwards request
-	ListForwards(ctx context.Context, accountId string, inboxId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListForwards(ctx context.Context, accountId string, inboxId int64, params *ListForwardsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListLineupMarkers request
 	ListLineupMarkers(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3051,6 +3516,23 @@ type ClientInterface interface {
 
 	UpdateMessage(ctx context.Context, accountId string, messageId int64, body UpdateMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetMyAssignments request
+	GetMyAssignments(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMyCompletedAssignments request
+	GetMyCompletedAssignments(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMyDueAssignments request
+	GetMyDueAssignments(ctx context.Context, accountId string, params *GetMyDueAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMyPreferences request
+	GetMyPreferences(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateMyPreferencesWithBody request with any body
+	UpdateMyPreferencesWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateMyPreferences(ctx context.Context, accountId string, body UpdateMyPreferencesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetMyProfile request
 	GetMyProfile(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -3062,11 +3544,30 @@ type ClientInterface interface {
 	// GetQuestionReminders request
 	GetQuestionReminders(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetMyNotifications request
+	GetMyNotifications(ctx context.Context, accountId string, params *GetMyNotificationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// MarkAsReadWithBody request with any body
+	MarkAsReadWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	MarkAsRead(ctx context.Context, accountId string, body MarkAsReadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListPeople request
 	ListPeople(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetPerson request
 	GetPerson(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DisableOutOfOffice request
+	DisableOutOfOffice(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOutOfOffice request
+	GetOutOfOffice(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EnableOutOfOfficeWithBody request with any body
+	EnableOutOfOfficeWithBody(ctx context.Context, accountId string, personId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EnableOutOfOffice(ctx context.Context, accountId string, personId int64, body EnableOutOfOfficeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListProjects request
 	ListProjects(ctx context.Context, accountId string, params *ListProjectsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3089,6 +3590,19 @@ type ClientInterface interface {
 	UpdateProjectWithBody(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateProject(ctx context.Context, accountId string, projectId int64, body UpdateProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ToggleGaugeWithBody request with any body
+	ToggleGaugeWithBody(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ToggleGauge(ctx context.Context, accountId string, projectId int64, body ToggleGaugeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListGaugeNeedles request
+	ListGaugeNeedles(ctx context.Context, accountId string, projectId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateGaugeNeedleWithBody request with any body
+	CreateGaugeNeedleWithBody(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateGaugeNeedle(ctx context.Context, accountId string, projectId int64, body CreateGaugeNeedleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListProjectPeople request
 	ListProjectPeople(ctx context.Context, accountId string, projectId int64, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3238,6 +3752,9 @@ type ClientInterface interface {
 	RepositionToolWithBody(ctx context.Context, accountId string, toolId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	RepositionTool(ctx context.Context, accountId string, toolId int64, body RepositionToolJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListGauges request
+	ListGauges(ctx context.Context, accountId string, params *ListGaugesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetProgressReport request
 	GetProgressReport(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3451,6 +3968,54 @@ type ClientInterface interface {
 	UpdateWebhookWithBody(ctx context.Context, accountId string, webhookId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateWebhook(ctx context.Context, accountId string, webhookId int64, body UpdateWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+}
+
+// GetAccount is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) GetAccount(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewGetAccountRequest(c.Server, accountId)
+	}, true, "GetAccount", reqEditors...)
+
+}
+
+// RemoveAccountLogo is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) RemoveAccountLogo(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewRemoveAccountLogoRequest(c.Server, accountId)
+	}, true, "RemoveAccountLogo", reqEditors...)
+
+}
+
+// UpdateAccountLogoWithBody is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) UpdateAccountLogoWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewUpdateAccountLogoRequestWithBody(c.Server, accountId, contentType, body)
+	}, true, "UpdateAccountLogo", reqEditors...)
+
+}
+
+// UpdateAccountNameWithBody is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) UpdateAccountNameWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewUpdateAccountNameRequestWithBody(c.Server, accountId, contentType, body)
+	}, true, "UpdateAccountName", reqEditors...)
+
+}
+
+func (c *Client) UpdateAccountName(ctx context.Context, accountId string, body UpdateAccountNameJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewUpdateAccountNameRequest(c.Server, accountId, body)
+	}, true, "UpdateAccountName", reqEditors...)
+
 }
 
 // CreateAttachmentWithBody executes the CreateAttachment operation.
@@ -4073,10 +4638,10 @@ func (c *Client) UpdateChatbot(ctx context.Context, accountId string, campfireId
 
 // ListCampfireLines is marked as idempotent and will be retried on transient failures.
 
-func (c *Client) ListCampfireLines(ctx context.Context, accountId string, campfireId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ListCampfireLines(ctx context.Context, accountId string, campfireId int64, params *ListCampfireLinesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
-		return NewListCampfireLinesRequest(c.Server, accountId, campfireId)
+		return NewListCampfireLinesRequest(c.Server, accountId, campfireId, params)
 	}, true, "ListCampfireLines", reqEditors...)
 
 }
@@ -4133,10 +4698,10 @@ func (c *Client) GetCampfireLine(ctx context.Context, accountId string, campfire
 
 // ListCampfireUploads is marked as idempotent and will be retried on transient failures.
 
-func (c *Client) ListCampfireUploads(ctx context.Context, accountId string, campfireId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ListCampfireUploads(ctx context.Context, accountId string, campfireId int64, params *ListCampfireUploadsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
-		return NewListCampfireUploadsRequest(c.Server, accountId, campfireId)
+		return NewListCampfireUploadsRequest(c.Server, accountId, campfireId, params)
 	}, true, "ListCampfireUploads", reqEditors...)
 
 }
@@ -4169,10 +4734,10 @@ func (c *Client) ListPingablePeople(ctx context.Context, accountId string, reqEd
 
 // ListClientApprovals is marked as idempotent and will be retried on transient failures.
 
-func (c *Client) ListClientApprovals(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ListClientApprovals(ctx context.Context, accountId string, params *ListClientApprovalsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
-		return NewListClientApprovalsRequest(c.Server, accountId)
+		return NewListClientApprovalsRequest(c.Server, accountId, params)
 	}, true, "ListClientApprovals", reqEditors...)
 
 }
@@ -4189,10 +4754,10 @@ func (c *Client) GetClientApproval(ctx context.Context, accountId string, approv
 
 // ListClientCorrespondences is marked as idempotent and will be retried on transient failures.
 
-func (c *Client) ListClientCorrespondences(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ListClientCorrespondences(ctx context.Context, accountId string, params *ListClientCorrespondencesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
-		return NewListClientCorrespondencesRequest(c.Server, accountId)
+		return NewListClientCorrespondencesRequest(c.Server, accountId, params)
 	}, true, "ListClientCorrespondences", reqEditors...)
 
 }
@@ -4351,6 +4916,44 @@ func (c *Client) UpdateDocument(ctx context.Context, accountId string, documentI
 
 }
 
+// DestroyGaugeNeedle is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) DestroyGaugeNeedle(ctx context.Context, accountId string, needleId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewDestroyGaugeNeedleRequest(c.Server, accountId, needleId)
+	}, true, "DestroyGaugeNeedle", reqEditors...)
+
+}
+
+// GetGaugeNeedle is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) GetGaugeNeedle(ctx context.Context, accountId string, needleId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewGetGaugeNeedleRequest(c.Server, accountId, needleId)
+	}, true, "GetGaugeNeedle", reqEditors...)
+
+}
+
+// UpdateGaugeNeedleWithBody is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) UpdateGaugeNeedleWithBody(ctx context.Context, accountId string, needleId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewUpdateGaugeNeedleRequestWithBody(c.Server, accountId, needleId, contentType, body)
+	}, true, "UpdateGaugeNeedle", reqEditors...)
+
+}
+
+func (c *Client) UpdateGaugeNeedle(ctx context.Context, accountId string, needleId int64, body UpdateGaugeNeedleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewUpdateGaugeNeedleRequest(c.Server, accountId, needleId, body)
+	}, true, "UpdateGaugeNeedle", reqEditors...)
+
+}
+
 // GetForward is marked as idempotent and will be retried on transient failures.
 
 func (c *Client) GetForward(ctx context.Context, accountId string, forwardId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -4423,10 +5026,10 @@ func (c *Client) GetInbox(ctx context.Context, accountId string, inboxId int64, 
 
 // ListForwards is marked as idempotent and will be retried on transient failures.
 
-func (c *Client) ListForwards(ctx context.Context, accountId string, inboxId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ListForwards(ctx context.Context, accountId string, inboxId int64, params *ListForwardsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
-		return NewListForwardsRequest(c.Server, accountId, inboxId)
+		return NewListForwardsRequest(c.Server, accountId, inboxId, params)
 	}, true, "ListForwards", reqEditors...)
 
 }
@@ -4577,6 +5180,64 @@ func (c *Client) UpdateMessage(ctx context.Context, accountId string, messageId 
 
 }
 
+// GetMyAssignments is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) GetMyAssignments(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewGetMyAssignmentsRequest(c.Server, accountId)
+	}, true, "GetMyAssignments", reqEditors...)
+
+}
+
+// GetMyCompletedAssignments is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) GetMyCompletedAssignments(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewGetMyCompletedAssignmentsRequest(c.Server, accountId)
+	}, true, "GetMyCompletedAssignments", reqEditors...)
+
+}
+
+// GetMyDueAssignments is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) GetMyDueAssignments(ctx context.Context, accountId string, params *GetMyDueAssignmentsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewGetMyDueAssignmentsRequest(c.Server, accountId, params)
+	}, true, "GetMyDueAssignments", reqEditors...)
+
+}
+
+// GetMyPreferences is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) GetMyPreferences(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewGetMyPreferencesRequest(c.Server, accountId)
+	}, true, "GetMyPreferences", reqEditors...)
+
+}
+
+// UpdateMyPreferencesWithBody is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) UpdateMyPreferencesWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewUpdateMyPreferencesRequestWithBody(c.Server, accountId, contentType, body)
+	}, true, "UpdateMyPreferences", reqEditors...)
+
+}
+
+func (c *Client) UpdateMyPreferences(ctx context.Context, accountId string, body UpdateMyPreferencesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewUpdateMyPreferencesRequest(c.Server, accountId, body)
+	}, true, "UpdateMyPreferences", reqEditors...)
+
+}
+
 // GetMyProfile is marked as idempotent and will be retried on transient failures.
 
 func (c *Client) GetMyProfile(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -4615,6 +5276,34 @@ func (c *Client) GetQuestionReminders(ctx context.Context, accountId string, req
 
 }
 
+// GetMyNotifications is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) GetMyNotifications(ctx context.Context, accountId string, params *GetMyNotificationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewGetMyNotificationsRequest(c.Server, accountId, params)
+	}, true, "GetMyNotifications", reqEditors...)
+
+}
+
+// MarkAsReadWithBody is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) MarkAsReadWithBody(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewMarkAsReadRequestWithBody(c.Server, accountId, contentType, body)
+	}, true, "MarkAsRead", reqEditors...)
+
+}
+
+func (c *Client) MarkAsRead(ctx context.Context, accountId string, body MarkAsReadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewMarkAsReadRequest(c.Server, accountId, body)
+	}, true, "MarkAsRead", reqEditors...)
+
+}
+
 // ListPeople is marked as idempotent and will be retried on transient failures.
 
 func (c *Client) ListPeople(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -4632,6 +5321,56 @@ func (c *Client) GetPerson(ctx context.Context, accountId string, personId int64
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
 		return NewGetPersonRequest(c.Server, accountId, personId)
 	}, true, "GetPerson", reqEditors...)
+
+}
+
+// DisableOutOfOffice is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) DisableOutOfOffice(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewDisableOutOfOfficeRequest(c.Server, accountId, personId)
+	}, true, "DisableOutOfOffice", reqEditors...)
+
+}
+
+// GetOutOfOffice is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) GetOutOfOffice(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewGetOutOfOfficeRequest(c.Server, accountId, personId)
+	}, true, "GetOutOfOffice", reqEditors...)
+
+}
+
+// EnableOutOfOfficeWithBody executes the EnableOutOfOffice operation.
+
+func (c *Client) EnableOutOfOfficeWithBody(ctx context.Context, accountId string, personId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	req, err := NewEnableOutOfOfficeRequestWithBody(c.Server, accountId, personId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+
+}
+
+func (c *Client) EnableOutOfOffice(ctx context.Context, accountId string, personId int64, body EnableOutOfOfficeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	req, err := NewEnableOutOfOfficeRequest(c.Server, accountId, personId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
 
 }
 
@@ -4720,6 +5459,64 @@ func (c *Client) UpdateProject(ctx context.Context, accountId string, projectId 
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
 		return NewUpdateProjectRequest(c.Server, accountId, projectId, body)
 	}, true, "UpdateProject", reqEditors...)
+
+}
+
+// ToggleGaugeWithBody is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) ToggleGaugeWithBody(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewToggleGaugeRequestWithBody(c.Server, accountId, projectId, contentType, body)
+	}, true, "ToggleGauge", reqEditors...)
+
+}
+
+func (c *Client) ToggleGauge(ctx context.Context, accountId string, projectId int64, body ToggleGaugeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewToggleGaugeRequest(c.Server, accountId, projectId, body)
+	}, true, "ToggleGauge", reqEditors...)
+
+}
+
+// ListGaugeNeedles is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) ListGaugeNeedles(ctx context.Context, accountId string, projectId int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewListGaugeNeedlesRequest(c.Server, accountId, projectId)
+	}, true, "ListGaugeNeedles", reqEditors...)
+
+}
+
+// CreateGaugeNeedleWithBody executes the CreateGaugeNeedle operation.
+
+func (c *Client) CreateGaugeNeedleWithBody(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	req, err := NewCreateGaugeNeedleRequestWithBody(c.Server, accountId, projectId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+
+}
+
+func (c *Client) CreateGaugeNeedle(ctx context.Context, accountId string, projectId int64, body CreateGaugeNeedleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	req, err := NewCreateGaugeNeedleRequest(c.Server, accountId, projectId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
 
 }
 
@@ -5324,6 +6121,16 @@ func (c *Client) RepositionTool(ctx context.Context, accountId string, toolId in
 	return c.doWithRetry(ctx, func() (*http.Request, error) {
 		return NewRepositionToolRequest(c.Server, accountId, toolId, body)
 	}, true, "RepositionTool", reqEditors...)
+
+}
+
+// ListGauges is marked as idempotent and will be retried on transient failures.
+
+func (c *Client) ListGauges(ctx context.Context, accountId string, params *ListGaugesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+
+	return c.doWithRetry(ctx, func() (*http.Request, error) {
+		return NewListGaugesRequest(c.Server, accountId, params)
+	}, true, "ListGauges", reqEditors...)
 
 }
 
@@ -6171,6 +6978,157 @@ func (c *Client) UpdateWebhook(ctx context.Context, accountId string, webhookId 
 		return NewUpdateWebhookRequest(c.Server, accountId, webhookId, body)
 	}, true, "UpdateWebhook", reqEditors...)
 
+}
+
+// NewGetAccountRequest generates requests for GetAccount
+func NewGetAccountRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/account.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRemoveAccountLogoRequest generates requests for RemoveAccountLogo
+func NewRemoveAccountLogoRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/account/logo.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateAccountLogoRequestWithBody generates requests for UpdateAccountLogo with any type of body
+func NewUpdateAccountLogoRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/account/logo.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUpdateAccountNameRequest calls the generic UpdateAccountName builder with application/json body
+func NewUpdateAccountNameRequest(server string, accountId string, body UpdateAccountNameJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAccountNameRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewUpdateAccountNameRequestWithBody generates requests for UpdateAccountName with any type of body
+func NewUpdateAccountNameRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/account/name.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
 }
 
 // NewCreateAttachmentRequestWithBody generates requests for CreateAttachment with any type of body
@@ -7912,7 +8870,7 @@ func NewUpdateChatbotRequestWithBody(server string, accountId string, campfireId
 }
 
 // NewListCampfireLinesRequest generates requests for ListCampfireLines
-func NewListCampfireLinesRequest(server string, accountId string, campfireId int64) (*http.Request, error) {
+func NewListCampfireLinesRequest(server string, accountId string, campfireId int64, params *ListCampfireLinesParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -7942,6 +8900,44 @@ func NewListCampfireLinesRequest(server string, accountId string, campfireId int
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Sort != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sort", runtime.ParamLocationQuery, params.Sort); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Direction != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "direction", runtime.ParamLocationQuery, params.Direction); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -8103,7 +9099,7 @@ func NewGetCampfireLineRequest(server string, accountId string, campfireId int64
 }
 
 // NewListCampfireUploadsRequest generates requests for ListCampfireUploads
-func NewListCampfireUploadsRequest(server string, accountId string, campfireId int64) (*http.Request, error) {
+func NewListCampfireUploadsRequest(server string, accountId string, campfireId int64, params *ListCampfireUploadsParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -8133,6 +9129,44 @@ func NewListCampfireUploadsRequest(server string, accountId string, campfireId i
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Sort != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sort", runtime.ParamLocationQuery, params.Sort); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Direction != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "direction", runtime.ParamLocationQuery, params.Direction); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -8239,7 +9273,7 @@ func NewListPingablePeopleRequest(server string, accountId string) (*http.Reques
 }
 
 // NewListClientApprovalsRequest generates requests for ListClientApprovals
-func NewListClientApprovalsRequest(server string, accountId string) (*http.Request, error) {
+func NewListClientApprovalsRequest(server string, accountId string, params *ListClientApprovalsParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -8262,6 +9296,44 @@ func NewListClientApprovalsRequest(server string, accountId string) (*http.Reque
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Sort != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sort", runtime.ParamLocationQuery, params.Sort); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Direction != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "direction", runtime.ParamLocationQuery, params.Direction); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -8314,7 +9386,7 @@ func NewGetClientApprovalRequest(server string, accountId string, approvalId int
 }
 
 // NewListClientCorrespondencesRequest generates requests for ListClientCorrespondences
-func NewListClientCorrespondencesRequest(server string, accountId string) (*http.Request, error) {
+func NewListClientCorrespondencesRequest(server string, accountId string, params *ListClientCorrespondencesParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -8337,6 +9409,44 @@ func NewListClientCorrespondencesRequest(server string, accountId string) (*http
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Sort != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sort", runtime.ParamLocationQuery, params.Sort); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Direction != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "direction", runtime.ParamLocationQuery, params.Direction); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -8850,6 +9960,142 @@ func NewUpdateDocumentRequestWithBody(server string, accountId string, documentI
 	return req, nil
 }
 
+// NewDestroyGaugeNeedleRequest generates requests for DestroyGaugeNeedle
+func NewDestroyGaugeNeedleRequest(server string, accountId string, needleId int64) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "needleId", runtime.ParamLocationPath, needleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/gauge_needles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetGaugeNeedleRequest generates requests for GetGaugeNeedle
+func NewGetGaugeNeedleRequest(server string, accountId string, needleId int64) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "needleId", runtime.ParamLocationPath, needleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/gauge_needles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateGaugeNeedleRequest calls the generic UpdateGaugeNeedle builder with application/json body
+func NewUpdateGaugeNeedleRequest(server string, accountId string, needleId int64, body UpdateGaugeNeedleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateGaugeNeedleRequestWithBody(server, accountId, needleId, "application/json", bodyReader)
+}
+
+// NewUpdateGaugeNeedleRequestWithBody generates requests for UpdateGaugeNeedle with any type of body
+func NewUpdateGaugeNeedleRequestWithBody(server string, accountId string, needleId int64, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "needleId", runtime.ParamLocationPath, needleId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/gauge_needles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetForwardRequest generates requests for GetForward
 func NewGetForwardRequest(server string, accountId string, forwardId int64) (*http.Request, error) {
 	var err error
@@ -9076,7 +10322,7 @@ func NewGetInboxRequest(server string, accountId string, inboxId int64) (*http.R
 }
 
 // NewListForwardsRequest generates requests for ListForwards
-func NewListForwardsRequest(server string, accountId string, inboxId int64) (*http.Request, error) {
+func NewListForwardsRequest(server string, accountId string, inboxId int64, params *ListForwardsParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -9106,6 +10352,44 @@ func NewListForwardsRequest(server string, accountId string, inboxId int64) (*ht
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Sort != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sort", runtime.ParamLocationQuery, params.Sort); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Direction != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "direction", runtime.ParamLocationQuery, params.Direction); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -9561,6 +10845,211 @@ func NewUpdateMessageRequestWithBody(server string, accountId string, messageId 
 	return req, nil
 }
 
+// NewGetMyAssignmentsRequest generates requests for GetMyAssignments
+func NewGetMyAssignmentsRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/my/assignments.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMyCompletedAssignmentsRequest generates requests for GetMyCompletedAssignments
+func NewGetMyCompletedAssignmentsRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/my/assignments/completed.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMyDueAssignmentsRequest generates requests for GetMyDueAssignments
+func NewGetMyDueAssignmentsRequest(server string, accountId string, params *GetMyDueAssignmentsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/my/assignments/due.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Scope != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "scope", runtime.ParamLocationQuery, params.Scope); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMyPreferencesRequest generates requests for GetMyPreferences
+func NewGetMyPreferencesRequest(server string, accountId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/my/preferences.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateMyPreferencesRequest calls the generic UpdateMyPreferences builder with application/json body
+func NewUpdateMyPreferencesRequest(server string, accountId string, body UpdateMyPreferencesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateMyPreferencesRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewUpdateMyPreferencesRequestWithBody generates requests for UpdateMyPreferences with any type of body
+func NewUpdateMyPreferencesRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/my/preferences.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetMyProfileRequest generates requests for GetMyProfile
 func NewGetMyProfileRequest(server string, accountId string) (*http.Request, error) {
 	var err error
@@ -9676,6 +11165,109 @@ func NewGetQuestionRemindersRequest(server string, accountId string) (*http.Requ
 	return req, nil
 }
 
+// NewGetMyNotificationsRequest generates requests for GetMyNotifications
+func NewGetMyNotificationsRequest(server string, accountId string, params *GetMyNotificationsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/my/readings.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != 0 {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewMarkAsReadRequest calls the generic MarkAsRead builder with application/json body
+func NewMarkAsReadRequest(server string, accountId string, body MarkAsReadJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewMarkAsReadRequestWithBody(server, accountId, "application/json", bodyReader)
+}
+
+// NewMarkAsReadRequestWithBody generates requests for MarkAsRead with any type of body
+func NewMarkAsReadRequestWithBody(server string, accountId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/my/unreads.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListPeopleRequest generates requests for ListPeople
 func NewListPeopleRequest(server string, accountId string) (*http.Request, error) {
 	var err error
@@ -9747,6 +11339,142 @@ func NewGetPersonRequest(server string, accountId string, personId int64) (*http
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewDisableOutOfOfficeRequest generates requests for DisableOutOfOffice
+func NewDisableOutOfOfficeRequest(server string, accountId string, personId int64) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "personId", runtime.ParamLocationPath, personId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/people/%s/out_of_office.json", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetOutOfOfficeRequest generates requests for GetOutOfOffice
+func NewGetOutOfOfficeRequest(server string, accountId string, personId int64) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "personId", runtime.ParamLocationPath, personId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/people/%s/out_of_office.json", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewEnableOutOfOfficeRequest calls the generic EnableOutOfOffice builder with application/json body
+func NewEnableOutOfOfficeRequest(server string, accountId string, personId int64, body EnableOutOfOfficeJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEnableOutOfOfficeRequestWithBody(server, accountId, personId, "application/json", bodyReader)
+}
+
+// NewEnableOutOfOfficeRequestWithBody generates requests for EnableOutOfOffice with any type of body
+func NewEnableOutOfOfficeRequestWithBody(server string, accountId string, personId int64, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "personId", runtime.ParamLocationPath, personId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/people/%s/out_of_office.json", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -10097,6 +11825,155 @@ func NewUpdateProjectRequestWithBody(server string, accountId string, projectId 
 	}
 
 	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewToggleGaugeRequest calls the generic ToggleGauge builder with application/json body
+func NewToggleGaugeRequest(server string, accountId string, projectId int64, body ToggleGaugeJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewToggleGaugeRequestWithBody(server, accountId, projectId, "application/json", bodyReader)
+}
+
+// NewToggleGaugeRequestWithBody generates requests for ToggleGauge with any type of body
+func NewToggleGaugeRequestWithBody(server string, accountId string, projectId int64, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "projectId", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/projects/%s/gauge.json", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListGaugeNeedlesRequest generates requests for ListGaugeNeedles
+func NewListGaugeNeedlesRequest(server string, accountId string, projectId int64) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "projectId", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/projects/%s/gauge/needles.json", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateGaugeNeedleRequest calls the generic CreateGaugeNeedle builder with application/json body
+func NewCreateGaugeNeedleRequest(server string, accountId string, projectId int64, body CreateGaugeNeedleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateGaugeNeedleRequestWithBody(server, accountId, projectId, "application/json", bodyReader)
+}
+
+// NewCreateGaugeNeedleRequestWithBody generates requests for CreateGaugeNeedle with any type of body
+func NewCreateGaugeNeedleRequestWithBody(server string, accountId string, projectId int64, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "projectId", runtime.ParamLocationPath, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/projects/%s/gauge/needles.json", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -12081,6 +13958,62 @@ func NewRepositionToolRequestWithBody(server string, accountId string, toolId in
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListGaugesRequest generates requests for ListGauges
+func NewListGaugesRequest(server string, accountId string, params *ListGaugesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountId", runtime.ParamLocationPath, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/%s/reports/gauges.json", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.BucketIds != "" {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bucket_ids", runtime.ParamLocationQuery, params.BucketIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -14924,6 +16857,10 @@ type OperationMetadata struct {
 // This is generated from x-basecamp-* extensions in the OpenAPI spec.
 // GET/HEAD operations are always considered idempotent for retry purposes.
 var operationMetadata = map[string]OperationMetadata{
+	"GetAccount":                         {Idempotent: true, HasSensitiveParams: false},
+	"RemoveAccountLogo":                  {Idempotent: true, HasSensitiveParams: false},
+	"UpdateAccountLogo":                  {Idempotent: true, HasSensitiveParams: false},
+	"UpdateAccountName":                  {Idempotent: true, HasSensitiveParams: false},
 	"CreateAttachment":                   {Idempotent: false, HasSensitiveParams: false},
 	"DeleteBoost":                        {Idempotent: true, HasSensitiveParams: false},
 	"GetBoost":                           {Idempotent: true, HasSensitiveParams: false},
@@ -14982,6 +16919,9 @@ var operationMetadata = map[string]OperationMetadata{
 	"UpdateTool":                         {Idempotent: true, HasSensitiveParams: false},
 	"GetDocument":                        {Idempotent: true, HasSensitiveParams: false},
 	"UpdateDocument":                     {Idempotent: true, HasSensitiveParams: false},
+	"DestroyGaugeNeedle":                 {Idempotent: true, HasSensitiveParams: false},
+	"GetGaugeNeedle":                     {Idempotent: true, HasSensitiveParams: false},
+	"UpdateGaugeNeedle":                  {Idempotent: true, HasSensitiveParams: false},
 	"GetForward":                         {Idempotent: true, HasSensitiveParams: false},
 	"ListForwardReplies":                 {Idempotent: true, HasSensitiveParams: false},
 	"CreateForwardReply":                 {Idempotent: false, HasSensitiveParams: false},
@@ -14997,17 +16937,30 @@ var operationMetadata = map[string]OperationMetadata{
 	"CreateMessage":                      {Idempotent: false, HasSensitiveParams: false},
 	"GetMessage":                         {Idempotent: true, HasSensitiveParams: false},
 	"UpdateMessage":                      {Idempotent: true, HasSensitiveParams: false},
+	"GetMyAssignments":                   {Idempotent: true, HasSensitiveParams: false},
+	"GetMyCompletedAssignments":          {Idempotent: true, HasSensitiveParams: false},
+	"GetMyDueAssignments":                {Idempotent: true, HasSensitiveParams: false},
+	"GetMyPreferences":                   {Idempotent: true, HasSensitiveParams: false},
+	"UpdateMyPreferences":                {Idempotent: true, HasSensitiveParams: false},
 	"GetMyProfile":                       {Idempotent: true, HasSensitiveParams: false},
 	"UpdateMyProfile":                    {Idempotent: true, HasSensitiveParams: false},
 	"GetQuestionReminders":               {Idempotent: true, HasSensitiveParams: false},
+	"GetMyNotifications":                 {Idempotent: true, HasSensitiveParams: false},
+	"MarkAsRead":                         {Idempotent: true, HasSensitiveParams: false},
 	"ListPeople":                         {Idempotent: true, HasSensitiveParams: false},
 	"GetPerson":                          {Idempotent: true, HasSensitiveParams: false},
+	"DisableOutOfOffice":                 {Idempotent: true, HasSensitiveParams: false},
+	"GetOutOfOffice":                     {Idempotent: true, HasSensitiveParams: false},
+	"EnableOutOfOffice":                  {Idempotent: false, HasSensitiveParams: false},
 	"ListProjects":                       {Idempotent: true, HasSensitiveParams: false},
 	"CreateProject":                      {Idempotent: false, HasSensitiveParams: false},
 	"ListRecordings":                     {Idempotent: true, HasSensitiveParams: false},
 	"TrashProject":                       {Idempotent: true, HasSensitiveParams: false},
 	"GetProject":                         {Idempotent: true, HasSensitiveParams: false},
 	"UpdateProject":                      {Idempotent: true, HasSensitiveParams: false},
+	"ToggleGauge":                        {Idempotent: true, HasSensitiveParams: false},
+	"ListGaugeNeedles":                   {Idempotent: true, HasSensitiveParams: false},
+	"CreateGaugeNeedle":                  {Idempotent: false, HasSensitiveParams: false},
 	"ListProjectPeople":                  {Idempotent: true, HasSensitiveParams: false},
 	"UpdateProjectAccess":                {Idempotent: true, HasSensitiveParams: false},
 	"GetProjectTimeline":                 {Idempotent: true, HasSensitiveParams: false},
@@ -15049,6 +17002,7 @@ var operationMetadata = map[string]OperationMetadata{
 	"DisableTool":                        {Idempotent: true, HasSensitiveParams: false},
 	"EnableTool":                         {Idempotent: false, HasSensitiveParams: false},
 	"RepositionTool":                     {Idempotent: true, HasSensitiveParams: false},
+	"ListGauges":                         {Idempotent: true, HasSensitiveParams: false},
 	"GetProgressReport":                  {Idempotent: true, HasSensitiveParams: false},
 	"GetUpcomingSchedule":                {Idempotent: true, HasSensitiveParams: false},
 	"GetTimesheetReport":                 {Idempotent: true, HasSensitiveParams: false},
@@ -16041,6 +17995,20 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
+	// GetAccountWithResponse request
+	GetAccountWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetAccountResponse, error)
+
+	// RemoveAccountLogoWithResponse request
+	RemoveAccountLogoWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*RemoveAccountLogoResponse, error)
+
+	// UpdateAccountLogoWithBodyWithResponse request with any body
+	UpdateAccountLogoWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountLogoResponse, error)
+
+	// UpdateAccountNameWithBodyWithResponse request with any body
+	UpdateAccountNameWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountNameResponse, error)
+
+	UpdateAccountNameWithResponse(ctx context.Context, accountId string, body UpdateAccountNameJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAccountNameResponse, error)
+
 	// CreateAttachmentWithBodyWithResponse request with any body
 	CreateAttachmentWithBodyWithResponse(ctx context.Context, accountId string, params *CreateAttachmentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAttachmentResponse, error)
 
@@ -16185,7 +18153,7 @@ type ClientWithResponsesInterface interface {
 	UpdateChatbotWithResponse(ctx context.Context, accountId string, campfireId int64, chatbotId int64, body UpdateChatbotJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateChatbotResponse, error)
 
 	// ListCampfireLinesWithResponse request
-	ListCampfireLinesWithResponse(ctx context.Context, accountId string, campfireId int64, reqEditors ...RequestEditorFn) (*ListCampfireLinesResponse, error)
+	ListCampfireLinesWithResponse(ctx context.Context, accountId string, campfireId int64, params *ListCampfireLinesParams, reqEditors ...RequestEditorFn) (*ListCampfireLinesResponse, error)
 
 	// CreateCampfireLineWithBodyWithResponse request with any body
 	CreateCampfireLineWithBodyWithResponse(ctx context.Context, accountId string, campfireId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCampfireLineResponse, error)
@@ -16199,7 +18167,7 @@ type ClientWithResponsesInterface interface {
 	GetCampfireLineWithResponse(ctx context.Context, accountId string, campfireId int64, lineId int64, reqEditors ...RequestEditorFn) (*GetCampfireLineResponse, error)
 
 	// ListCampfireUploadsWithResponse request
-	ListCampfireUploadsWithResponse(ctx context.Context, accountId string, campfireId int64, reqEditors ...RequestEditorFn) (*ListCampfireUploadsResponse, error)
+	ListCampfireUploadsWithResponse(ctx context.Context, accountId string, campfireId int64, params *ListCampfireUploadsParams, reqEditors ...RequestEditorFn) (*ListCampfireUploadsResponse, error)
 
 	// CreateCampfireUploadWithBodyWithResponse request with any body
 	CreateCampfireUploadWithBodyWithResponse(ctx context.Context, accountId string, campfireId int64, params *CreateCampfireUploadParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCampfireUploadResponse, error)
@@ -16208,13 +18176,13 @@ type ClientWithResponsesInterface interface {
 	ListPingablePeopleWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListPingablePeopleResponse, error)
 
 	// ListClientApprovalsWithResponse request
-	ListClientApprovalsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListClientApprovalsResponse, error)
+	ListClientApprovalsWithResponse(ctx context.Context, accountId string, params *ListClientApprovalsParams, reqEditors ...RequestEditorFn) (*ListClientApprovalsResponse, error)
 
 	// GetClientApprovalWithResponse request
 	GetClientApprovalWithResponse(ctx context.Context, accountId string, approvalId int64, reqEditors ...RequestEditorFn) (*GetClientApprovalResponse, error)
 
 	// ListClientCorrespondencesWithResponse request
-	ListClientCorrespondencesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListClientCorrespondencesResponse, error)
+	ListClientCorrespondencesWithResponse(ctx context.Context, accountId string, params *ListClientCorrespondencesParams, reqEditors ...RequestEditorFn) (*ListClientCorrespondencesResponse, error)
 
 	// GetClientCorrespondenceWithResponse request
 	GetClientCorrespondenceWithResponse(ctx context.Context, accountId string, correspondenceId int64, reqEditors ...RequestEditorFn) (*GetClientCorrespondenceResponse, error)
@@ -16257,6 +18225,17 @@ type ClientWithResponsesInterface interface {
 
 	UpdateDocumentWithResponse(ctx context.Context, accountId string, documentId int64, body UpdateDocumentJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDocumentResponse, error)
 
+	// DestroyGaugeNeedleWithResponse request
+	DestroyGaugeNeedleWithResponse(ctx context.Context, accountId string, needleId int64, reqEditors ...RequestEditorFn) (*DestroyGaugeNeedleResponse, error)
+
+	// GetGaugeNeedleWithResponse request
+	GetGaugeNeedleWithResponse(ctx context.Context, accountId string, needleId int64, reqEditors ...RequestEditorFn) (*GetGaugeNeedleResponse, error)
+
+	// UpdateGaugeNeedleWithBodyWithResponse request with any body
+	UpdateGaugeNeedleWithBodyWithResponse(ctx context.Context, accountId string, needleId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGaugeNeedleResponse, error)
+
+	UpdateGaugeNeedleWithResponse(ctx context.Context, accountId string, needleId int64, body UpdateGaugeNeedleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGaugeNeedleResponse, error)
+
 	// GetForwardWithResponse request
 	GetForwardWithResponse(ctx context.Context, accountId string, forwardId int64, reqEditors ...RequestEditorFn) (*GetForwardResponse, error)
 
@@ -16275,7 +18254,7 @@ type ClientWithResponsesInterface interface {
 	GetInboxWithResponse(ctx context.Context, accountId string, inboxId int64, reqEditors ...RequestEditorFn) (*GetInboxResponse, error)
 
 	// ListForwardsWithResponse request
-	ListForwardsWithResponse(ctx context.Context, accountId string, inboxId int64, reqEditors ...RequestEditorFn) (*ListForwardsResponse, error)
+	ListForwardsWithResponse(ctx context.Context, accountId string, inboxId int64, params *ListForwardsParams, reqEditors ...RequestEditorFn) (*ListForwardsResponse, error)
 
 	// ListLineupMarkersWithResponse request
 	ListLineupMarkersWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListLineupMarkersResponse, error)
@@ -16312,6 +18291,23 @@ type ClientWithResponsesInterface interface {
 
 	UpdateMessageWithResponse(ctx context.Context, accountId string, messageId int64, body UpdateMessageJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMessageResponse, error)
 
+	// GetMyAssignmentsWithResponse request
+	GetMyAssignmentsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMyAssignmentsResponse, error)
+
+	// GetMyCompletedAssignmentsWithResponse request
+	GetMyCompletedAssignmentsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMyCompletedAssignmentsResponse, error)
+
+	// GetMyDueAssignmentsWithResponse request
+	GetMyDueAssignmentsWithResponse(ctx context.Context, accountId string, params *GetMyDueAssignmentsParams, reqEditors ...RequestEditorFn) (*GetMyDueAssignmentsResponse, error)
+
+	// GetMyPreferencesWithResponse request
+	GetMyPreferencesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMyPreferencesResponse, error)
+
+	// UpdateMyPreferencesWithBodyWithResponse request with any body
+	UpdateMyPreferencesWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateMyPreferencesResponse, error)
+
+	UpdateMyPreferencesWithResponse(ctx context.Context, accountId string, body UpdateMyPreferencesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMyPreferencesResponse, error)
+
 	// GetMyProfileWithResponse request
 	GetMyProfileWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMyProfileResponse, error)
 
@@ -16323,11 +18319,30 @@ type ClientWithResponsesInterface interface {
 	// GetQuestionRemindersWithResponse request
 	GetQuestionRemindersWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetQuestionRemindersResponse, error)
 
+	// GetMyNotificationsWithResponse request
+	GetMyNotificationsWithResponse(ctx context.Context, accountId string, params *GetMyNotificationsParams, reqEditors ...RequestEditorFn) (*GetMyNotificationsResponse, error)
+
+	// MarkAsReadWithBodyWithResponse request with any body
+	MarkAsReadWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MarkAsReadResponse, error)
+
+	MarkAsReadWithResponse(ctx context.Context, accountId string, body MarkAsReadJSONRequestBody, reqEditors ...RequestEditorFn) (*MarkAsReadResponse, error)
+
 	// ListPeopleWithResponse request
 	ListPeopleWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListPeopleResponse, error)
 
 	// GetPersonWithResponse request
 	GetPersonWithResponse(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*GetPersonResponse, error)
+
+	// DisableOutOfOfficeWithResponse request
+	DisableOutOfOfficeWithResponse(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*DisableOutOfOfficeResponse, error)
+
+	// GetOutOfOfficeWithResponse request
+	GetOutOfOfficeWithResponse(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*GetOutOfOfficeResponse, error)
+
+	// EnableOutOfOfficeWithBodyWithResponse request with any body
+	EnableOutOfOfficeWithBodyWithResponse(ctx context.Context, accountId string, personId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EnableOutOfOfficeResponse, error)
+
+	EnableOutOfOfficeWithResponse(ctx context.Context, accountId string, personId int64, body EnableOutOfOfficeJSONRequestBody, reqEditors ...RequestEditorFn) (*EnableOutOfOfficeResponse, error)
 
 	// ListProjectsWithResponse request
 	ListProjectsWithResponse(ctx context.Context, accountId string, params *ListProjectsParams, reqEditors ...RequestEditorFn) (*ListProjectsResponse, error)
@@ -16350,6 +18365,19 @@ type ClientWithResponsesInterface interface {
 	UpdateProjectWithBodyWithResponse(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateProjectResponse, error)
 
 	UpdateProjectWithResponse(ctx context.Context, accountId string, projectId int64, body UpdateProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateProjectResponse, error)
+
+	// ToggleGaugeWithBodyWithResponse request with any body
+	ToggleGaugeWithBodyWithResponse(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ToggleGaugeResponse, error)
+
+	ToggleGaugeWithResponse(ctx context.Context, accountId string, projectId int64, body ToggleGaugeJSONRequestBody, reqEditors ...RequestEditorFn) (*ToggleGaugeResponse, error)
+
+	// ListGaugeNeedlesWithResponse request
+	ListGaugeNeedlesWithResponse(ctx context.Context, accountId string, projectId int64, reqEditors ...RequestEditorFn) (*ListGaugeNeedlesResponse, error)
+
+	// CreateGaugeNeedleWithBodyWithResponse request with any body
+	CreateGaugeNeedleWithBodyWithResponse(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGaugeNeedleResponse, error)
+
+	CreateGaugeNeedleWithResponse(ctx context.Context, accountId string, projectId int64, body CreateGaugeNeedleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGaugeNeedleResponse, error)
 
 	// ListProjectPeopleWithResponse request
 	ListProjectPeopleWithResponse(ctx context.Context, accountId string, projectId int64, reqEditors ...RequestEditorFn) (*ListProjectPeopleResponse, error)
@@ -16499,6 +18527,9 @@ type ClientWithResponsesInterface interface {
 	RepositionToolWithBodyWithResponse(ctx context.Context, accountId string, toolId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RepositionToolResponse, error)
 
 	RepositionToolWithResponse(ctx context.Context, accountId string, toolId int64, body RepositionToolJSONRequestBody, reqEditors ...RequestEditorFn) (*RepositionToolResponse, error)
+
+	// ListGaugesWithResponse request
+	ListGaugesWithResponse(ctx context.Context, accountId string, params *ListGaugesParams, reqEditors ...RequestEditorFn) (*ListGaugesResponse, error)
 
 	// GetProgressReportWithResponse request
 	GetProgressReportWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetProgressReportResponse, error)
@@ -16712,6 +18743,109 @@ type ClientWithResponsesInterface interface {
 	UpdateWebhookWithBodyWithResponse(ctx context.Context, accountId string, webhookId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateWebhookResponse, error)
 
 	UpdateWebhookWithResponse(ctx context.Context, accountId string, webhookId int64, body UpdateWebhookJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateWebhookResponse, error)
+}
+
+type GetAccountResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetAccountResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemoveAccountLogoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveAccountLogoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveAccountLogoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateAccountLogoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON422      *ValidationErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAccountLogoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAccountLogoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateAccountNameResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UpdateAccountNameResponseContent
+	JSON400      *BadRequestErrorResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAccountNameResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAccountNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
 }
 
 type CreateAttachmentResponse struct {
@@ -18238,6 +20372,86 @@ func (r UpdateDocumentResponse) StatusCode() int {
 	return 0
 }
 
+type DestroyGaugeNeedleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON404      *NotFoundErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r DestroyGaugeNeedleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DestroyGaugeNeedleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetGaugeNeedleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetGaugeNeedleResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON404      *NotFoundErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGaugeNeedleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGaugeNeedleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateGaugeNeedleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UpdateGaugeNeedleResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON404      *NotFoundErrorResponseContent
+	JSON422      *ValidationErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateGaugeNeedleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateGaugeNeedleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetForwardResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18630,6 +20844,134 @@ func (r UpdateMessageResponse) StatusCode() int {
 	return 0
 }
 
+type GetMyAssignmentsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetMyAssignmentsResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMyAssignmentsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMyAssignmentsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetMyCompletedAssignmentsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetMyCompletedAssignmentsResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMyCompletedAssignmentsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMyCompletedAssignmentsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetMyDueAssignmentsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetMyDueAssignmentsResponseContent
+	JSON400      *BadRequestErrorResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMyDueAssignmentsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMyDueAssignmentsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetMyPreferencesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetMyPreferencesResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMyPreferencesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMyPreferencesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateMyPreferencesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *UpdateMyPreferencesResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON422      *ValidationErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateMyPreferencesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateMyPreferencesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetMyProfileResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18707,6 +21049,56 @@ func (r GetQuestionRemindersResponse) StatusCode() int {
 	return 0
 }
 
+type GetMyNotificationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetMyNotificationsResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMyNotificationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMyNotificationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type MarkAsReadResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r MarkAsReadResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r MarkAsReadResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ListPeopleResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18753,6 +21145,84 @@ func (r GetPersonResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetPersonResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DisableOutOfOfficeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r DisableOutOfOfficeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DisableOutOfOfficeResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetOutOfOfficeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetOutOfOfficeResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON404      *NotFoundErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOutOfOfficeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOutOfOfficeResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type EnableOutOfOfficeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *EnableOutOfOfficeResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON422      *ValidationErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r EnableOutOfOfficeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EnableOutOfOfficeResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -18910,6 +21380,85 @@ func (r UpdateProjectResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateProjectResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ToggleGaugeResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r ToggleGaugeResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ToggleGaugeResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListGaugeNeedlesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ListGaugeNeedlesResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON404      *NotFoundErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r ListGaugeNeedlesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListGaugeNeedlesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateGaugeNeedleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *CreateGaugeNeedleResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON422      *ValidationErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateGaugeNeedleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateGaugeNeedleResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -19990,6 +22539,32 @@ func (r RepositionToolResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r RepositionToolResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListGaugesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ListGaugesResponseContent
+	JSON401      *UnauthorizedErrorResponseContent
+	JSON403      *ForbiddenErrorResponseContent
+	JSON429      *RateLimitErrorResponseContent
+	JSON500      *InternalServerErrorResponseContent
+}
+
+// Status returns HTTPResponse.Status
+func (r ListGaugesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListGaugesResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -21496,6 +24071,50 @@ func (r UpdateWebhookResponse) StatusCode() int {
 	return 0
 }
 
+// GetAccountWithResponse request returning *GetAccountResponse
+func (c *ClientWithResponses) GetAccountWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetAccountResponse, error) {
+	rsp, err := c.GetAccount(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAccountResponse(rsp)
+}
+
+// RemoveAccountLogoWithResponse request returning *RemoveAccountLogoResponse
+func (c *ClientWithResponses) RemoveAccountLogoWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*RemoveAccountLogoResponse, error) {
+	rsp, err := c.RemoveAccountLogo(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveAccountLogoResponse(rsp)
+}
+
+// UpdateAccountLogoWithBodyWithResponse request with arbitrary body returning *UpdateAccountLogoResponse
+func (c *ClientWithResponses) UpdateAccountLogoWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountLogoResponse, error) {
+	rsp, err := c.UpdateAccountLogoWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAccountLogoResponse(rsp)
+}
+
+// UpdateAccountNameWithBodyWithResponse request with arbitrary body returning *UpdateAccountNameResponse
+func (c *ClientWithResponses) UpdateAccountNameWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAccountNameResponse, error) {
+	rsp, err := c.UpdateAccountNameWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAccountNameResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateAccountNameWithResponse(ctx context.Context, accountId string, body UpdateAccountNameJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAccountNameResponse, error) {
+	rsp, err := c.UpdateAccountName(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAccountNameResponse(rsp)
+}
+
 // CreateAttachmentWithBodyWithResponse request with arbitrary body returning *CreateAttachmentResponse
 func (c *ClientWithResponses) CreateAttachmentWithBodyWithResponse(ctx context.Context, accountId string, params *CreateAttachmentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateAttachmentResponse, error) {
 	rsp, err := c.CreateAttachmentWithBody(ctx, accountId, params, contentType, body, reqEditors...)
@@ -21958,8 +24577,8 @@ func (c *ClientWithResponses) UpdateChatbotWithResponse(ctx context.Context, acc
 }
 
 // ListCampfireLinesWithResponse request returning *ListCampfireLinesResponse
-func (c *ClientWithResponses) ListCampfireLinesWithResponse(ctx context.Context, accountId string, campfireId int64, reqEditors ...RequestEditorFn) (*ListCampfireLinesResponse, error) {
-	rsp, err := c.ListCampfireLines(ctx, accountId, campfireId, reqEditors...)
+func (c *ClientWithResponses) ListCampfireLinesWithResponse(ctx context.Context, accountId string, campfireId int64, params *ListCampfireLinesParams, reqEditors ...RequestEditorFn) (*ListCampfireLinesResponse, error) {
+	rsp, err := c.ListCampfireLines(ctx, accountId, campfireId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -22002,8 +24621,8 @@ func (c *ClientWithResponses) GetCampfireLineWithResponse(ctx context.Context, a
 }
 
 // ListCampfireUploadsWithResponse request returning *ListCampfireUploadsResponse
-func (c *ClientWithResponses) ListCampfireUploadsWithResponse(ctx context.Context, accountId string, campfireId int64, reqEditors ...RequestEditorFn) (*ListCampfireUploadsResponse, error) {
-	rsp, err := c.ListCampfireUploads(ctx, accountId, campfireId, reqEditors...)
+func (c *ClientWithResponses) ListCampfireUploadsWithResponse(ctx context.Context, accountId string, campfireId int64, params *ListCampfireUploadsParams, reqEditors ...RequestEditorFn) (*ListCampfireUploadsResponse, error) {
+	rsp, err := c.ListCampfireUploads(ctx, accountId, campfireId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -22029,8 +24648,8 @@ func (c *ClientWithResponses) ListPingablePeopleWithResponse(ctx context.Context
 }
 
 // ListClientApprovalsWithResponse request returning *ListClientApprovalsResponse
-func (c *ClientWithResponses) ListClientApprovalsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListClientApprovalsResponse, error) {
-	rsp, err := c.ListClientApprovals(ctx, accountId, reqEditors...)
+func (c *ClientWithResponses) ListClientApprovalsWithResponse(ctx context.Context, accountId string, params *ListClientApprovalsParams, reqEditors ...RequestEditorFn) (*ListClientApprovalsResponse, error) {
+	rsp, err := c.ListClientApprovals(ctx, accountId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -22047,8 +24666,8 @@ func (c *ClientWithResponses) GetClientApprovalWithResponse(ctx context.Context,
 }
 
 // ListClientCorrespondencesWithResponse request returning *ListClientCorrespondencesResponse
-func (c *ClientWithResponses) ListClientCorrespondencesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListClientCorrespondencesResponse, error) {
-	rsp, err := c.ListClientCorrespondences(ctx, accountId, reqEditors...)
+func (c *ClientWithResponses) ListClientCorrespondencesWithResponse(ctx context.Context, accountId string, params *ListClientCorrespondencesParams, reqEditors ...RequestEditorFn) (*ListClientCorrespondencesResponse, error) {
+	rsp, err := c.ListClientCorrespondences(ctx, accountId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -22186,6 +24805,41 @@ func (c *ClientWithResponses) UpdateDocumentWithResponse(ctx context.Context, ac
 	return ParseUpdateDocumentResponse(rsp)
 }
 
+// DestroyGaugeNeedleWithResponse request returning *DestroyGaugeNeedleResponse
+func (c *ClientWithResponses) DestroyGaugeNeedleWithResponse(ctx context.Context, accountId string, needleId int64, reqEditors ...RequestEditorFn) (*DestroyGaugeNeedleResponse, error) {
+	rsp, err := c.DestroyGaugeNeedle(ctx, accountId, needleId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDestroyGaugeNeedleResponse(rsp)
+}
+
+// GetGaugeNeedleWithResponse request returning *GetGaugeNeedleResponse
+func (c *ClientWithResponses) GetGaugeNeedleWithResponse(ctx context.Context, accountId string, needleId int64, reqEditors ...RequestEditorFn) (*GetGaugeNeedleResponse, error) {
+	rsp, err := c.GetGaugeNeedle(ctx, accountId, needleId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGaugeNeedleResponse(rsp)
+}
+
+// UpdateGaugeNeedleWithBodyWithResponse request with arbitrary body returning *UpdateGaugeNeedleResponse
+func (c *ClientWithResponses) UpdateGaugeNeedleWithBodyWithResponse(ctx context.Context, accountId string, needleId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGaugeNeedleResponse, error) {
+	rsp, err := c.UpdateGaugeNeedleWithBody(ctx, accountId, needleId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateGaugeNeedleResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateGaugeNeedleWithResponse(ctx context.Context, accountId string, needleId int64, body UpdateGaugeNeedleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGaugeNeedleResponse, error) {
+	rsp, err := c.UpdateGaugeNeedle(ctx, accountId, needleId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateGaugeNeedleResponse(rsp)
+}
+
 // GetForwardWithResponse request returning *GetForwardResponse
 func (c *ClientWithResponses) GetForwardWithResponse(ctx context.Context, accountId string, forwardId int64, reqEditors ...RequestEditorFn) (*GetForwardResponse, error) {
 	rsp, err := c.GetForward(ctx, accountId, forwardId, reqEditors...)
@@ -22240,8 +24894,8 @@ func (c *ClientWithResponses) GetInboxWithResponse(ctx context.Context, accountI
 }
 
 // ListForwardsWithResponse request returning *ListForwardsResponse
-func (c *ClientWithResponses) ListForwardsWithResponse(ctx context.Context, accountId string, inboxId int64, reqEditors ...RequestEditorFn) (*ListForwardsResponse, error) {
-	rsp, err := c.ListForwards(ctx, accountId, inboxId, reqEditors...)
+func (c *ClientWithResponses) ListForwardsWithResponse(ctx context.Context, accountId string, inboxId int64, params *ListForwardsParams, reqEditors ...RequestEditorFn) (*ListForwardsResponse, error) {
+	rsp, err := c.ListForwards(ctx, accountId, inboxId, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -22361,6 +25015,59 @@ func (c *ClientWithResponses) UpdateMessageWithResponse(ctx context.Context, acc
 	return ParseUpdateMessageResponse(rsp)
 }
 
+// GetMyAssignmentsWithResponse request returning *GetMyAssignmentsResponse
+func (c *ClientWithResponses) GetMyAssignmentsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMyAssignmentsResponse, error) {
+	rsp, err := c.GetMyAssignments(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMyAssignmentsResponse(rsp)
+}
+
+// GetMyCompletedAssignmentsWithResponse request returning *GetMyCompletedAssignmentsResponse
+func (c *ClientWithResponses) GetMyCompletedAssignmentsWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMyCompletedAssignmentsResponse, error) {
+	rsp, err := c.GetMyCompletedAssignments(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMyCompletedAssignmentsResponse(rsp)
+}
+
+// GetMyDueAssignmentsWithResponse request returning *GetMyDueAssignmentsResponse
+func (c *ClientWithResponses) GetMyDueAssignmentsWithResponse(ctx context.Context, accountId string, params *GetMyDueAssignmentsParams, reqEditors ...RequestEditorFn) (*GetMyDueAssignmentsResponse, error) {
+	rsp, err := c.GetMyDueAssignments(ctx, accountId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMyDueAssignmentsResponse(rsp)
+}
+
+// GetMyPreferencesWithResponse request returning *GetMyPreferencesResponse
+func (c *ClientWithResponses) GetMyPreferencesWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMyPreferencesResponse, error) {
+	rsp, err := c.GetMyPreferences(ctx, accountId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMyPreferencesResponse(rsp)
+}
+
+// UpdateMyPreferencesWithBodyWithResponse request with arbitrary body returning *UpdateMyPreferencesResponse
+func (c *ClientWithResponses) UpdateMyPreferencesWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateMyPreferencesResponse, error) {
+	rsp, err := c.UpdateMyPreferencesWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateMyPreferencesResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateMyPreferencesWithResponse(ctx context.Context, accountId string, body UpdateMyPreferencesJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateMyPreferencesResponse, error) {
+	rsp, err := c.UpdateMyPreferences(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateMyPreferencesResponse(rsp)
+}
+
 // GetMyProfileWithResponse request returning *GetMyProfileResponse
 func (c *ClientWithResponses) GetMyProfileWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*GetMyProfileResponse, error) {
 	rsp, err := c.GetMyProfile(ctx, accountId, reqEditors...)
@@ -22396,6 +25103,32 @@ func (c *ClientWithResponses) GetQuestionRemindersWithResponse(ctx context.Conte
 	return ParseGetQuestionRemindersResponse(rsp)
 }
 
+// GetMyNotificationsWithResponse request returning *GetMyNotificationsResponse
+func (c *ClientWithResponses) GetMyNotificationsWithResponse(ctx context.Context, accountId string, params *GetMyNotificationsParams, reqEditors ...RequestEditorFn) (*GetMyNotificationsResponse, error) {
+	rsp, err := c.GetMyNotifications(ctx, accountId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMyNotificationsResponse(rsp)
+}
+
+// MarkAsReadWithBodyWithResponse request with arbitrary body returning *MarkAsReadResponse
+func (c *ClientWithResponses) MarkAsReadWithBodyWithResponse(ctx context.Context, accountId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*MarkAsReadResponse, error) {
+	rsp, err := c.MarkAsReadWithBody(ctx, accountId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMarkAsReadResponse(rsp)
+}
+
+func (c *ClientWithResponses) MarkAsReadWithResponse(ctx context.Context, accountId string, body MarkAsReadJSONRequestBody, reqEditors ...RequestEditorFn) (*MarkAsReadResponse, error) {
+	rsp, err := c.MarkAsRead(ctx, accountId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseMarkAsReadResponse(rsp)
+}
+
 // ListPeopleWithResponse request returning *ListPeopleResponse
 func (c *ClientWithResponses) ListPeopleWithResponse(ctx context.Context, accountId string, reqEditors ...RequestEditorFn) (*ListPeopleResponse, error) {
 	rsp, err := c.ListPeople(ctx, accountId, reqEditors...)
@@ -22412,6 +25145,41 @@ func (c *ClientWithResponses) GetPersonWithResponse(ctx context.Context, account
 		return nil, err
 	}
 	return ParseGetPersonResponse(rsp)
+}
+
+// DisableOutOfOfficeWithResponse request returning *DisableOutOfOfficeResponse
+func (c *ClientWithResponses) DisableOutOfOfficeWithResponse(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*DisableOutOfOfficeResponse, error) {
+	rsp, err := c.DisableOutOfOffice(ctx, accountId, personId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDisableOutOfOfficeResponse(rsp)
+}
+
+// GetOutOfOfficeWithResponse request returning *GetOutOfOfficeResponse
+func (c *ClientWithResponses) GetOutOfOfficeWithResponse(ctx context.Context, accountId string, personId int64, reqEditors ...RequestEditorFn) (*GetOutOfOfficeResponse, error) {
+	rsp, err := c.GetOutOfOffice(ctx, accountId, personId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOutOfOfficeResponse(rsp)
+}
+
+// EnableOutOfOfficeWithBodyWithResponse request with arbitrary body returning *EnableOutOfOfficeResponse
+func (c *ClientWithResponses) EnableOutOfOfficeWithBodyWithResponse(ctx context.Context, accountId string, personId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EnableOutOfOfficeResponse, error) {
+	rsp, err := c.EnableOutOfOfficeWithBody(ctx, accountId, personId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnableOutOfOfficeResponse(rsp)
+}
+
+func (c *ClientWithResponses) EnableOutOfOfficeWithResponse(ctx context.Context, accountId string, personId int64, body EnableOutOfOfficeJSONRequestBody, reqEditors ...RequestEditorFn) (*EnableOutOfOfficeResponse, error) {
+	rsp, err := c.EnableOutOfOffice(ctx, accountId, personId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnableOutOfOfficeResponse(rsp)
 }
 
 // ListProjectsWithResponse request returning *ListProjectsResponse
@@ -22482,6 +25250,49 @@ func (c *ClientWithResponses) UpdateProjectWithResponse(ctx context.Context, acc
 		return nil, err
 	}
 	return ParseUpdateProjectResponse(rsp)
+}
+
+// ToggleGaugeWithBodyWithResponse request with arbitrary body returning *ToggleGaugeResponse
+func (c *ClientWithResponses) ToggleGaugeWithBodyWithResponse(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ToggleGaugeResponse, error) {
+	rsp, err := c.ToggleGaugeWithBody(ctx, accountId, projectId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseToggleGaugeResponse(rsp)
+}
+
+func (c *ClientWithResponses) ToggleGaugeWithResponse(ctx context.Context, accountId string, projectId int64, body ToggleGaugeJSONRequestBody, reqEditors ...RequestEditorFn) (*ToggleGaugeResponse, error) {
+	rsp, err := c.ToggleGauge(ctx, accountId, projectId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseToggleGaugeResponse(rsp)
+}
+
+// ListGaugeNeedlesWithResponse request returning *ListGaugeNeedlesResponse
+func (c *ClientWithResponses) ListGaugeNeedlesWithResponse(ctx context.Context, accountId string, projectId int64, reqEditors ...RequestEditorFn) (*ListGaugeNeedlesResponse, error) {
+	rsp, err := c.ListGaugeNeedles(ctx, accountId, projectId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListGaugeNeedlesResponse(rsp)
+}
+
+// CreateGaugeNeedleWithBodyWithResponse request with arbitrary body returning *CreateGaugeNeedleResponse
+func (c *ClientWithResponses) CreateGaugeNeedleWithBodyWithResponse(ctx context.Context, accountId string, projectId int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateGaugeNeedleResponse, error) {
+	rsp, err := c.CreateGaugeNeedleWithBody(ctx, accountId, projectId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateGaugeNeedleResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateGaugeNeedleWithResponse(ctx context.Context, accountId string, projectId int64, body CreateGaugeNeedleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateGaugeNeedleResponse, error) {
+	rsp, err := c.CreateGaugeNeedle(ctx, accountId, projectId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateGaugeNeedleResponse(rsp)
 }
 
 // ListProjectPeopleWithResponse request returning *ListProjectPeopleResponse
@@ -22955,6 +25766,15 @@ func (c *ClientWithResponses) RepositionToolWithResponse(ctx context.Context, ac
 		return nil, err
 	}
 	return ParseRepositionToolResponse(rsp)
+}
+
+// ListGaugesWithResponse request returning *ListGaugesResponse
+func (c *ClientWithResponses) ListGaugesWithResponse(ctx context.Context, accountId string, params *ListGaugesParams, reqEditors ...RequestEditorFn) (*ListGaugesResponse, error) {
+	rsp, err := c.ListGauges(ctx, accountId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListGaugesResponse(rsp)
 }
 
 // GetProgressReportWithResponse request returning *GetProgressReportResponse
@@ -23636,6 +26456,215 @@ func (c *ClientWithResponses) UpdateWebhookWithResponse(ctx context.Context, acc
 		return nil, err
 	}
 	return ParseUpdateWebhookResponse(rsp)
+}
+
+// ParseGetAccountResponse parses an HTTP response from a GetAccountWithResponse call
+func ParseGetAccountResponse(rsp *http.Response) (*GetAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetAccountResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveAccountLogoResponse parses an HTTP response from a RemoveAccountLogoWithResponse call
+func ParseRemoveAccountLogoResponse(rsp *http.Response) (*RemoveAccountLogoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveAccountLogoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAccountLogoResponse parses an HTTP response from a UpdateAccountLogoWithResponse call
+func ParseUpdateAccountLogoResponse(rsp *http.Response) (*UpdateAccountLogoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAccountLogoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest ValidationErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAccountNameResponse parses an HTTP response from a UpdateAccountNameWithResponse call
+func ParseUpdateAccountNameResponse(rsp *http.Response) (*UpdateAccountNameResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAccountNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UpdateAccountNameResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequestErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
 }
 
 // ParseCreateAttachmentResponse parses an HTTP response from a CreateAttachmentWithResponse call
@@ -26882,6 +29911,182 @@ func ParseUpdateDocumentResponse(rsp *http.Response) (*UpdateDocumentResponse, e
 	return response, nil
 }
 
+// ParseDestroyGaugeNeedleResponse parses an HTTP response from a DestroyGaugeNeedleWithResponse call
+func ParseDestroyGaugeNeedleResponse(rsp *http.Response) (*DestroyGaugeNeedleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DestroyGaugeNeedleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFoundErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGaugeNeedleResponse parses an HTTP response from a GetGaugeNeedleWithResponse call
+func ParseGetGaugeNeedleResponse(rsp *http.Response) (*GetGaugeNeedleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGaugeNeedleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetGaugeNeedleResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFoundErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateGaugeNeedleResponse parses an HTTP response from a UpdateGaugeNeedleWithResponse call
+func ParseUpdateGaugeNeedleResponse(rsp *http.Response) (*UpdateGaugeNeedleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateGaugeNeedleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UpdateGaugeNeedleResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFoundErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest ValidationErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetForwardResponse parses an HTTP response from a GetForwardWithResponse call
 func ParseGetForwardResponse(rsp *http.Response) (*GetForwardResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -27706,6 +30911,262 @@ func ParseUpdateMessageResponse(rsp *http.Response) (*UpdateMessageResponse, err
 	return response, nil
 }
 
+// ParseGetMyAssignmentsResponse parses an HTTP response from a GetMyAssignmentsWithResponse call
+func ParseGetMyAssignmentsResponse(rsp *http.Response) (*GetMyAssignmentsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMyAssignmentsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetMyAssignmentsResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMyCompletedAssignmentsResponse parses an HTTP response from a GetMyCompletedAssignmentsWithResponse call
+func ParseGetMyCompletedAssignmentsResponse(rsp *http.Response) (*GetMyCompletedAssignmentsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMyCompletedAssignmentsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetMyCompletedAssignmentsResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMyDueAssignmentsResponse parses an HTTP response from a GetMyDueAssignmentsWithResponse call
+func ParseGetMyDueAssignmentsResponse(rsp *http.Response) (*GetMyDueAssignmentsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMyDueAssignmentsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetMyDueAssignmentsResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest BadRequestErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMyPreferencesResponse parses an HTTP response from a GetMyPreferencesWithResponse call
+func ParseGetMyPreferencesResponse(rsp *http.Response) (*GetMyPreferencesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMyPreferencesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetMyPreferencesResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateMyPreferencesResponse parses an HTTP response from a UpdateMyPreferencesWithResponse call
+func ParseUpdateMyPreferencesResponse(rsp *http.Response) (*UpdateMyPreferencesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateMyPreferencesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UpdateMyPreferencesResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest ValidationErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetMyProfileResponse parses an HTTP response from a GetMyProfileWithResponse call
 func ParseGetMyProfileResponse(rsp *http.Response) (*GetMyProfileResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -27861,6 +31322,100 @@ func ParseGetQuestionRemindersResponse(rsp *http.Response) (*GetQuestionReminder
 	return response, nil
 }
 
+// ParseGetMyNotificationsResponse parses an HTTP response from a GetMyNotificationsWithResponse call
+func ParseGetMyNotificationsResponse(rsp *http.Response) (*GetMyNotificationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMyNotificationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetMyNotificationsResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseMarkAsReadResponse parses an HTTP response from a MarkAsReadWithResponse call
+func ParseMarkAsReadResponse(rsp *http.Response) (*MarkAsReadResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &MarkAsReadResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListPeopleResponse parses an HTTP response from a ListPeopleWithResponse call
 func ParseListPeopleResponse(rsp *http.Response) (*ListPeopleResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -27956,6 +31511,168 @@ func ParseGetPersonResponse(rsp *http.Response) (*GetPersonResponse, error) {
 			return nil, err
 		}
 		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDisableOutOfOfficeResponse parses an HTTP response from a DisableOutOfOfficeWithResponse call
+func ParseDisableOutOfOfficeResponse(rsp *http.Response) (*DisableOutOfOfficeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DisableOutOfOfficeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOutOfOfficeResponse parses an HTTP response from a GetOutOfOfficeWithResponse call
+func ParseGetOutOfOfficeResponse(rsp *http.Response) (*GetOutOfOfficeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOutOfOfficeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetOutOfOfficeResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFoundErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEnableOutOfOfficeResponse parses an HTTP response from a EnableOutOfOfficeWithResponse call
+func ParseEnableOutOfOfficeResponse(rsp *http.Response) (*EnableOutOfOfficeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EnableOutOfOfficeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EnableOutOfOfficeResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest ValidationErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalServerErrorResponseContent
@@ -28287,6 +32004,175 @@ func ParseUpdateProjectResponse(rsp *http.Response) (*UpdateProjectResponse, err
 			return nil, err
 		}
 		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseToggleGaugeResponse parses an HTTP response from a ToggleGaugeWithResponse call
+func ParseToggleGaugeResponse(rsp *http.Response) (*ToggleGaugeResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ToggleGaugeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListGaugeNeedlesResponse parses an HTTP response from a ListGaugeNeedlesWithResponse call
+func ParseListGaugeNeedlesResponse(rsp *http.Response) (*ListGaugeNeedlesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListGaugeNeedlesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListGaugeNeedlesResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFoundErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateGaugeNeedleResponse parses an HTTP response from a CreateGaugeNeedleWithResponse call
+func ParseCreateGaugeNeedleResponse(rsp *http.Response) (*CreateGaugeNeedleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateGaugeNeedleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest CreateGaugeNeedleResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest ValidationErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalServerErrorResponseContent
@@ -30599,6 +34485,60 @@ func ParseRepositionToolResponse(rsp *http.Response) (*RepositionToolResponse, e
 			return nil, err
 		}
 		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListGaugesResponse parses an HTTP response from a ListGaugesWithResponse call
+func ParseListGaugesResponse(rsp *http.Response) (*ListGaugesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListGaugesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListGaugesResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest UnauthorizedErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ForbiddenErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest RateLimitErrorResponseContent
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalServerErrorResponseContent

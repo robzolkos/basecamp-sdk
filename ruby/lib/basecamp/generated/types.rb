@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Auto-generated from OpenAPI spec. Do not edit manually.
-# Generated: 2026-03-21T06:14:16Z
+# Generated: 2026-03-23T21:15:35Z
 
 require "json"
 require "time"
@@ -61,6 +61,141 @@ end
 module Basecamp
   module Types
     include TypeHelpers
+
+    # Account
+    class Account
+      include TypeHelpers
+      attr_accessor :created_at, :id, :name, :updated_at, :active, :frozen, :limits, :logo, :owner_name, :paused, :settings, :subscription, :trial, :trial_ends_on
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[created_at id name updated_at].freeze
+      end
+
+      def initialize(data = {})
+        @created_at = parse_datetime(data["created_at"])
+        @id = parse_integer(data["id"])
+        @name = data["name"]
+        @updated_at = parse_datetime(data["updated_at"])
+        @active = parse_boolean(data["active"])
+        @frozen = parse_boolean(data["frozen"])
+        @limits = parse_type(data["limits"], "AccountLimits")
+        @logo = data["logo"]
+        @owner_name = data["owner_name"]
+        @paused = parse_boolean(data["paused"])
+        @settings = parse_type(data["settings"], "AccountSettings")
+        @subscription = parse_type(data["subscription"], "AccountSubscription")
+        @trial = parse_boolean(data["trial"])
+        @trial_ends_on = data["trial_ends_on"]
+      end
+
+      def to_h
+        {
+          "created_at" => @created_at,
+          "id" => @id,
+          "name" => @name,
+          "updated_at" => @updated_at,
+          "active" => @active,
+          "frozen" => @frozen,
+          "limits" => @limits,
+          "logo" => @logo,
+          "owner_name" => @owner_name,
+          "paused" => @paused,
+          "settings" => @settings,
+          "subscription" => @subscription,
+          "trial" => @trial,
+          "trial_ends_on" => @trial_ends_on,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # AccountLimits
+    class AccountLimits
+      include TypeHelpers
+      attr_accessor :can_create_projects, :can_create_users, :can_pin_projects, :can_upload_files
+
+      def initialize(data = {})
+        @can_create_projects = parse_boolean(data["can_create_projects"])
+        @can_create_users = parse_boolean(data["can_create_users"])
+        @can_pin_projects = parse_boolean(data["can_pin_projects"])
+        @can_upload_files = parse_boolean(data["can_upload_files"])
+      end
+
+      def to_h
+        {
+          "can_create_projects" => @can_create_projects,
+          "can_create_users" => @can_create_users,
+          "can_pin_projects" => @can_pin_projects,
+          "can_upload_files" => @can_upload_files,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # AccountSettings
+    class AccountSettings
+      include TypeHelpers
+      attr_accessor :company_hq_enabled, :projects_enabled, :teams_enabled
+
+      def initialize(data = {})
+        @company_hq_enabled = parse_boolean(data["company_hq_enabled"])
+        @projects_enabled = parse_boolean(data["projects_enabled"])
+        @teams_enabled = parse_boolean(data["teams_enabled"])
+      end
+
+      def to_h
+        {
+          "company_hq_enabled" => @company_hq_enabled,
+          "projects_enabled" => @projects_enabled,
+          "teams_enabled" => @teams_enabled,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # AccountSubscription
+    class AccountSubscription
+      include TypeHelpers
+      attr_accessor :clients, :logo, :project_limit, :proper_name, :short_name, :teams, :templates, :timesheet
+
+      def initialize(data = {})
+        @clients = parse_boolean(data["clients"])
+        @logo = parse_boolean(data["logo"])
+        @project_limit = parse_integer(data["project_limit"])
+        @proper_name = data["proper_name"]
+        @short_name = data["short_name"]
+        @teams = parse_boolean(data["teams"])
+        @templates = parse_boolean(data["templates"])
+        @timesheet = parse_boolean(data["timesheet"])
+      end
+
+      def to_h
+        {
+          "clients" => @clients,
+          "logo" => @logo,
+          "project_limit" => @project_limit,
+          "proper_name" => @proper_name,
+          "short_name" => @short_name,
+          "teams" => @teams,
+          "templates" => @templates,
+          "timesheet" => @timesheet,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
 
     # Assignable
     class Assignable
@@ -1282,6 +1417,208 @@ module Basecamp
       end
     end
 
+    # Gauge
+    class Gauge
+      include TypeHelpers
+      attr_accessor :created_at, :id, :updated_at, :app_url, :bookmark_url, :bucket, :creator, :description, :enabled, :inherits_status, :last_needle_color, :last_needle_position, :previous_needle_position, :status, :title, :type, :url, :visible_to_clients
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[created_at id updated_at].freeze
+      end
+
+      def initialize(data = {})
+        @created_at = parse_datetime(data["created_at"])
+        @id = parse_integer(data["id"])
+        @updated_at = parse_datetime(data["updated_at"])
+        @app_url = data["app_url"]
+        @bookmark_url = data["bookmark_url"]
+        @bucket = parse_type(data["bucket"], "RecordingBucket")
+        @creator = parse_type(data["creator"], "Person")
+        @description = data["description"]
+        @enabled = parse_boolean(data["enabled"])
+        @inherits_status = parse_boolean(data["inherits_status"])
+        @last_needle_color = data["last_needle_color"]
+        @last_needle_position = parse_integer(data["last_needle_position"])
+        @previous_needle_position = parse_integer(data["previous_needle_position"])
+        @status = data["status"]
+        @title = data["title"]
+        @type = data["type"]
+        @url = data["url"]
+        @visible_to_clients = parse_boolean(data["visible_to_clients"])
+      end
+
+      def to_h
+        {
+          "created_at" => @created_at,
+          "id" => @id,
+          "updated_at" => @updated_at,
+          "app_url" => @app_url,
+          "bookmark_url" => @bookmark_url,
+          "bucket" => @bucket,
+          "creator" => @creator,
+          "description" => @description,
+          "enabled" => @enabled,
+          "inherits_status" => @inherits_status,
+          "last_needle_color" => @last_needle_color,
+          "last_needle_position" => @last_needle_position,
+          "previous_needle_position" => @previous_needle_position,
+          "status" => @status,
+          "title" => @title,
+          "type" => @type,
+          "url" => @url,
+          "visible_to_clients" => @visible_to_clients,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # GaugeNeedle
+    class GaugeNeedle
+      include TypeHelpers
+      attr_accessor :created_at, :id, :updated_at, :app_url, :bookmark_url, :boosts_count, :boosts_url, :bucket, :color, :comment_count, :comments_count, :comments_url, :creator, :description, :inherits_status, :parent, :position, :status, :subscription_url, :title, :type, :url, :visible_to_clients
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[created_at id updated_at].freeze
+      end
+
+      def initialize(data = {})
+        @created_at = parse_datetime(data["created_at"])
+        @id = parse_integer(data["id"])
+        @updated_at = parse_datetime(data["updated_at"])
+        @app_url = data["app_url"]
+        @bookmark_url = data["bookmark_url"]
+        @boosts_count = parse_integer(data["boosts_count"])
+        @boosts_url = data["boosts_url"]
+        @bucket = parse_type(data["bucket"], "RecordingBucket")
+        @color = data["color"]
+        @comment_count = parse_integer(data["comment_count"])
+        @comments_count = parse_integer(data["comments_count"])
+        @comments_url = data["comments_url"]
+        @creator = parse_type(data["creator"], "Person")
+        @description = data["description"]
+        @inherits_status = parse_boolean(data["inherits_status"])
+        @parent = parse_type(data["parent"], "RecordingParent")
+        @position = parse_integer(data["position"])
+        @status = data["status"]
+        @subscription_url = data["subscription_url"]
+        @title = data["title"]
+        @type = data["type"]
+        @url = data["url"]
+        @visible_to_clients = parse_boolean(data["visible_to_clients"])
+      end
+
+      def to_h
+        {
+          "created_at" => @created_at,
+          "id" => @id,
+          "updated_at" => @updated_at,
+          "app_url" => @app_url,
+          "bookmark_url" => @bookmark_url,
+          "boosts_count" => @boosts_count,
+          "boosts_url" => @boosts_url,
+          "bucket" => @bucket,
+          "color" => @color,
+          "comment_count" => @comment_count,
+          "comments_count" => @comments_count,
+          "comments_url" => @comments_url,
+          "creator" => @creator,
+          "description" => @description,
+          "inherits_status" => @inherits_status,
+          "parent" => @parent,
+          "position" => @position,
+          "status" => @status,
+          "subscription_url" => @subscription_url,
+          "title" => @title,
+          "type" => @type,
+          "url" => @url,
+          "visible_to_clients" => @visible_to_clients,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # GaugeNeedlePayload
+    class GaugeNeedlePayload
+      include TypeHelpers
+      attr_accessor :position, :color, :description
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[position].freeze
+      end
+
+      def initialize(data = {})
+        @position = parse_integer(data["position"])
+        @color = data["color"]
+        @description = data["description"]
+      end
+
+      def to_h
+        {
+          "position" => @position,
+          "color" => @color,
+          "description" => @description,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # GaugeNeedleUpdatePayload
+    class GaugeNeedleUpdatePayload
+      include TypeHelpers
+      attr_accessor :description
+
+      def initialize(data = {})
+        @description = data["description"]
+      end
+
+      def to_h
+        {
+          "description" => @description,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # GaugeTogglePayload
+    class GaugeTogglePayload
+      include TypeHelpers
+      attr_accessor :enabled
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[enabled].freeze
+      end
+
+      def initialize(data = {})
+        @enabled = parse_boolean(data["enabled"])
+      end
+
+      def to_h
+        {
+          "enabled" => @enabled,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
     # HillChart
     class HillChart
       include TypeHelpers
@@ -1597,6 +1934,297 @@ module Basecamp
       end
     end
 
+    # MyAssignment
+    class MyAssignment
+      include TypeHelpers
+      attr_accessor :id, :app_url, :assignees, :bucket, :children, :comments_count, :completed, :content, :due_on, :has_description, :parent, :priority_recording_id, :starts_on, :type
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[id].freeze
+      end
+
+      def initialize(data = {})
+        @id = parse_integer(data["id"])
+        @app_url = data["app_url"]
+        @assignees = parse_array(data["assignees"], "MyAssignmentAssignee")
+        @bucket = parse_type(data["bucket"], "MyAssignmentBucket")
+        @children = parse_array(data["children"], "MyAssignment")
+        @comments_count = parse_integer(data["comments_count"])
+        @completed = parse_boolean(data["completed"])
+        @content = data["content"]
+        @due_on = data["due_on"]
+        @has_description = parse_boolean(data["has_description"])
+        @parent = parse_type(data["parent"], "MyAssignmentParent")
+        @priority_recording_id = parse_integer(data["priority_recording_id"])
+        @starts_on = data["starts_on"]
+        @type = data["type"]
+      end
+
+      def to_h
+        {
+          "id" => @id,
+          "app_url" => @app_url,
+          "assignees" => @assignees,
+          "bucket" => @bucket,
+          "children" => @children,
+          "comments_count" => @comments_count,
+          "completed" => @completed,
+          "content" => @content,
+          "due_on" => @due_on,
+          "has_description" => @has_description,
+          "parent" => @parent,
+          "priority_recording_id" => @priority_recording_id,
+          "starts_on" => @starts_on,
+          "type" => @type,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # MyAssignmentAssignee
+    class MyAssignmentAssignee
+      include TypeHelpers
+      attr_accessor :id, :avatar_url, :name
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[id].freeze
+      end
+
+      def initialize(data = {})
+        @id = parse_integer(data["id"])
+        @avatar_url = data["avatar_url"]
+        @name = data["name"]
+      end
+
+      def to_h
+        {
+          "id" => @id,
+          "avatar_url" => @avatar_url,
+          "name" => @name,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # MyAssignmentBucket
+    class MyAssignmentBucket
+      include TypeHelpers
+      attr_accessor :id, :app_url, :name
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[id].freeze
+      end
+
+      def initialize(data = {})
+        @id = parse_integer(data["id"])
+        @app_url = data["app_url"]
+        @name = data["name"]
+      end
+
+      def to_h
+        {
+          "id" => @id,
+          "app_url" => @app_url,
+          "name" => @name,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # MyAssignmentParent
+    class MyAssignmentParent
+      include TypeHelpers
+      attr_accessor :id, :app_url, :title
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[id].freeze
+      end
+
+      def initialize(data = {})
+        @id = parse_integer(data["id"])
+        @app_url = data["app_url"]
+        @title = data["title"]
+      end
+
+      def to_h
+        {
+          "id" => @id,
+          "app_url" => @app_url,
+          "title" => @title,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # Notification
+    class Notification
+      include TypeHelpers
+      attr_accessor :created_at, :id, :updated_at, :app_url, :bookmark_url, :bucket_name, :content_excerpt, :creator, :image_url, :memory_url, :named, :participants, :previewable_attachments, :read_at, :readable_identifier, :readable_sgid, :section, :subscribed, :subscription_url, :title, :type, :unread_at, :unread_count, :unread_url
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[created_at id updated_at].freeze
+      end
+
+      def initialize(data = {})
+        @created_at = parse_datetime(data["created_at"])
+        @id = parse_integer(data["id"])
+        @updated_at = parse_datetime(data["updated_at"])
+        @app_url = data["app_url"]
+        @bookmark_url = data["bookmark_url"]
+        @bucket_name = data["bucket_name"]
+        @content_excerpt = data["content_excerpt"]
+        @creator = parse_type(data["creator"], "Person")
+        @image_url = data["image_url"]
+        @memory_url = data["memory_url"]
+        @named = parse_boolean(data["named"])
+        @participants = parse_array(data["participants"], "Person")
+        @previewable_attachments = parse_array(data["previewable_attachments"], "PreviewableAttachment")
+        @read_at = parse_datetime(data["read_at"])
+        @readable_identifier = data["readable_identifier"]
+        @readable_sgid = data["readable_sgid"]
+        @section = data["section"]
+        @subscribed = parse_boolean(data["subscribed"])
+        @subscription_url = data["subscription_url"]
+        @title = data["title"]
+        @type = data["type"]
+        @unread_at = parse_datetime(data["unread_at"])
+        @unread_count = parse_integer(data["unread_count"])
+        @unread_url = data["unread_url"]
+      end
+
+      def to_h
+        {
+          "created_at" => @created_at,
+          "id" => @id,
+          "updated_at" => @updated_at,
+          "app_url" => @app_url,
+          "bookmark_url" => @bookmark_url,
+          "bucket_name" => @bucket_name,
+          "content_excerpt" => @content_excerpt,
+          "creator" => @creator,
+          "image_url" => @image_url,
+          "memory_url" => @memory_url,
+          "named" => @named,
+          "participants" => @participants,
+          "previewable_attachments" => @previewable_attachments,
+          "read_at" => @read_at,
+          "readable_identifier" => @readable_identifier,
+          "readable_sgid" => @readable_sgid,
+          "section" => @section,
+          "subscribed" => @subscribed,
+          "subscription_url" => @subscription_url,
+          "title" => @title,
+          "type" => @type,
+          "unread_at" => @unread_at,
+          "unread_count" => @unread_count,
+          "unread_url" => @unread_url,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # OutOfOffice
+    class OutOfOffice
+      include TypeHelpers
+      attr_accessor :enabled, :end_date, :ongoing, :person, :start_date
+
+      def initialize(data = {})
+        @enabled = parse_boolean(data["enabled"])
+        @end_date = data["end_date"]
+        @ongoing = parse_boolean(data["ongoing"])
+        @person = parse_type(data["person"], "OutOfOfficePerson")
+        @start_date = data["start_date"]
+      end
+
+      def to_h
+        {
+          "enabled" => @enabled,
+          "end_date" => @end_date,
+          "ongoing" => @ongoing,
+          "person" => @person,
+          "start_date" => @start_date,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # OutOfOfficePayload
+    class OutOfOfficePayload
+      include TypeHelpers
+      attr_accessor :end_date, :start_date
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[end_date start_date].freeze
+      end
+
+      def initialize(data = {})
+        @end_date = data["end_date"]
+        @start_date = data["start_date"]
+      end
+
+      def to_h
+        {
+          "end_date" => @end_date,
+          "start_date" => @start_date,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # OutOfOfficePerson
+    class OutOfOfficePerson
+      include TypeHelpers
+      attr_accessor :id, :name
+
+      # @return [Array<Symbol>]
+      def self.required_fields
+        %i[id].freeze
+      end
+
+      def initialize(data = {})
+        @id = parse_integer(data["id"])
+        @name = data["name"]
+      end
+
+      def to_h
+        {
+          "id" => @id,
+          "name" => @name,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
     # Person
     class Person
       include TypeHelpers
@@ -1683,6 +2311,92 @@ module Basecamp
         {
           "id" => @id,
           "name" => @name,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # Preferences
+    class Preferences
+      include TypeHelpers
+      attr_accessor :app_url, :first_week_day, :time_format, :time_zone_name, :url
+
+      def initialize(data = {})
+        @app_url = data["app_url"]
+        @first_week_day = data["first_week_day"]
+        @time_format = data["time_format"]
+        @time_zone_name = data["time_zone_name"]
+        @url = data["url"]
+      end
+
+      def to_h
+        {
+          "app_url" => @app_url,
+          "first_week_day" => @first_week_day,
+          "time_format" => @time_format,
+          "time_zone_name" => @time_zone_name,
+          "url" => @url,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # PreferencesPayload
+    class PreferencesPayload
+      include TypeHelpers
+      attr_accessor :first_week_day, :time_format, :time_zone_name
+
+      def initialize(data = {})
+        @first_week_day = data["first_week_day"]
+        @time_format = data["time_format"]
+        @time_zone_name = data["time_zone_name"]
+      end
+
+      def to_h
+        {
+          "first_week_day" => @first_week_day,
+          "time_format" => @time_format,
+          "time_zone_name" => @time_zone_name,
+        }.compact
+      end
+
+      def to_json(*args)
+        to_h.to_json(*args)
+      end
+    end
+
+    # PreviewableAttachment
+    class PreviewableAttachment
+      include TypeHelpers
+      attr_accessor :app_url, :content_type, :filename, :filesize, :height, :id, :url, :width
+
+      def initialize(data = {})
+        @app_url = data["app_url"]
+        @content_type = data["content_type"]
+        @filename = data["filename"]
+        @filesize = parse_integer(data["filesize"])
+        @height = parse_integer(data["height"])
+        @id = parse_integer(data["id"])
+        @url = data["url"]
+        @width = parse_integer(data["width"])
+      end
+
+      def to_h
+        {
+          "app_url" => @app_url,
+          "content_type" => @content_type,
+          "filename" => @filename,
+          "filesize" => @filesize,
+          "height" => @height,
+          "id" => @id,
+          "url" => @url,
+          "width" => @width,
         }.compact
       end
 

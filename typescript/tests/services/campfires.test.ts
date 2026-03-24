@@ -96,6 +96,27 @@ describe("CampfiresService", () => {
       expect(lines[1]!.id).toBe(2);
     });
 
+    it("should pass sort and direction query params", async () => {
+      const campfireId = 42;
+      let capturedUrl = "";
+
+      server.use(
+        http.get(`${BASE_URL}/chats/${campfireId}/lines.json`, ({ request }) => {
+          capturedUrl = request.url;
+          return HttpResponse.json([sampleLine(1)]);
+        })
+      );
+
+      await client.campfires.listLines(campfireId, {
+        sort: "created_at",
+        direction: "desc",
+      });
+
+      const url = new URL(capturedUrl);
+      expect(url.searchParams.get("sort")).toBe("created_at");
+      expect(url.searchParams.get("direction")).toBe("desc");
+    });
+
     it("should handle mixed text and upload lines", async () => {
       const campfireId = 42;
       const uploadLine = {
@@ -215,6 +236,27 @@ describe("CampfiresService", () => {
       expect(uploads[0]!.attachments![0]!.download_url).toBe(
         "https://3.basecampapi.com/12345/uploads/200/download/report.pdf"
       );
+    });
+
+    it("should pass sort and direction query params", async () => {
+      const campfireId = 42;
+      let capturedUrl = "";
+
+      server.use(
+        http.get(`${BASE_URL}/chats/${campfireId}/uploads.json`, ({ request }) => {
+          capturedUrl = request.url;
+          return HttpResponse.json([]);
+        })
+      );
+
+      await client.campfires.listUploads(campfireId, {
+        sort: "created_at",
+        direction: "desc",
+      });
+
+      const url = new URL(capturedUrl);
+      expect(url.searchParams.get("sort")).toBe("created_at");
+      expect(url.searchParams.get("direction")).toBe("desc");
     });
   });
 
