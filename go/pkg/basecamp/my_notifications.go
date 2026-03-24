@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/basecamp/basecamp-sdk/go/pkg/generated"
@@ -74,16 +75,22 @@ func (s *MyNotificationsService) Get(ctx context.Context, page int32) (result *N
 		}
 	}
 
-	resp, err := s.client.parent.gen.GetMyNotificationsWithResponse(ctx, s.client.accountID, params)
+	resp, err := s.client.parent.gen.GetMyNotifications(ctx, s.client.accountID, params)
 	if err != nil {
 		return nil, err
 	}
-	if err = checkResponse(resp.HTTPResponse, resp.Body); err != nil {
+	defer func() { _ = resp.Body.Close() }()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read notifications response: %w", err)
+	}
+	if err = checkResponse(resp, body); err != nil {
 		return nil, err
 	}
 
 	var notifications NotificationsResult
-	if err = json.Unmarshal(resp.Body, &notifications); err != nil {
+	if err = json.Unmarshal(body, &notifications); err != nil {
 		return nil, fmt.Errorf("failed to parse notifications: %w", err)
 	}
 
