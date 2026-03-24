@@ -212,15 +212,37 @@ func (s *AccountService) UpdateLogo(ctx context.Context, logo io.Reader, filenam
 		return fmt.Errorf("failed to close multipart writer: %w", err)
 	}
 
-	// Delegate to the generated client — retry and auth are handled by the transport
+	// Delegate to the generated client — retry and auth are handled by the transport.
+	// Pass a rewindable reader so doWithRetry can replay the body on transient failures.
+	bodyBytes := buf.Bytes()
+	multipartContentType := writer.FormDataContentType()
+	rewindable := &rewindableReader{data: bodyBytes}
 	resp, err := s.client.parent.gen.UpdateAccountLogoWithBodyWithResponse(
 		ctx,
 		s.client.accountID,
-		writer.FormDataContentType(),
-		&buf,
+		multipartContentType,
+		rewindable,
 	)
 	if err != nil {
 		return err
 	}
 	return checkResponse(resp.HTTPResponse, resp.Body)
+}
+
+// rewindableReader wraps a byte slice as an io.Reader that resets to the
+// beginning each time it's fully consumed. This allows the generated client's
+// doWithRetry to replay the body on transient failures without modification.
+type rewindableReader struct {
+	data []byte
+	pos  int
+}
+
+func (r *rewindableReader) Read(p []byte) (int, error) {
+	if r.pos >= len(r.data) {
+		r.pos = 0 // rewind for next attempt
+		return 0, io.EOF
+	}
+	n := copy(p, r.data[r.pos:])
+	r.pos += n
+	return n, nil
 }

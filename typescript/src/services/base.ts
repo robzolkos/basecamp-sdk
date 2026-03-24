@@ -24,7 +24,9 @@
 
 import type { BasecampHooks, OperationInfo, OperationResult } from "../hooks.js";
 import { BasecampError, errorFromResponse } from "../errors.js";
-import metadata from "../generated/metadata.json" with { type: "json" };
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const metadata = require("../generated/metadata.json") as { operations: Record<string, { retry?: { maxAttempts?: number; baseDelayMs?: number; backoff?: string; retryOn?: number[] } }> };
 import { ListResult, parseTotalCount, type PaginationOptions } from "../pagination.js";
 import { parseNextLink, resolveURL, isSameOrigin } from "../pagination-utils.js";
 import type { paths } from "../generated/schema.js";
@@ -153,6 +155,17 @@ export abstract class BaseService {
         const delay = !isNaN(retryAfter) && retryAfter > 0
           ? retryAfter
           : (retryConfig.baseDelayMs ?? 1000) * Math.pow(2, attempt);
+
+        try {
+          const retryError = new Error(`${response.status} ${response.statusText}`);
+          this.hooks?.onRetry?.(
+            { method, url, attempt: attempt + 1 },
+            attempt + 1,
+            retryError,
+            delay,
+          );
+        } catch { /* hooks should not interrupt */ }
+
         await new Promise((r) => setTimeout(r, delay));
       }
 
