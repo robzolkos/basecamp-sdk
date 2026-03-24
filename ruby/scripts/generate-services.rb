@@ -379,6 +379,8 @@ class ServiceGenerator
     # Check for request body (JSON or binary)
     body_schema_ref = operation.dig('requestBody', 'content', 'application/json', 'schema')
     has_binary_body = operation.dig('requestBody', 'content', 'application/octet-stream', 'schema')
+    has_multipart_body = operation.dig('requestBody', 'content', 'multipart/form-data', 'schema')
+    multipart_field = operation.dig('x-basecamp-multipart', 'field')
 
     # Extract body parameters from schema
     body_params = extract_body_params(body_schema_ref)
@@ -400,6 +402,8 @@ class ServiceGenerator
       body_params: body_params,
       has_body: body_params.any?,
       has_binary_body: !!has_binary_body,
+      has_multipart_body: !!has_multipart_body,
+      multipart_field: multipart_field,
       returns_void: returns_void,
       returns_array: returns_array,
       is_mutation: http_method != 'GET',
@@ -569,6 +573,13 @@ class ServiceGenerator
       lines << '      # @param content_type [String] MIME type of the file (e.g., "application/pdf", "image/png")'
     end
 
+    # Add @param tags for multipart upload params
+    if op[:has_multipart_body]
+      lines << '      # @param io [IO, String] File data to upload (IO object or string)'
+      lines << '      # @param filename [String] Display name for the uploaded file'
+      lines << '      # @param content_type [String] MIME type of the file (e.g., "image/png")'
+    end
+
     # Add @param tags for body params
     if op[:body_params]&.any?
       op[:body_params].each do |b|
@@ -664,7 +675,11 @@ class ServiceGenerator
     end
 
     # Binary upload parameters
-    if op[:has_binary_body]
+    if op[:has_multipart_body]
+      params << 'io:'
+      params << 'filename:'
+      params << 'content_type:'
+    elsif op[:has_binary_body]
       params << 'data:'
       params << 'content_type:'
     elsif op[:has_body]
@@ -719,7 +734,11 @@ class ServiceGenerator
     lines = []
     http_method = op[:http_method].downcase
 
-    if op[:has_body]
+    if op[:has_multipart_body]
+      field = op[:multipart_field] || 'file'
+      lines << "        http_#{http_method}_multipart(#{path_expr}, io: io, filename: filename, " \
+               "content_type: content_type, field: \"#{field}\")"
+    elsif op[:has_body]
       body_expr = build_body_expression(op)
       lines << "        http_#{http_method}(#{path_expr}, body: #{body_expr})"
     else

@@ -315,48 +315,6 @@ module Basecamp
       end
     end
 
-    # Uploads or replaces the account logo.
-    # The logo must be sent as multipart/form-data with field name "logo".
-    # Accepted formats: PNG, JPEG, GIF, WebP, AVIF, HEIC. Maximum 5 MB.
-    #
-    # @param io [IO, StringIO, File] the logo image data
-    # @param filename [String] the filename (e.g., "logo.png")
-    # @param content_type [String] MIME type (e.g., "image/png")
-    # @return [void]
-    # @raise [ApiError] if the upload fails
-    def update_account_logo(io:, filename:, content_type:)
-      op = OperationInfo.new(
-        service: "Account",
-        operation: "UpdateAccountLogo",
-        is_mutation: true
-      )
-      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      safe_hook { hooks.on_operation_start(op) }
-
-      begin
-        boundary = "BasecampSDK#{SecureRandom.hex(16)}"
-        body = build_multipart_body(boundary: boundary, field: "logo", io: io, filename: filename, content_type: content_type)
-
-        response = put_raw(
-          "/account/logo.json",
-          body: body,
-          content_type: "multipart/form-data; boundary=#{boundary}"
-        )
-
-        unless response.status == 204 || response.success?
-          raise Basecamp.error_from_response(response.status, response.body)
-        end
-      rescue => e
-        duration = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - start) * 1000).round
-        safe_hook { hooks.on_operation_end(op, OperationResult.new(duration_ms: duration, error: e)) }
-        raise
-      else
-        duration = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - start) * 1000).round
-        safe_hook { hooks.on_operation_end(op, OperationResult.new(duration_ms: duration, error: nil)) }
-        nil
-      end
-    end
-
     # @!group Services
 
     # @return [Services::ProjectsService]
@@ -639,19 +597,5 @@ module Basecamp
       parsed >= 0 ? parsed : -1
     end
 
-    def build_multipart_body(boundary:, field:, io:, filename:, content_type:)
-      data = io.respond_to?(:read) ? io.read : io.to_s
-      safe_filename = filename.tr("\r\n", "").gsub("\\", "\\\\").gsub('"', '\\"')
-      safe_content_type = content_type.tr("\r\n", "")
-      body = "".b
-      body << "--#{boundary}\r\n"
-      body << "Content-Disposition: form-data; name=\"#{field}\"; filename=\"#{safe_filename}\"\r\n"
-      body << "Content-Type: #{safe_content_type}\r\n"
-      body << "\r\n"
-      body << data
-      body << "\r\n"
-      body << "--#{boundary}--\r\n"
-      body.force_encoding(Encoding::BINARY)
-    end
   end
 end

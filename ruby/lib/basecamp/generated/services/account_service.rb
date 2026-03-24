@@ -15,6 +15,18 @@ module Basecamp
         end
       end
 
+      # Upload or replace the account logo.
+      # @param io [IO, String] File data to upload (IO object or string)
+      # @param filename [String] Display name for the uploaded file
+      # @param content_type [String] MIME type of the file (e.g., "image/png")
+      # @return [void]
+      def update_account_logo(io:, filename:, content_type:)
+        with_operation(service: "account", operation: "update_account_logo", is_mutation: true) do
+          http_put_multipart("/account/logo.json", io: io, filename: filename, content_type: content_type, field: "logo")
+          nil
+        end
+      end
+
       # Remove the account logo. Only administrators and account owners can use this endpoint.
       # @return [void]
       def remove_account_logo()
