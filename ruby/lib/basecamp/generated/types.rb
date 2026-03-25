@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Auto-generated from OpenAPI spec. Do not edit manually.
-# Generated: 2026-03-23T21:15:35Z
+# Generated: 2026-03-25T06:07:30Z
 
 require "json"
 require "time"
@@ -1479,7 +1479,7 @@ module Basecamp
     # GaugeNeedle
     class GaugeNeedle
       include TypeHelpers
-      attr_accessor :created_at, :id, :updated_at, :app_url, :bookmark_url, :boosts_count, :boosts_url, :bucket, :color, :comment_count, :comments_count, :comments_url, :creator, :description, :inherits_status, :parent, :position, :status, :subscription_url, :title, :type, :url, :visible_to_clients
+      attr_accessor :created_at, :id, :updated_at, :app_url, :bookmark_url, :boosts_count, :boosts_url, :bucket, :color, :comments_count, :comments_url, :creator, :description, :inherits_status, :parent, :position, :status, :subscription_url, :title, :type, :url, :visible_to_clients
 
       # @return [Array<Symbol>]
       def self.required_fields
@@ -1496,7 +1496,6 @@ module Basecamp
         @boosts_url = data["boosts_url"]
         @bucket = parse_type(data["bucket"], "RecordingBucket")
         @color = data["color"]
-        @comment_count = parse_integer(data["comment_count"])
         @comments_count = parse_integer(data["comments_count"])
         @comments_url = data["comments_url"]
         @creator = parse_type(data["creator"], "Person")
@@ -1523,7 +1522,6 @@ module Basecamp
           "boosts_url" => @boosts_url,
           "bucket" => @bucket,
           "color" => @color,
-          "comment_count" => @comment_count,
           "comments_count" => @comments_count,
           "comments_url" => @comments_url,
           "creator" => @creator,
