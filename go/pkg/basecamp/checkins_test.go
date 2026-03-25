@@ -849,3 +849,66 @@ func TestCheckinsService_UpdateAnswerExplicitGroupOn(t *testing.T) {
 		t.Errorf("expected group_on '2025-03-01', got %v", receivedBody["group_on"])
 	}
 }
+
+func TestCheckinsService_UpdateAnswerRejectsInvalidExplicitGroupOn(t *testing.T) {
+	var requestCount int
+
+	svc := testCheckinsServer(t, func(w http.ResponseWriter, r *http.Request) {
+		requestCount++
+		t.Fatalf("unexpected request: %s %s", r.Method, r.URL.Path)
+	})
+
+	err := svc.UpdateAnswer(context.Background(), 1069479450, &UpdateAnswerRequest{
+		Content: "<div>Updated content.</div>",
+		GroupOn: "2025/03/01",
+	})
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	apiErr, ok := err.(*Error)
+	if !ok || apiErr.Code != CodeUsage {
+		t.Fatalf("expected usage error, got %v", err)
+	}
+	if requestCount != 0 {
+		t.Fatalf("expected 0 requests, got %d", requestCount)
+	}
+	if apiErr.Message != "group_on must be in YYYY-MM-DD format" {
+		t.Fatalf("unexpected error message: %q", apiErr.Message)
+	}
+}
+
+func TestCheckinsService_UpdateAnswerRejectsMissingResolvedGroupOn(t *testing.T) {
+	var requestCount int
+
+	svc := testCheckinsServer(t, func(w http.ResponseWriter, r *http.Request) {
+		requestCount++
+		w.Header().Set("Content-Type", "application/json")
+
+		switch r.Method {
+		case http.MethodGet:
+			w.WriteHeader(200)
+			w.Write([]byte(`{"id":1069479450,"content":"Existing answer","group_on":null}`))
+		case http.MethodPut:
+			t.Fatal("unexpected PUT request when resolved group_on is empty")
+		default:
+			t.Fatalf("unexpected method: %s", r.Method)
+		}
+	})
+
+	err := svc.UpdateAnswer(context.Background(), 1069479450, &UpdateAnswerRequest{
+		Content: "<div>Updated content.</div>",
+	})
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	apiErr, ok := err.(*Error)
+	if !ok || apiErr.Code != CodeUsage {
+		t.Fatalf("expected usage error, got %v", err)
+	}
+	if requestCount != 1 {
+		t.Fatalf("expected 1 request (GET only), got %d", requestCount)
+	}
+	if apiErr.Message != "group_on is required" {
+		t.Fatalf("unexpected error message: %q", apiErr.Message)
+	}
+}

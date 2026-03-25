@@ -619,6 +619,12 @@ func (s *CheckinsService) UpdateAnswer(ctx context.Context, answerID int64, req 
 		}
 		groupOn = existing.GroupOn
 	}
+	if groupOn == "" {
+		return ErrUsage("group_on is required")
+	}
+	if _, parseErr := types.ParseDate(groupOn); parseErr != nil {
+		return ErrUsage("group_on must be in YYYY-MM-DD format")
+	}
 
 	body := map[string]any{
 		"content":  req.Content,
