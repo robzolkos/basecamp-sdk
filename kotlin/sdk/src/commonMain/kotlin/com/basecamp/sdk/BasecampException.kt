@@ -59,13 +59,22 @@ sealed class BasecampException(
     ) : BasecampException(message, CODE_FORBIDDEN, hint, 403, false, requestId, cause)
 
     /** Not found error (404). */
-    class NotFound(
-        message: String = "Resource not found",
-        hint: String? = null,
-        requestId: String? = null,
-        cause: Throwable? = null,
-        code: String = CODE_NOT_FOUND,
-    ) : BasecampException(message, code, hint, 404, false, requestId, cause)
+    class NotFound internal constructor(
+        message: String,
+        hint: String?,
+        requestId: String?,
+        cause: Throwable?,
+        code: String,
+    ) : BasecampException(message, code, hint, 404, false, requestId, cause) {
+        constructor() : this("Resource not found", null, null, null, CODE_NOT_FOUND)
+
+        constructor(
+            message: String = "Resource not found",
+            hint: String? = null,
+            requestId: String? = null,
+            cause: Throwable? = null,
+        ) : this(message, hint, requestId, cause, CODE_NOT_FOUND)
+    }
 
     /** Rate limit error (429). Retryable with optional Retry-After. */
     class RateLimit(
@@ -162,6 +171,17 @@ sealed class BasecampException(
             else -> EXIT_API
         }
 
+        internal fun apiDisabledNotFound(
+            requestId: String? = null,
+            cause: Throwable? = null,
+        ): NotFound = NotFound(
+            API_DISABLED_MESSAGE,
+            API_DISABLED_HINT,
+            requestId,
+            cause,
+            CODE_API_DISABLED,
+        )
+
         /** Maximum length for error messages to prevent unbounded memory growth. */
         private const val MAX_ERROR_MESSAGE_LENGTH = 500
 
@@ -184,12 +204,7 @@ sealed class BasecampException(
                 401 -> Auth(msg, hint, requestId)
                 403 -> Forbidden(msg, hint, requestId)
                 404 -> when (reason) {
-                    "API Disabled" -> NotFound(
-                        API_DISABLED_MESSAGE,
-                        API_DISABLED_HINT,
-                        requestId,
-                        code = CODE_API_DISABLED,
-                    )
+                    "API Disabled" -> apiDisabledNotFound(requestId)
                     "Account Inactive" -> NotFound(
                         ACCOUNT_INACTIVE_MESSAGE,
                         ACCOUNT_INACTIVE_HINT,

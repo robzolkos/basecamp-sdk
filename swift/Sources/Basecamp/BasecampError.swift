@@ -75,8 +75,8 @@ public enum BasecampError: Error, Sendable, LocalizedError {
         switch self {
         case .auth: "auth_required"
         case .forbidden: "forbidden"
-        case .notFound(let message, _, _):
-            message == Self.apiDisabledMessage ? "api_disabled" : "not_found"
+        case .notFound(let message, let hint, _):
+            isAPIDisabledNotFound(message: message, hint: hint) ? "api_disabled" : "not_found"
         case .rateLimit: "rate_limit"
         case .network: "network"
         case .api: "api_error"
@@ -88,7 +88,12 @@ public enum BasecampError: Error, Sendable, LocalizedError {
 
     /// Whether this error represents account-level public API access being disabled.
     public var isAPIDisabled: Bool {
-        code == "api_disabled"
+        switch self {
+        case .notFound(let message, let hint, _):
+            isAPIDisabledNotFound(message: message, hint: hint)
+        default:
+            false
+        }
     }
 
     /// The HTTP status code, if applicable.
@@ -255,6 +260,10 @@ public enum BasecampError: Error, Sendable, LocalizedError {
         }
         let lowercasedName = name.lowercased()
         return headers.first { $0.key.lowercased() == lowercasedName }?.value
+    }
+
+    private func isAPIDisabledNotFound(message: String, hint: String?) -> Bool {
+        message == Self.apiDisabledMessage && hint == Self.apiDisabledHint
     }
 
     /// Parses a Retry-After header value (seconds or HTTP-date).

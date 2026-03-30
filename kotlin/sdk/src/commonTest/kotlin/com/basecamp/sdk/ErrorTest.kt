@@ -146,12 +146,9 @@ class ErrorTest {
     }
 
     @Test
-    fun apiDisabledNotFoundCanBeConstructedWithoutNewSubtype() {
-        val e = BasecampException.NotFound(
-            message = "API access is disabled for this account",
-            hint = "An administrator can re-enable it in Adminland under Manage API access",
-            code = BasecampException.CODE_API_DISABLED,
-        )
+    fun apiDisabledNotFoundUsesNotFoundSubtypeWithoutNewPublicConstructor() {
+        val e = BasecampException.apiDisabledNotFound()
+        assertIs<BasecampException.NotFound>(e)
         assertEquals("api_disabled", e.code)
         assertEquals(404, e.httpStatus)
         assertEquals(10, e.exitCode)

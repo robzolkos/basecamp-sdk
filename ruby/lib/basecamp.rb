@@ -91,8 +91,9 @@ module Basecamp
   # @return [Error]
   def self.error_from_response(status, body = nil, retry_after: nil, headers: {})
     message = parse_error_message(body) || "Request failed"
+    request_id = headers["X-Request-Id"] || headers["x-request-id"]
 
-    case status
+    err = case status
     when 400, 422
       ValidationError.new(message, http_status: status)
     when 401
@@ -117,6 +118,9 @@ module Basecamp
     else
       ApiError.from_status(status, message)
     end
+
+    err.instance_variable_set(:@request_id, request_id) if request_id
+    err
   end
 
   # Extracts a filename from the last path segment of a URL.

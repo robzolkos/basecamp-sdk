@@ -156,6 +156,16 @@ final class ErrorTests: XCTestCase {
         XCTAssertTrue(error.isAPIDisabled)
     }
 
+    func testCallerConstructedNotFoundWithMatchingMessageOnlyIsNotApiDisabled() {
+        let error = BasecampError.notFound(
+            message: "API access is disabled for this account",
+            hint: "Some other hint",
+            requestId: nil
+        )
+        XCTAssertEqual(error.code, "not_found")
+        XCTAssertFalse(error.isAPIDisabled)
+    }
+
     func testFromHTTPResponse404AccountInactive() {
         let error = BasecampError.fromHTTPResponse(
             status: 404, data: nil, headers: ["Reason": "Account Inactive"], requestId: nil

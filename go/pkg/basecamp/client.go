@@ -782,6 +782,9 @@ func (c *Client) singleRequest(ctx context.Context, method, url string, body any
 
 	case http.StatusNotFound: // 404
 		if reasonErr := checkReasonHeader(resp); reasonErr != nil {
+			if reasonErr.RequestID == "" {
+				reasonErr.RequestID = resp.Header.Get("X-Request-Id")
+			}
 			return nil, reasonErr
 		}
 		return nil, ErrNotFound("Resource", url)
