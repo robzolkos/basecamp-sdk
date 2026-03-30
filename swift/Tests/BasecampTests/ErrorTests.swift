@@ -75,6 +75,20 @@ final class ErrorTests: XCTestCase {
         XCTAssertEqual(error.hint, "Did you mean: Project A, Project B")
     }
 
+    func testApiDisabledErrorProperties() {
+        let error = BasecampError.apiDisabled(
+            message: "API access is disabled",
+            hint: "Contact admin",
+            requestId: "req-1"
+        )
+        XCTAssertEqual(error.httpStatusCode, 404)
+        XCTAssertEqual(error.exitCode, 10)
+        XCTAssertFalse(error.isRetryable)
+        XCTAssertEqual(error.message, "API access is disabled")
+        XCTAssertEqual(error.hint, "Contact admin")
+        XCTAssertEqual(error.requestId, "req-1")
+    }
+
     func testUsageErrorProperties() {
         let error = BasecampError.usage(message: "Bad argument", hint: "Use --flag")
         XCTAssertNil(error.httpStatusCode)
@@ -101,6 +115,33 @@ final class ErrorTests: XCTestCase {
     func testFromHTTPResponse404() {
         let error = BasecampError.fromHTTPResponse(status: 404, data: nil, headers: [:], requestId: nil)
         if case .notFound = error { } else { XCTFail("Expected .notFound") }
+    }
+
+    func testFromHTTPResponse404APIDisabled() {
+        let error = BasecampError.fromHTTPResponse(
+            status: 404, data: nil, headers: ["Reason": "API Disabled"], requestId: "req-1"
+        )
+        if case .apiDisabled(let message, let hint, let requestId) = error {
+            XCTAssertTrue(message.contains("disabled"))
+            XCTAssertNotNil(hint)
+            XCTAssertTrue(hint!.contains("Adminland"))
+            XCTAssertEqual(requestId, "req-1")
+        } else {
+            XCTFail("Expected .apiDisabled, got \(error)")
+        }
+    }
+
+    func testFromHTTPResponse404AccountInactive() {
+        let error = BasecampError.fromHTTPResponse(
+            status: 404, data: nil, headers: ["Reason": "Account Inactive"], requestId: nil
+        )
+        if case .notFound(let message, let hint, _) = error {
+            XCTAssertTrue(message.contains("inactive"))
+            XCTAssertNotNil(hint)
+            XCTAssertTrue(hint!.contains("expired trial"))
+        } else {
+            XCTFail("Expected .notFound with account inactive, got \(error)")
+        }
     }
 
     func testFromHTTPResponse429() {

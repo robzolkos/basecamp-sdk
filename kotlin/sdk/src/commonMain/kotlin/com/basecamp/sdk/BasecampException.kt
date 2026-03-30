@@ -108,6 +108,13 @@ sealed class BasecampException(
             "Did you mean: ${matches.joinToString(", ")}" else "Be more specific",
     ) : BasecampException("Ambiguous $resource", CODE_AMBIGUOUS, hint)
 
+    /** API access disabled by account administrator (404 with Reason: API Disabled header). */
+    class ApiDisabled(
+        message: String = "API access is disabled for this account",
+        hint: String? = "An administrator can re-enable it in Adminland under Manage API access",
+        requestId: String? = null,
+    ) : BasecampException(message, CODE_API_DISABLED, hint, 404, false, requestId)
+
     /** Usage error (bad arguments, configuration errors). */
     class Usage(
         message: String,
@@ -123,6 +130,7 @@ sealed class BasecampException(
         const val CODE_API = "api_error"
         const val CODE_VALIDATION = "validation"
         const val CODE_AMBIGUOUS = "ambiguous"
+        const val CODE_API_DISABLED = "api_disabled"
         const val CODE_USAGE = "usage"
 
         private const val EXIT_OK = 0
@@ -135,6 +143,7 @@ sealed class BasecampException(
         private const val EXIT_API = 7
         private const val EXIT_AMBIGUOUS = 8
         private const val EXIT_VALIDATION = 9
+        private const val EXIT_API_DISABLED = 10
 
         /** Maps an error code to a CLI exit code. */
         fun exitCodeFor(code: String): Int = when (code) {
@@ -147,6 +156,7 @@ sealed class BasecampException(
             CODE_API -> EXIT_API
             CODE_AMBIGUOUS -> EXIT_AMBIGUOUS
             CODE_VALIDATION -> EXIT_VALIDATION
+            CODE_API_DISABLED -> EXIT_API_DISABLED
             else -> EXIT_API
         }
 
@@ -165,12 +175,21 @@ sealed class BasecampException(
             hint: String? = null,
             requestId: String? = null,
             retryAfterSeconds: Int? = null,
+            reason: String? = null,
         ): BasecampException {
             val msg = truncateMessage(message ?: "Request failed (HTTP $httpStatus)")
             return when (httpStatus) {
                 401 -> Auth(msg, hint, requestId)
                 403 -> Forbidden(msg, hint, requestId)
-                404 -> NotFound(msg, hint, requestId)
+                404 -> when (reason) {
+                    "API Disabled" -> ApiDisabled(requestId = requestId)
+                    "Account Inactive" -> NotFound(
+                        "Account is inactive",
+                        "The account may have an expired trial or be suspended",
+                        requestId,
+                    )
+                    else -> NotFound(msg, hint, requestId)
+                }
                 429 -> RateLimit(retryAfterSeconds, msg, hint, requestId)
                 400, 422 -> Validation(msg, hint, httpStatus, requestId)
                 else -> Api(msg, httpStatus, hint, httpStatus in 500..599, requestId)

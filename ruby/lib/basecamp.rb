@@ -89,7 +89,7 @@ module Basecamp
   # @param body [String, nil] response body (will attempt JSON parse)
   # @param retry_after [Integer, nil] Retry-After header value
   # @return [Error]
-  def self.error_from_response(status, body = nil, retry_after: nil)
+  def self.error_from_response(status, body = nil, retry_after: nil, headers: {})
     message = parse_error_message(body) || "Request failed"
 
     case status
@@ -100,7 +100,14 @@ module Basecamp
     when 403
       ForbiddenError.new(message)
     when 404
-      NotFoundError.new(message: message)
+      reason = headers["Reason"] || headers["reason"]
+      if reason == "API Disabled"
+        ApiDisabledError.new
+      elsif reason == "Account Inactive"
+        NotFoundError.new(message: "Account is inactive", hint: "The account may have an expired trial or be suspended")
+      else
+        NotFoundError.new(message: message)
+      end
     when 429
       RateLimitError.new(retry_after: retry_after)
     when 500

@@ -108,6 +108,50 @@ class ErrorTest {
     }
 
     @Test
+    fun fromHttpStatusMaps404ApiDisabled() {
+        val e = BasecampException.fromHttpStatus(404, "Not found", reason = "API Disabled")
+        assertIs<BasecampException.ApiDisabled>(e)
+        assertEquals("api_disabled", e.code)
+        assertEquals(404, e.httpStatus)
+        assertEquals(10, e.exitCode)
+        assertFalse(e.retryable)
+        assertTrue(e.hint?.contains("Adminland") == true)
+    }
+
+    @Test
+    fun fromHttpStatusMaps404AccountInactive() {
+        val e = BasecampException.fromHttpStatus(404, "Not found", reason = "Account Inactive")
+        assertIs<BasecampException.NotFound>(e)
+        assertEquals("Account is inactive", e.message)
+        assertTrue(e.hint?.contains("expired trial") == true)
+    }
+
+    @Test
+    fun fromHttpStatusMaps404NoReason() {
+        val e = BasecampException.fromHttpStatus(404, "Not found", reason = null)
+        assertIs<BasecampException.NotFound>(e)
+        assertEquals("Not found", e.message)
+    }
+
+    @Test
+    fun fromHttpStatusMaps404ApiDisabledPreservesRequestId() {
+        val e = BasecampException.fromHttpStatus(404, "Not found", requestId = "req-123", reason = "API Disabled")
+        assertIs<BasecampException.ApiDisabled>(e)
+        assertEquals("req-123", e.requestId)
+    }
+
+    @Test
+    fun apiDisabledErrorProperties() {
+        val e = BasecampException.ApiDisabled()
+        assertEquals("api_disabled", e.code)
+        assertEquals(404, e.httpStatus)
+        assertEquals(10, e.exitCode)
+        assertFalse(e.retryable)
+        assertTrue(e.message!!.contains("disabled"))
+        assertTrue(e.hint?.contains("Adminland") == true)
+    }
+
+    @Test
     fun fromHttpStatusMaps429ToRateLimit() {
         val e = BasecampException.fromHttpStatus(429, "Too many requests", retryAfterSeconds = 10)
         assertIs<BasecampException.RateLimit>(e)
@@ -152,6 +196,7 @@ class ErrorTest {
             BasecampException.Api("error", 500),
             BasecampException.Ambiguous("project"),
             BasecampException.Validation("invalid"),
+            BasecampException.ApiDisabled(),
             BasecampException.Usage("bad arg"),
         )
 
@@ -166,6 +211,7 @@ class ErrorTest {
                 is BasecampException.Api -> "api"
                 is BasecampException.Ambiguous -> "ambiguous"
                 is BasecampException.Validation -> "validation"
+                is BasecampException.ApiDisabled -> "api_disabled"
                 is BasecampException.Usage -> "usage"
             }
             assertTrue(code.isNotEmpty())

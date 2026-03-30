@@ -46,6 +46,9 @@ public enum BasecampError: Error, Sendable, LocalizedError {
     /// Multiple matches found for a name or identifier.
     case ambiguous(resource: String, matches: [String], hint: String?)
 
+    /// API access disabled by account administrator (HTTP 404 with Reason: API Disabled header).
+    case apiDisabled(message: String, hint: String?, requestId: String?)
+
     /// Client usage error (invalid arguments, bad configuration).
     case usage(message: String, hint: String?)
 
@@ -58,6 +61,7 @@ public enum BasecampError: Error, Sendable, LocalizedError {
         case .network: true
         case .api(_, let status, _, _): status.map { $0 >= 500 } ?? false
         case .ambiguous: false
+        case .apiDisabled: false
         default: false
         }
     }
@@ -68,6 +72,7 @@ public enum BasecampError: Error, Sendable, LocalizedError {
         case .auth: 401
         case .forbidden: 403
         case .notFound: 404
+        case .apiDisabled: 404
         case .rateLimit: 429
         case .validation(_, let status, _, _): status
         case .api(_, let status, _, _): status
@@ -89,6 +94,7 @@ public enum BasecampError: Error, Sendable, LocalizedError {
         case .api: 7
         case .ambiguous: 8
         case .validation: 9
+        case .apiDisabled: 10
         }
     }
 
@@ -98,6 +104,7 @@ public enum BasecampError: Error, Sendable, LocalizedError {
         case .auth(_, let hint, _): hint
         case .forbidden(_, let hint, _): hint
         case .notFound(_, let hint, _): hint
+        case .apiDisabled(_, let hint, _): hint
         case .rateLimit(_, _, let hint, _): hint
         case .network: "Check your network connection"
         case .api(_, _, let hint, _): hint
@@ -113,6 +120,7 @@ public enum BasecampError: Error, Sendable, LocalizedError {
         case .auth(let msg, _, _): msg
         case .forbidden(let msg, _, _): msg
         case .notFound(let msg, _, _): msg
+        case .apiDisabled(let msg, _, _): msg
         case .rateLimit(let msg, _, _, _): msg
         case .network(let msg, _): msg
         case .api(let msg, _, _, _): msg
@@ -128,6 +136,7 @@ public enum BasecampError: Error, Sendable, LocalizedError {
         case .auth(_, _, let id): id
         case .forbidden(_, _, let id): id
         case .notFound(_, _, let id): id
+        case .apiDisabled(_, _, let id): id
         case .rateLimit(_, _, _, let id): id
         case .api(_, _, _, let id): id
         case .ambiguous: nil
@@ -167,6 +176,21 @@ public enum BasecampError: Error, Sendable, LocalizedError {
         case 403:
             return .forbidden(message: message, hint: hint, requestId: requestId)
         case 404:
+            let reason = headers["Reason"]
+            if reason == "API Disabled" {
+                return .apiDisabled(
+                    message: "API access is disabled for this account",
+                    hint: "An administrator can re-enable it in Adminland under Manage API access",
+                    requestId: requestId
+                )
+            }
+            if reason == "Account Inactive" {
+                return .notFound(
+                    message: "Account is inactive",
+                    hint: "The account may have an expired trial or be suspended",
+                    requestId: requestId
+                )
+            }
             return .notFound(message: message, hint: hint, requestId: requestId)
         case 429:
             let retryAfter = parseRetryAfter(headers["Retry-After"])
