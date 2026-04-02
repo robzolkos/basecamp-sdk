@@ -134,8 +134,8 @@ func ExampleTodosService_List() {
 
 	todolistID := int64(789012)
 
-	// List all todos in a todolist
-	todosResult, err := client.ForAccount("12345").Todos().List(ctx, todolistID, nil)
+	// List completed todos in a todolist
+	todosResult, err := client.ForAccount("12345").Todos().List(ctx, todolistID, &basecamp.TodoListOptions{Status: "completed"})
 	if err != nil {
 		log.Fatal(err)
 	}
