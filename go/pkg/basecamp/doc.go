@@ -88,6 +88,8 @@
 //
 // # Working with Todos
 //
+// Todo APIs take todolistID or todoID directly; projectID is not required.
+//
 // List todos in a todolist:
 //
 //	todos, err := account.Todos().List(ctx, todolistID, nil)

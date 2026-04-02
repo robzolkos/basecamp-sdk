@@ -1008,6 +1008,31 @@ func TestTodosService_ListPendingFilterOmitsQueryParams(t *testing.T) {
 	}
 }
 
+func TestTodosService_ListIncompleteFilterOmitsQueryParams(t *testing.T) {
+	fixture := loadTodosFixture(t, "list.json")
+	var gotStatus string
+	var gotCompleted string
+
+	svc := testTodosServer(t, func(w http.ResponseWriter, r *http.Request) {
+		gotStatus = r.URL.Query().Get("status")
+		gotCompleted = r.URL.Query().Get("completed")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write(fixture)
+	})
+
+	_, err := svc.List(context.Background(), 1069479519, &TodoListOptions{Status: "incomplete"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if gotStatus != "" {
+		t.Errorf("expected status query to be omitted, got %q", gotStatus)
+	}
+	if gotCompleted != "" {
+		t.Errorf("expected completed query to be omitted, got %q", gotCompleted)
+	}
+}
+
 func TestTodosService_ListLifecycleStatusFilter(t *testing.T) {
 	fixture := loadTodosFixture(t, "list.json")
 	var gotStatus string
