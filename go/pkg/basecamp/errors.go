@@ -73,9 +73,9 @@ func (e *Error) withRequestID(requestID string) *Error {
 	if e == nil || requestID == "" {
 		return e
 	}
-	copy := *e
-	copy.RequestID = requestID
-	return &copy
+	errCopy := *e
+	errCopy.RequestID = requestID
+	return &errCopy
 }
 
 // ExitCode returns the appropriate exit code for this error.

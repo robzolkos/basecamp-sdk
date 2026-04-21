@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -359,7 +360,11 @@ func TestSingleRequest_ErrorIncludesRequestID(t *testing.T) {
 			if apiErr.Code != tt.wantCode {
 				t.Fatalf("Code = %q, want %q", apiErr.Code, tt.wantCode)
 			}
-			if apiErr.Message != tt.wantMessage && !(tt.wantCode == CodeNotFound && len(apiErr.Message) >= len(tt.wantMessage) && apiErr.Message[:len(tt.wantMessage)] == tt.wantMessage) {
+			messageMatches := apiErr.Message == tt.wantMessage
+			if tt.wantCode == CodeNotFound {
+				messageMatches = strings.HasPrefix(apiErr.Message, tt.wantMessage)
+			}
+			if !messageMatches {
 				t.Fatalf("Message = %q, want %q", apiErr.Message, tt.wantMessage)
 			}
 			if apiErr.Hint != tt.wantHint {
