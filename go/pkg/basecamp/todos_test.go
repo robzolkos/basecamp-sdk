@@ -990,10 +990,18 @@ func TestTodosService_List_QueryParameters(t *testing.T) {
 			if len(result.Todos) != 2 {
 				t.Fatalf("expected 2 todos, got %d", len(result.Todos))
 			}
-			if got := gotQuery.Get("status"); got != tt.wantStatus {
+			if tt.wantStatus == "" {
+				if gotQuery.Has("status") {
+					t.Fatalf("expected status to be absent, got %q", gotQuery.Get("status"))
+				}
+			} else if got := gotQuery.Get("status"); got != tt.wantStatus {
 				t.Fatalf("status query = %q, want %q", got, tt.wantStatus)
 			}
-			if got := gotQuery.Get("completed"); got != tt.wantCompleted {
+			if tt.wantCompleted == "" {
+				if gotQuery.Has("completed") {
+					t.Fatalf("expected completed to be absent, got %q", gotQuery.Get("completed"))
+				}
+			} else if got := gotQuery.Get("completed"); got != tt.wantCompleted {
 				t.Fatalf("completed query = %q, want %q", got, tt.wantCompleted)
 			}
 		})
