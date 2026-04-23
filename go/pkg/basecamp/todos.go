@@ -95,9 +95,13 @@ type Bucket struct {
 
 // TodoListOptions specifies options for listing todos.
 type TodoListOptions struct {
-	// Status filters by completion status.
-	// "completed" returns completed todos, "pending" returns pending todos.
-	// Empty returns all todos.
+	// Status filters todos by lifecycle status or by legacy completion shortcuts.
+	//
+	// Supported values:
+	//   - "completed": completed todos (sent as completed=true)
+	//   - "pending": active, incomplete todos (default API behavior)
+	//   - "active", "archived", "trashed": recording status filters
+	//   - "": default API behavior (active, incomplete todos)
 	Status string
 
 	// Limit is the maximum number of todos to return.
@@ -188,10 +192,20 @@ func (s *TodosService) List(ctx context.Context, todolistID int64, opts *TodoLis
 	ctx = s.client.parent.hooks.OnOperationStart(ctx, op)
 	defer func() { s.client.parent.hooks.OnOperationEnd(ctx, op, err, time.Since(start)) }()
 
-	// Build params for generated client
+	// Build params for generated client.
+	// The API uses completed=true for completion filtering and reserves status
+	// for recording lifecycle state (active/archived/trashed).
 	var params *generated.ListTodosParams
 	if opts != nil && opts.Status != "" {
-		params = &generated.ListTodosParams{Status: opts.Status}
+		switch opts.Status {
+		case "completed":
+			params = &generated.ListTodosParams{Completed: true}
+		case "pending":
+			// Default API behavior already returns active, incomplete todos.
+			params = nil
+		default:
+			params = &generated.ListTodosParams{Status: opts.Status}
+		}
 	}
 
 	// Call generated client for first page (spec-conformant - no manual path construction)

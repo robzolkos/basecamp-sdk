@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"testing"
@@ -949,6 +950,54 @@ func testTodosServer(t *testing.T, handler http.HandlerFunc) *TodosService {
 	client := NewClient(cfg, token)
 	account := client.ForAccount("99999")
 	return account.Todos()
+}
+
+func TestTodosService_List_QueryParameters(t *testing.T) {
+	fixture := loadTodosFixture(t, "list.json")
+
+	tests := []struct {
+		name          string
+		opts          *TodoListOptions
+		wantStatus    string
+		wantCompleted string
+	}{
+		{name: "nil options", opts: nil},
+		{name: "completed shortcut", opts: &TodoListOptions{Status: "completed"}, wantCompleted: "true"},
+		{name: "pending shortcut", opts: &TodoListOptions{Status: "pending"}},
+		{name: "archived status", opts: &TodoListOptions{Status: "archived"}, wantStatus: "archived"},
+		{name: "trashed status", opts: &TodoListOptions{Status: "trashed"}, wantStatus: "trashed"},
+		{name: "active status", opts: &TodoListOptions{Status: "active"}, wantStatus: "active"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var gotQuery url.Values
+			svc := testTodosServer(t, func(w http.ResponseWriter, r *http.Request) {
+				if r.Method != "GET" {
+					t.Errorf("expected GET, got %s", r.Method)
+				}
+				gotQuery = r.URL.Query()
+				w.Header().Set("Content-Type", "application/json")
+				w.Header().Set("X-Total-Count", "2")
+				w.WriteHeader(200)
+				_, _ = w.Write(fixture)
+			})
+
+			result, err := svc.List(context.Background(), 1069479519, tt.opts)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if len(result.Todos) != 2 {
+				t.Fatalf("expected 2 todos, got %d", len(result.Todos))
+			}
+			if got := gotQuery.Get("status"); got != tt.wantStatus {
+				t.Fatalf("status query = %q, want %q", got, tt.wantStatus)
+			}
+			if got := gotQuery.Get("completed"); got != tt.wantCompleted {
+				t.Fatalf("completed query = %q, want %q", got, tt.wantCompleted)
+			}
+		})
+	}
 }
 
 func TestTodosService_Update(t *testing.T) {
