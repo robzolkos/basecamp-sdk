@@ -98,10 +98,6 @@ type TodoListOptions struct {
 	// Status filters by recording lifecycle: "archived" or "trashed".
 	// Omit for the API default — incomplete todos with status inherited
 	// from the parent list.
-	//
-	// For backward compatibility, "completed" and "pending" are also
-	// accepted as shortcuts: "completed" is translated to Completed=true,
-	// "pending" is translated to the API default.
 	Status string
 
 	// Completed, when true, returns only completed todos.
@@ -201,17 +197,8 @@ func (s *TodosService) List(ctx context.Context, todolistID int64, opts *TodoLis
 	// upstream: Status filters by recording lifecycle (archived/trashed),
 	// Completed=true narrows to completed todos, and they may be combined.
 	var params *generated.ListTodosParams
-	if opts != nil {
-		status, completed := opts.Status, opts.Completed
-		switch status {
-		case "completed":
-			status, completed = "", true
-		case "pending":
-			status = ""
-		}
-		if status != "" || completed {
-			params = &generated.ListTodosParams{Status: status, Completed: completed}
-		}
+	if opts != nil && (opts.Status != "" || opts.Completed) {
+		params = &generated.ListTodosParams{Status: opts.Status, Completed: opts.Completed}
 	}
 
 	// Call generated client for first page (spec-conformant - no manual path construction)

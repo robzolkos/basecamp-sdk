@@ -497,8 +497,6 @@ func TestTodoListOptions_StatusFilter(t *testing.T) {
 		status    string
 		completed bool
 	}{
-		{name: "completed shortcut", status: "completed"},
-		{name: "pending shortcut", status: "pending"},
 		{name: "archived", status: "archived"},
 		{name: "trashed", status: "trashed"},
 		{name: "completed bool", completed: true},
@@ -975,8 +973,6 @@ func TestTodosService_List_QueryParameters(t *testing.T) {
 		{name: "trashed status", opts: &TodoListOptions{Status: "trashed"}, wantStatus: "trashed"},
 		{name: "archived + completed", opts: &TodoListOptions{Status: "archived", Completed: true}, wantStatus: "archived", wantCompleted: "true"},
 		{name: "trashed + completed", opts: &TodoListOptions{Status: "trashed", Completed: true}, wantStatus: "trashed", wantCompleted: "true"},
-		{name: "completed shortcut", opts: &TodoListOptions{Status: "completed"}, wantCompleted: "true"},
-		{name: "pending shortcut", opts: &TodoListOptions{Status: "pending"}},
 	}
 
 	for _, tt := range tests {
