@@ -3,6 +3,7 @@ package basecamp
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -1009,6 +1010,26 @@ func TestTodosService_List_QueryParameters(t *testing.T) {
 				}
 			} else if got := gotQuery.Get("completed"); got != tt.wantCompleted {
 				t.Fatalf("completed query = %q, want %q", got, tt.wantCompleted)
+			}
+		})
+	}
+}
+
+func TestTodosService_List_RejectsInvalidStatus(t *testing.T) {
+	// Server must never be reached — validation happens before the request.
+	svc := testTodosServer(t, func(w http.ResponseWriter, r *http.Request) {
+		t.Fatalf("handler should not be called for invalid status; got %s %s", r.Method, r.URL.Path)
+	})
+
+	for _, status := range []string{"completed", "pending", "active", "something-else"} {
+		t.Run(status, func(t *testing.T) {
+			_, err := svc.List(context.Background(), 1069479519, &TodoListOptions{Status: status})
+			if err == nil {
+				t.Fatalf("expected usage error for Status=%q, got nil", status)
+			}
+			apiErr, ok := errors.AsType[*Error](err)
+			if !ok || apiErr.Code != CodeUsage {
+				t.Fatalf("expected CodeUsage for Status=%q, got %T %v", status, err, err)
 			}
 		})
 	}

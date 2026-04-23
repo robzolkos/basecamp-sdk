@@ -97,7 +97,10 @@ type Bucket struct {
 type TodoListOptions struct {
 	// Status filters by recording lifecycle: "archived" or "trashed".
 	// Omit for the API default — incomplete todos with status inherited
-	// from the parent list.
+	// from the parent list. Unsupported values are rejected at the wrapper
+	// boundary (the BC3 server silently coerces them to nil, so we fail
+	// fast to surface bugs instead of returning unexpectedly-default
+	// results).
 	Status string
 
 	// Completed, when true, returns only completed todos.
@@ -192,6 +195,11 @@ func (s *TodosService) List(ctx context.Context, todolistID int64, opts *TodoLis
 	start := time.Now()
 	ctx = s.client.parent.hooks.OnOperationStart(ctx, op)
 	defer func() { s.client.parent.hooks.OnOperationEnd(ctx, op, err, time.Since(start)) }()
+
+	if opts != nil && opts.Status != "" && opts.Status != "archived" && opts.Status != "trashed" {
+		err = ErrUsage(fmt.Sprintf("todo list status must be empty, %q, or %q (got %q)", "archived", "trashed", opts.Status))
+		return nil, err
+	}
 
 	// Build params for generated client. Status and Completed are orthogonal
 	// upstream: Status filters by recording lifecycle (archived/trashed),
